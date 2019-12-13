@@ -1,0 +1,22 @@
+{
+  "name": "web-audio",
+  "version": "0.1.0",
+  "scripts": {
+    "build": "bsb -make-world",
+    "start": "parcel ./src/index.html",
+    "clean": "bsb -clean-world"
+  },
+  "keywords": [
+    "BuckleScript"
+  ],
+  "author": "",
+  "license": "MIT",
+  "devDependencies": {
+    "bs-platform": "^5.2.1",
+    "bsb-js": "^1.1.7"
+  },
+  "dependencies": {
+    "bs-webapi": "^0.15",
+    "parcel-bundler": "^1.12.4"
+  }
+}
