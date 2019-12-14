@@ -12,7 +12,6 @@
   "author": "",
   "license": "MIT",
   "devDependencies": {
-    "bs-platform": "^5.2.1",
     "bsb-js": "^1.1.7"
   },
   "dependencies": {

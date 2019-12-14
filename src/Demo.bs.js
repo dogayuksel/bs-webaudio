@@ -4,6 +4,30 @@
 
 console.log("Hello, BuckleScript and Reason!");
 
+var $$AudioParam = { };
+
+function Impl(T) {
+  return { };
+}
+
+var $$AudioNode = {
+  Impl: Impl
+};
+
+var $$AudioDestinationNode = { };
+
+var $$GainNode = { };
+
+function Impl$1(T) {
+  return { };
+}
+
+var $$OscillatorNode = {
+  Impl: Impl$1
+};
+
+var $$AudioContext = { };
+
 var audioCtx = new AudioContext();
 
 var oscillator = audioCtx.createOscillator();
@@ -16,6 +40,21 @@ gain.connect(audioCtx.destination);
 
 oscillator.start();
 
+setTimeout((function (param) {
+        var timestamp = audioCtx.getOutputTimestamp();
+        console.log(timestamp.contextTime);
+        console.log(oscillator.frequency.defaultValue);
+        var __x = oscillator.frequency;
+        __x.value = 240.0;
+        return /* () */0;
+      }), 3500);
+
+exports.$$AudioParam = $$AudioParam;
+exports.$$AudioNode = $$AudioNode;
+exports.$$AudioDestinationNode = $$AudioDestinationNode;
+exports.$$GainNode = $$GainNode;
+exports.$$OscillatorNode = $$OscillatorNode;
+exports.$$AudioContext = $$AudioContext;
 exports.audioCtx = audioCtx;
 exports.oscillator = oscillator;
 exports.gain = gain;
