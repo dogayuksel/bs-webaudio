@@ -2,8 +2,6 @@
 'use strict';
 
 
-console.log("Hello, BuckleScript and Reason!");
-
 var $$AudioParam = { };
 
 function Impl(T) {
@@ -46,8 +44,9 @@ setTimeout((function (param) {
         console.log(oscillator.frequency.defaultValue);
         var __x = oscillator.frequency;
         __x.value = 240.0;
+        oscillator.stop(timestamp.contextTime + 2.0);
         return /* () */0;
-      }), 3500);
+      }), 4500);
 
 exports.$$AudioParam = $$AudioParam;
 exports.$$AudioNode = $$AudioNode;
@@ -58,4 +57,4 @@ exports.$$AudioContext = $$AudioContext;
 exports.audioCtx = audioCtx;
 exports.oscillator = oscillator;
 exports.gain = gain;
-/*  Not a pure module */
+/* audioCtx Not a pure module */

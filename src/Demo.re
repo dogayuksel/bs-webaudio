@@ -1,6 +1,4 @@
-Js.log("Hello, BuckleScript and Reason!");
-
-type audioNode_like ('a);
+type audioNode_like('a);
 
 module AudioParam = {
   type audioParam;
@@ -9,11 +7,12 @@ module AudioParam = {
   [@bs.get] external minValue: audioParam => float = "minValue";
   [@bs.get] external getValue: audioParam => float = "value";
   [@bs.set] external setValue: (audioParam, float) => unit = "value";
-}
+};
 
 module AudioNode = {
   module Impl = (T: {type t;}) => {
-    [@bs.send] external connect: (T.t, audioNode_like('a)) => unit = "connect";
+    [@bs.send]
+      external connect: (T.t, audioNode_like('a)) => unit = "connect";
     [@bs.send] external disconnect: T.t => unit = "disconnect";
   };
   type audioNode_tag;
@@ -47,7 +46,10 @@ module OscillatorNode = {
     [@bs.new]
       external createOscillator: unit => oscillatorNode = "OscillatorNode";
     [@bs.send] external start: oscillatorNode => unit = "start";
-    [@bs.get] external frequency: oscillatorNode => AudioParam.audioParam = "frequency";
+    [@bs.send] external stop: oscillatorNode => unit = "stop";
+    [@bs.send.pipe: oscillatorNode] external stopAt: float => unit = "stop";
+    [@bs.get]
+      external frequency: oscillatorNode => AudioParam.audioParam = "frequency";
   };
   include AudioNode.Impl({
     type nonrec t = oscillatorNode;
@@ -58,8 +60,8 @@ module OscillatorNode = {
 };
 
 type audioTimeStamp = {
-  contextTime: int,
-  performanceTime: int,
+  contextTime: float,
+  performanceTime: float,
 };
 
 module AudioContext = {
@@ -74,7 +76,8 @@ module AudioContext = {
     external getDestination:
     audioContext => AudioDestinationNode.audioDestinationNode =
     "destination";
-  [@bs.send.pipe: audioContext] external getOutputTimestamp: unit => audioTimeStamp = "getOutputTimestamp";
+  [@bs.send.pipe: audioContext]
+    external getOutputTimestamp: unit => audioTimeStamp = "getOutputTimestamp";
 };
 
 let audioCtx = AudioContext.createAudioContext();
@@ -84,9 +87,13 @@ OscillatorNode.connect(oscillator, gain);
 GainNode.connect(gain, AudioContext.getDestination(audioCtx));
 OscillatorNode.start(oscillator);
 
-Js.Global.setTimeout(() => {
+Js.Global.setTimeout(
+  () => {
   let timestamp = audioCtx |> AudioContext.getOutputTimestamp();
   Js.log(timestamp.contextTime);
   Js.log(OscillatorNode.frequency(oscillator) |> AudioParam.defaultValue);
   OscillatorNode.frequency(oscillator) |> AudioParam.setValue(_, 240.0);
-}, 3500);
+  oscillator |> OscillatorNode.stopAt(timestamp.contextTime +. 2.0);
+},
+  4500,
+);
