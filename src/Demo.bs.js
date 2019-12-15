@@ -16,6 +16,8 @@ var $$AudioDestinationNode = { };
 
 var $$GainNode = { };
 
+var $$PeriodicWave = { };
+
 function Impl$1(T) {
   return { };
 }
@@ -34,6 +36,28 @@ var gain = audioCtx.createGain();
 
 oscillator.connect(gain);
 
+var real = new Float32Array(3);
+
+var imag = new Float32Array(3);
+
+real[0] = 0.0;
+
+real[1] = 1.0;
+
+real[2] = 1.0;
+
+imag[0] = 0.0;
+
+imag[1] = 0.0;
+
+imag[2] = 0.0;
+
+var periodicWave = audioCtx.createPeriodicWave(real, imag, {
+      disableNormalization: true
+    });
+
+oscillator.setPeriodicWave(periodicWave);
+
 gain.connect(audioCtx.destination);
 
 oscillator.start();
@@ -46,15 +70,19 @@ setTimeout((function (param) {
         __x.value = 240.0;
         oscillator.stop(timestamp.contextTime + 2.0);
         return /* () */0;
-      }), 4500);
+      }), 2500);
 
 exports.$$AudioParam = $$AudioParam;
 exports.$$AudioNode = $$AudioNode;
 exports.$$AudioDestinationNode = $$AudioDestinationNode;
 exports.$$GainNode = $$GainNode;
+exports.$$PeriodicWave = $$PeriodicWave;
 exports.$$OscillatorNode = $$OscillatorNode;
 exports.$$AudioContext = $$AudioContext;
 exports.audioCtx = audioCtx;
 exports.oscillator = oscillator;
 exports.gain = gain;
+exports.real = real;
+exports.imag = imag;
+exports.periodicWave = periodicWave;
 /* audioCtx Not a pure module */
