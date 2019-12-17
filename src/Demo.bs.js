@@ -9,29 +9,17 @@ var oscillator = audioCtx.createOscillator();
 
 var biquadFilter = audioCtx.createBiquadFilter();
 
-BiquadFilterNode$WebAudio.setType(biquadFilter, /* Lowpass */0);
-
-biquadFilter.frequency.value = 170.0;
-
-oscillator.connect(biquadFilter);
-
 var gain = audioCtx.createGain();
 
-biquadFilter.connect(gain);
+var real = new Float32Array(3);
 
-var real = new Float32Array(5);
-
-var imag = new Float32Array(5);
+var imag = new Float32Array(3);
 
 real[0] = 0.0;
 
 real[1] = 1.0;
 
-real[2] = 1.0;
-
-real[3] = 0.5;
-
-real[4] = 0.2;
+real[2] = 0.3;
 
 imag[0] = 0.0;
 
@@ -39,15 +27,17 @@ imag[1] = 0.0;
 
 imag[2] = 0.0;
 
-imag[3] = 0.2;
+oscillator.setPeriodicWave(audioCtx.createPeriodicWave(real, imag, {
+          disableNormalization: true
+        }));
 
-imag[4] = 0.4;
+oscillator.connect(biquadFilter);
 
-var periodicWave = audioCtx.createPeriodicWave(real, imag, {
-      disableNormalization: true
-    });
+BiquadFilterNode$WebAudio.setType(biquadFilter, /* Lowpass */0);
 
-oscillator.setPeriodicWave(periodicWave);
+biquadFilter.frequency.value = 170.0;
+
+biquadFilter.connect(gain);
 
 gain.connect(audioCtx.destination);
 
@@ -56,10 +46,7 @@ oscillator.start();
 setTimeout((function (param) {
         biquadFilter.frequency.value = 320.0;
         var timestamp = audioCtx.getOutputTimestamp();
-        console.log(timestamp.contextTime);
-        console.log(oscillator.frequency.defaultValue);
-        var __x = oscillator.frequency;
-        __x.value = 240.0;
+        oscillator.frequency.value = 240.0;
         oscillator.stop(timestamp.contextTime + 2.0);
         return /* () */0;
       }), 2500);
@@ -70,5 +57,4 @@ exports.biquadFilter = biquadFilter;
 exports.gain = gain;
 exports.real = real;
 exports.imag = imag;
-exports.periodicWave = periodicWave;
 /* audioCtx Not a pure module */
