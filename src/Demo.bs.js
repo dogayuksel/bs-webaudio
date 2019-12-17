@@ -26,19 +26,53 @@ var $$OscillatorNode = {
   Impl: Impl$1
 };
 
+function setType(filterNode, filterType) {
+  switch (filterType) {
+    case /* Lowpass */0 :
+        filterNode.type = "lowpass";
+        return /* () */0;
+    case /* Highpass */1 :
+        filterNode.type = "highpass";
+        return /* () */0;
+    case /* Bandpass */2 :
+        filterNode.type = "bandpass";
+        return /* () */0;
+    case /* Lowshelf */3 :
+    case /* Highself */4 :
+    case /* Peaking */5 :
+    case /* Notch */6 :
+    case /* Allpass */7 :
+        console.log("Filter type not implemented yet");
+        return /* () */0;
+    
+  }
+}
+
+var $$BiquadFilterNode = {
+  setType: setType
+};
+
 var $$AudioContext = { };
 
 var audioCtx = new AudioContext();
 
 var oscillator = audioCtx.createOscillator();
 
+var biquadFilter = audioCtx.createBiquadFilter();
+
+biquadFilter.type = "lowpass";
+
+biquadFilter.frequency.value = 170.0;
+
+oscillator.connect(biquadFilter);
+
 var gain = audioCtx.createGain();
 
-oscillator.connect(gain);
+biquadFilter.connect(gain);
 
-var real = new Float32Array(3);
+var real = new Float32Array(5);
 
-var imag = new Float32Array(3);
+var imag = new Float32Array(5);
 
 real[0] = 0.0;
 
@@ -46,11 +80,19 @@ real[1] = 1.0;
 
 real[2] = 1.0;
 
+real[3] = 0.5;
+
+real[4] = 0.2;
+
 imag[0] = 0.0;
 
 imag[1] = 0.0;
 
 imag[2] = 0.0;
+
+imag[3] = 0.2;
+
+imag[4] = 0.4;
 
 var periodicWave = audioCtx.createPeriodicWave(real, imag, {
       disableNormalization: true
@@ -63,6 +105,7 @@ gain.connect(audioCtx.destination);
 oscillator.start();
 
 setTimeout((function (param) {
+        biquadFilter.frequency.value = 320.0;
         var timestamp = audioCtx.getOutputTimestamp();
         console.log(timestamp.contextTime);
         console.log(oscillator.frequency.defaultValue);
@@ -78,9 +121,11 @@ exports.$$AudioDestinationNode = $$AudioDestinationNode;
 exports.$$GainNode = $$GainNode;
 exports.$$PeriodicWave = $$PeriodicWave;
 exports.$$OscillatorNode = $$OscillatorNode;
+exports.$$BiquadFilterNode = $$BiquadFilterNode;
 exports.$$AudioContext = $$AudioContext;
 exports.audioCtx = audioCtx;
 exports.oscillator = oscillator;
+exports.biquadFilter = biquadFilter;
 exports.gain = gain;
 exports.real = real;
 exports.imag = imag;

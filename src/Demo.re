@@ -64,6 +64,35 @@ module OscillatorNode = {
   });
 };
 
+type filter =
+  | Lowpass
+  | Highpass
+  | Bandpass
+  | Lowshelf
+  | Highself
+  | Peaking
+  | Notch
+  | Allpass;
+
+module BiquadFilterNode = {
+  type biquadFilterNode_tag;
+  type biquadFilterNode = audioNode_like(biquadFilterNode_tag);
+  [@bs.set]
+  external assignfilterType: (biquadFilterNode, string) => unit = "type";
+  [@bs.get]
+  external frequency: biquadFilterNode => AudioParam.audioParam = "frequency";
+  let setType = (filterNode: biquadFilterNode, filterType: filter) =>
+    switch (filterType) {
+    | Lowpass => assignfilterType(filterNode, "lowpass")
+    | Highpass => assignfilterType(filterNode, "highpass")
+    | Bandpass => assignfilterType(filterNode, "bandpass")
+    | _ => Js.log("Filter type not implemented yet")
+    };
+  include AudioNode.Impl({
+    type t = biquadFilterNode;
+  });
+};
+
 type audioTimeStamp = {
   contextTime: float,
   performanceTime: float,
@@ -77,6 +106,10 @@ module AudioContext = {
     "createOscillator";
   [@bs.send]
   external createGain: audioContext => GainNode.gainNode = "createGain";
+  [@bs.send]
+  external createBiquadFilter:
+    audioContext => BiquadFilterNode.biquadFilterNode =
+    "createBiquadFilter";
   [@bs.get]
   external getDestination:
     audioContext => AudioDestinationNode.audioDestinationNode =
@@ -97,17 +130,25 @@ module AudioContext = {
 
 let audioCtx = AudioContext.createAudioContext();
 let oscillator = AudioContext.createOscillator(audioCtx);
+let biquadFilter = AudioContext.createBiquadFilter(audioCtx);
+BiquadFilterNode.setType(biquadFilter, Lowpass);
+BiquadFilterNode.frequency(biquadFilter)->AudioParam.setValue(170.0);
+OscillatorNode.connect(oscillator, biquadFilter);
 let gain = AudioContext.createGain(audioCtx);
-OscillatorNode.connect(oscillator, gain);
+BiquadFilterNode.connect(biquadFilter, gain);
 
-let real = Js_typed_array.Float32Array.fromLength(3);
-let imag = Js_typed_array.Float32Array.fromLength(3);
+let real = Js_typed_array.Float32Array.fromLength(5);
+let imag = Js_typed_array.Float32Array.fromLength(5);
 Js_typed_array2.Float32Array.unsafe_set(real, 0, 0.0);
 Js_typed_array2.Float32Array.unsafe_set(real, 1, 1.0);
 Js_typed_array2.Float32Array.unsafe_set(real, 2, 1.0);
+Js_typed_array2.Float32Array.unsafe_set(real, 3, 0.5);
+Js_typed_array2.Float32Array.unsafe_set(real, 4, 0.2);
 Js_typed_array2.Float32Array.unsafe_set(imag, 0, 0.0);
 Js_typed_array2.Float32Array.unsafe_set(imag, 1, 0.0);
 Js_typed_array2.Float32Array.unsafe_set(imag, 2, 0.0);
+Js_typed_array2.Float32Array.unsafe_set(imag, 3, 0.2);
+Js_typed_array2.Float32Array.unsafe_set(imag, 4, 0.4);
 let periodicWave =
   AudioContext.createPeriodicWave(
     audioCtx,
@@ -122,6 +163,7 @@ OscillatorNode.start(oscillator);
 
 Js.Global.setTimeout(
   () => {
+    BiquadFilterNode.frequency(biquadFilter)->AudioParam.setValue(320.0);
     let timestamp = audioCtx |> AudioContext.getOutputTimestamp();
     Js.log(timestamp.contextTime);
     Js.log(OscillatorNode.frequency(oscillator) |> AudioParam.defaultValue);
