@@ -27,15 +27,15 @@ imag[1] = 0.0;
 
 imag[2] = 0.0;
 
-oscillator.setPeriodicWave(audioCtx.createPeriodicWave(real, imag, {
-          disableNormalization: true
-        }));
+var periodicWave = audioCtx.createPeriodicWave(real, imag, {
+      disableNormalization: false
+    });
+
+oscillator.setPeriodicWave(periodicWave);
 
 oscillator.connect(biquadFilter);
 
 BiquadFilterNode$WebAudio.setType(biquadFilter, /* Lowpass */0);
-
-biquadFilter.frequency.value = 170.0;
 
 biquadFilter.connect(gain);
 
@@ -43,13 +43,17 @@ gain.connect(audioCtx.destination);
 
 oscillator.start();
 
-setTimeout((function (param) {
-        biquadFilter.frequency.value = 320.0;
-        var timestamp = audioCtx.getOutputTimestamp();
-        oscillator.frequency.value = 240.0;
-        oscillator.stop(timestamp.contextTime + 2.0);
-        return /* () */0;
-      }), 2500);
+oscillator.stop(4.5);
+
+oscillator.frequency.setValueCurveAtTime(/* array */[
+      240.0,
+      370.0,
+      240.0
+    ], 2.0, 2.5);
+
+biquadFilter.frequency.value = 170.0;
+
+biquadFilter.frequency.setTargetAtTime(50.0, 2.0, 1.0);
 
 exports.audioCtx = audioCtx;
 exports.oscillator = oscillator;
@@ -57,4 +61,5 @@ exports.biquadFilter = biquadFilter;
 exports.gain = gain;
 exports.real = real;
 exports.imag = imag;
+exports.periodicWave = periodicWave;
 /* audioCtx Not a pure module */
