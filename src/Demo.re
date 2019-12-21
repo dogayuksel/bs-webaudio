@@ -4,12 +4,12 @@ let sineOscillator = Oscillator.make(Sine, audioCtx);
 let biquadFilter = AudioContext.createBiquadFilter(audioCtx);
 let sineGain = AudioContext.createGain(audioCtx);
 
-sineOscillator->OscillatorNode.connect(biquadFilter);
+sineOscillator |> OscillatorNode.connect(biquadFilter);
 
 biquadFilter->BiquadFilterNode.setType(Lowpass);
-biquadFilter->BiquadFilterNode.connect(sineGain);
+biquadFilter |> BiquadFilterNode.connect(sineGain);
 
-sineGain->GainNode.connect(AudioContext.getDestination(audioCtx));
+sineGain |> GainNode.connect(AudioContext.getDestination(audioCtx));
 
 sineOscillator |> OscillatorNode.start();
 sineOscillator |> OscillatorNode.stopAt(4.5);
@@ -27,8 +27,8 @@ BiquadFilterNode.frequency(biquadFilter)
 
 let sawOscillator = Oscillator.make(SawTooth, audioCtx);
 let sawGain = AudioContext.createGain(audioCtx);
-sawOscillator->OscillatorNode.connect(sawGain);
-sawGain->GainNode.connect(AudioContext.getDestination(audioCtx));
+sawOscillator |> OscillatorNode.connect(sawGain);
+sawGain |> GainNode.connect(AudioContext.getDestination(audioCtx));
 sawGain->GainNode.gain->AudioParam.setValue(0.005);
 sawOscillator |> OscillatorNode.start();
 sawOscillator |> OscillatorNode.stopAt(4.5);
