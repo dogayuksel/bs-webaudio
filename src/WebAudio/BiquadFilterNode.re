@@ -11,12 +11,12 @@ type filter =
 type biquadFilterNode_tag;
 type biquadFilterNode = AudioNode.audioNode_like(biquadFilterNode_tag);
 
-[@bs.set]
-external assignfilterType: (biquadFilterNode, string) => unit = "type";
-[@bs.get]
-external frequency: biquadFilterNode => AudioParam.audioParam = "frequency";
+type t = biquadFilterNode;
 
-let setType = (filterNode: biquadFilterNode, filterType: filter) =>
+[@bs.set] external assignfilterType: (t, string) => unit = "type";
+[@bs.get] external frequency: t => AudioParam.t = "frequency";
+
+let setType = (filterNode: t, filterType: filter) =>
   switch (filterType) {
   | Lowpass => assignfilterType(filterNode, "lowpass")
   | Highpass => assignfilterType(filterNode, "highpass")
@@ -25,5 +25,5 @@ let setType = (filterNode: biquadFilterNode, filterType: filter) =>
   };
 
 include AudioNode.Impl({
-  type t = biquadFilterNode;
+  type nonrec t = t;
 });

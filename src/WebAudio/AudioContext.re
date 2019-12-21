@@ -4,35 +4,29 @@ type audioTimeStamp = {
 };
 
 type audioContext;
+type t = audioContext;
 
-[@bs.new] external createAudioContext: unit => audioContext = "AudioContext";
-
-[@bs.send]
-external createOscillator: audioContext => OscillatorNode.oscillatorNode =
-  "createOscillator";
+[@bs.new] external createAudioContext: unit => t = "AudioContext";
 
 [@bs.send]
-external createGain: audioContext => GainNode.gainNode = "createGain";
+external createOscillator: t => OscillatorNode.t = "createOscillator";
+
+[@bs.send] external createGain: t => GainNode.t = "createGain";
 
 [@bs.send]
-external createBiquadFilter: audioContext => BiquadFilterNode.biquadFilterNode =
-  "createBiquadFilter";
+external createBiquadFilter: t => BiquadFilterNode.t = "createBiquadFilter";
 
-[@bs.get]
-external getDestination:
-  audioContext => AudioDestinationNode.audioDestinationNode =
-  "destination";
+[@bs.get] external getDestination: t => AudioDestinationNode.t = "destination";
 
-[@bs.send.pipe: audioContext]
+[@bs.send.pipe: t]
 external getOutputTimestamp: unit => audioTimeStamp = "getOutputTimestamp";
 
-[@bs.send]
+[@bs.send.pipe: t]
 external createPeriodicWave:
   (
-    audioContext,
     Js_typed_array.Float32Array.typed_array(float),
     Js_typed_array.Float32Array.typed_array(float),
     {.. "disableNormalization": bool}
   ) =>
-  PeriodicWave.periodicWave =
+  PeriodicWave.t =
   "createPeriodicWave";
