@@ -3,28 +3,28 @@
 
 
 function trigger(currentTime, gainNode) {
-  var attackTime = currentTime.contextTime + 2.0;
+  var attackTime = currentTime.contextTime + 0.3;
   var gainParam = gainNode.gain;
   gainParam.cancelScheduledValues(currentTime.contextTime);
-  gainParam.setTargetAtTime(0.99, currentTime.contextTime + 0.001, 2.0 / 3.0);
-  gainParam.setTargetAtTime(0.3, attackTime, 2.0 / 3.0);
+  gainParam.setTargetAtTime(0.99, currentTime.contextTime + 0.001, 0.3 / 3.0);
+  gainParam.setTargetAtTime(0.5, attackTime, 0.7 / 3.0);
   return /* () */0;
 }
 
 function endTrigger(currentTime, gainNode) {
   var gainParam = gainNode.gain;
   gainParam.cancelScheduledValues(currentTime.contextTime);
-  gainParam.setTargetAtTime(0.0005, currentTime.contextTime, 1.5 / 3.0);
+  gainParam.setTargetAtTime(0.0005, currentTime.contextTime, 1.2 / 3.0);
   return /* () */0;
 }
 
-var attack = 2.0;
+var attack = 0.3;
 
-var decay = 2.0;
+var decay = 0.7;
 
-var sustain = 0.3;
+var sustain = 0.5;
 
-var release = 1.5;
+var release = 1.2;
 
 exports.attack = attack;
 exports.decay = decay;

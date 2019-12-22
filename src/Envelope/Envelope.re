@@ -2,10 +2,10 @@ type envelope;
 
 type t = envelope;
 
-let attack = 2.0;
-let decay = 2.0;
-let sustain = 0.3;
-let release = 1.5;
+let attack = 0.3;
+let decay = 0.7;
+let sustain = 0.5;
+let release = 1.2;
 
 let trigger =
     (currentTime: AudioContext.audioTimeStamp, gainNode: GainNode.t): unit => {

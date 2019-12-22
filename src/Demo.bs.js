@@ -9,15 +9,9 @@ var audioCtx = new AudioContext();
 
 var sineOscillator = Oscillator$WebAudio.make(/* Sine */0, audioCtx);
 
-var biquadFilter = audioCtx.createBiquadFilter();
-
 var sineGain = audioCtx.createGain();
 
-sineOscillator.connect(biquadFilter);
-
-BiquadFilterNode$WebAudio.setType(biquadFilter, /* Lowpass */0);
-
-biquadFilter.connect(sineGain);
+sineOscillator.connect(sineGain);
 
 sineGain.connect(audioCtx.destination);
 
@@ -31,15 +25,21 @@ sineOscillator.frequency.setValueCurveAtTime(/* array */[
       470.0
     ], 2.0, 2.5);
 
-biquadFilter.frequency.value = 470.0;
-
-biquadFilter.frequency.setTargetAtTime(450.0, 2.0, 1.0);
-
 var sawOscillator = Oscillator$WebAudio.make(/* SawTooth */1, audioCtx);
+
+var biquadFilter = audioCtx.createBiquadFilter();
 
 var sawGain = audioCtx.createGain();
 
-sawOscillator.connect(sawGain);
+BiquadFilterNode$WebAudio.setType(biquadFilter, /* Lowpass */0);
+
+biquadFilter.frequency.value = 370.0;
+
+biquadFilter.frequency.setTargetAtTime(300.0, 2.0, 3.0);
+
+sawOscillator.connect(biquadFilter);
+
+biquadFilter.connect(sawGain);
 
 sawGain.connect(audioCtx.destination);
 
@@ -83,9 +83,9 @@ document.addEventListener("keyup", endTrigger);
 
 exports.audioCtx = audioCtx;
 exports.sineOscillator = sineOscillator;
-exports.biquadFilter = biquadFilter;
 exports.sineGain = sineGain;
 exports.sawOscillator = sawOscillator;
+exports.biquadFilter = biquadFilter;
 exports.sawGain = sawGain;
 exports.Keyboard = Keyboard;
 exports.trigger = trigger;
