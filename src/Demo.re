@@ -5,7 +5,7 @@ let sineGain = AudioContext.createGain(audioCtx);
 sineOscillator |> OscillatorNode.connect(sineGain);
 
 sineGain |> GainNode.connect(AudioContext.getDestination(audioCtx));
-sineGain->GainNode.gain->AudioParam.setValue(0.0005);
+sineGain->GainNode.gain->AudioParam.setValue(epsilon_float);
 sineOscillator |> OscillatorNode.start();
 
 OscillatorNode.frequency(sineOscillator)
@@ -32,7 +32,7 @@ sawOscillator |> OscillatorNode.connect(biquadFilter);
 biquadFilter |> BiquadFilterNode.connect(sawGain);
 
 sawGain |> GainNode.connect(AudioContext.getDestination(audioCtx));
-sawGain->GainNode.gain->AudioParam.setValue(0.0005);
+sawGain->GainNode.gain->AudioParam.setValue(epsilon_float);
 sawOscillator |> OscillatorNode.start();
 
 module Keyboard = {
