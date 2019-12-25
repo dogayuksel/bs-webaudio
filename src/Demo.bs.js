@@ -12,15 +12,15 @@ var sineOscillator = Oscillator$WebAudio.make(/* Custom */[Oscillator$WebAudio.s
 
 var sineGain = audioCtx.createGain();
 
-sineOscillator.connect(sineGain);
+Oscillator$WebAudio.connect(sineGain, sineOscillator);
 
 sineGain.connect(audioCtx.destination);
 
 sineGain.gain.value = Pervasives.epsilon_float;
 
-sineOscillator.start();
+Oscillator$WebAudio.start(sineOscillator);
 
-sineOscillator.frequency.setValueCurveAtTime(/* array */[
+sineOscillator.oscillatorNode.frequency.setValueCurveAtTime(/* array */[
       470.0,
       370.0,
       470.0
@@ -38,7 +38,7 @@ biquadFilter.frequency.value = 370.0;
 
 biquadFilter.frequency.setTargetAtTime(300.0, 2.0, 3.0);
 
-sawOscillator.connect(biquadFilter);
+Oscillator$WebAudio.connect(biquadFilter, sawOscillator);
 
 biquadFilter.connect(sawGain);
 
@@ -46,7 +46,7 @@ sawGain.connect(audioCtx.destination);
 
 sawGain.gain.value = Pervasives.epsilon_float;
 
-sawOscillator.start();
+Oscillator$WebAudio.start(sawOscillator);
 
 var state = {
   a: false

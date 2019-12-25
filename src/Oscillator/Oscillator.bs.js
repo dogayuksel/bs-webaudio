@@ -17,7 +17,7 @@ function sampleRandomWave(param) {
   return samples;
 }
 
-function setOscillatorType(oscillatorType, oscillator, audioCtx) {
+function setOscillatorNodeType(oscillatorType, oscillator, audioCtx) {
   if (typeof oscillatorType === "number") {
     switch (oscillatorType) {
       case /* Sine */0 :
@@ -44,11 +44,28 @@ function setOscillatorType(oscillatorType, oscillator, audioCtx) {
   return oscillator;
 }
 
+function start(oscillator) {
+  oscillator.oscillatorNode.start();
+  return oscillator;
+}
+
+function connect(target, oscillator) {
+  oscillator.oscillatorNode.connect(target);
+  return oscillator;
+}
+
 function make(oscillatorType, audioCtx) {
-  return setOscillatorType(oscillatorType, audioCtx.createOscillator(), audioCtx);
+  var oscillatorNode = setOscillatorNodeType(oscillatorType, audioCtx.createOscillator(), audioCtx);
+  return {
+          audioContext: audioCtx,
+          oscillatorNode: oscillatorNode,
+          oscillatorType: oscillatorType
+        };
 }
 
 exports.sampleRandomWave = sampleRandomWave;
-exports.setOscillatorType = setOscillatorType;
+exports.setOscillatorNodeType = setOscillatorNodeType;
+exports.start = start;
+exports.connect = connect;
 exports.make = make;
 /* No side effect */

@@ -3,13 +3,13 @@ let audioCtx = AudioContext.createAudioContext();
 let sineOscillator =
   Oscillator.make(Custom(Oscillator.sampleRandomWave()), audioCtx);
 let sineGain = AudioContext.createGain(audioCtx);
-sineOscillator |> OscillatorNode.connect(sineGain);
+sineOscillator |> Oscillator.connect(sineGain);
 
 sineGain |> GainNode.connect(AudioContext.getDestination(audioCtx));
 sineGain->GainNode.gain->AudioParam.setValue(epsilon_float);
-sineOscillator |> OscillatorNode.start();
+sineOscillator |> Oscillator.start;
 
-OscillatorNode.frequency(sineOscillator)
+OscillatorNode.frequency(sineOscillator.oscillatorNode)
 |> AudioParam.setValueCurveAtTime(
      ~curve=[|470.0, 370.0, 470.0|],
      ~startTime=2.0,
@@ -29,12 +29,12 @@ BiquadFilterNode.frequency(biquadFilter)
      ~timeConstant=3.0,
    );
 
-sawOscillator |> OscillatorNode.connect(biquadFilter);
+sawOscillator |> Oscillator.connect(biquadFilter);
 biquadFilter |> BiquadFilterNode.connect(sawGain);
 
 sawGain |> GainNode.connect(AudioContext.getDestination(audioCtx));
 sawGain->GainNode.gain->AudioParam.setValue(epsilon_float);
-sawOscillator |> OscillatorNode.start();
+sawOscillator |> Oscillator.start;
 
 module Keyboard = {
   type state = {mutable a: bool};
