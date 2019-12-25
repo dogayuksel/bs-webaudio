@@ -1,55 +1,49 @@
-type oscillator;
-
 type oscillatorType =
   | Sine
-  | SawTooth
+  | Square
+  | Sawtooth
   | Triange
-  | Square;
+  | Custom(array(float));
 
-let toTypedArray = (floatArray: array(Complex.t)) => {
-  let realCoefficients =
-    Array.map((x: Complex.t) => x.re, floatArray)
-    ->Js_typed_array.Float32Array.make;
-  let imaginaryCoefficients =
-    Array.map((x: Complex.t) => x.im, floatArray)
-    ->Js_typed_array.Float32Array.make;
-  (realCoefficients, imaginaryCoefficients);
+let sampleRandomWave = () => {
+  let samples = Array.make(256, 0.0);
+  let previousValue = ref(0.0);
+  samples[0] = previousValue^;
+  for (x in 1 to 255) {
+    let newValue = previousValue^ +. Random.float(0.2) -. 0.1;
+    samples[x] = newValue;
+    previousValue := newValue;
+  };
+  samples;
 };
 
-let sampleSineWave = () => {
-  let samples = Array.make(256, Complex.{re: 0.0, im: 0.0});
-  for (x in 0 to 255) {
-    let mapped =
-      (float_of_int(x) /. 256.0 *. 2.0 *. Js.Math._PI +. Js.Math._PI)->sin;
-    samples[x] = Complex.{re: mapped, im: 0.0};
+let setOscillatorType =
+    (
+      oscillatorType: oscillatorType,
+      oscillator: OscillatorNode.t,
+      audioCtx: AudioContext.t,
+    ) => {
+  switch (oscillatorType) {
+  | Sine => OscillatorNode.setOscillatorType(oscillator, "sine")
+  | Square => OscillatorNode.setOscillatorType(oscillator, "square")
+  | Sawtooth => OscillatorNode.setOscillatorType(oscillator, "sawtooth")
+  | Triange => OscillatorNode.setOscillatorType(oscillator, "triange")
+  | Custom(samples) =>
+    let (realCoefficients, imaginaryCoefficients) =
+      PeriodicWave.calculateCoefficients(samples);
+    let periodicWave =
+      AudioContext.createPeriodicWave(
+        realCoefficients,
+        imaginaryCoefficients,
+        {"disableNormalization": false},
+        audioCtx,
+      );
+    OscillatorNode.setPeriodicWave(periodicWave, oscillator);
   };
-  FFT.fft(samples) |> toTypedArray;
-};
-
-let sampleSawTooth = () => {
-  let samples = Array.make(256, Complex.{re: 0.0, im: 0.0});
-  for (x in 0 to 255) {
-    let mapped = float_of_int(x) /. 256.0 *. 2.0 -. 1.0;
-    samples[x] = Complex.{re: mapped, im: 0.0};
-  };
-  FFT.fft(samples) |> toTypedArray;
+  oscillator;
 };
 
 let make = (oscillatorType: oscillatorType, audioCtx: AudioContext.t) => {
-  let oscillator = AudioContext.createOscillator(audioCtx);
-  let (realCoefficients, imaginaryCoefficients) =
-    switch (oscillatorType) {
-    | Sine => sampleSineWave()
-    | SawTooth => sampleSawTooth()
-    | _ => raise(Not_found)
-    };
-  let periodicWave =
-    audioCtx
-    |> AudioContext.createPeriodicWave(
-         realCoefficients,
-         imaginaryCoefficients,
-         {"disableNormalization": false},
-       );
-  oscillator |> OscillatorNode.setPeriodicWave(periodicWave);
-  oscillator;
+  AudioContext.createOscillator(audioCtx)
+  |> setOscillatorType(oscillatorType, _, audioCtx);
 };

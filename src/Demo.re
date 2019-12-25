@@ -1,6 +1,7 @@
 let audioCtx = AudioContext.createAudioContext();
 
-let sineOscillator = Oscillator.make(Sine, audioCtx);
+let sineOscillator =
+  Oscillator.make(Custom(Oscillator.sampleRandomWave()), audioCtx);
 let sineGain = AudioContext.createGain(audioCtx);
 sineOscillator |> OscillatorNode.connect(sineGain);
 
@@ -15,7 +16,7 @@ OscillatorNode.frequency(sineOscillator)
      ~duration=2.5,
    );
 
-let sawOscillator = Oscillator.make(SawTooth, audioCtx);
+let sawOscillator = Oscillator.make(Sawtooth, audioCtx);
 let biquadFilter = AudioContext.createBiquadFilter(audioCtx);
 let sawGain = AudioContext.createGain(audioCtx);
 

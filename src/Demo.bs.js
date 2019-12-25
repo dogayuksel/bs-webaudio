@@ -8,7 +8,7 @@ var BiquadFilterNode$WebAudio = require("./WebAudio/BiquadFilterNode.bs.js");
 
 var audioCtx = new AudioContext();
 
-var sineOscillator = Oscillator$WebAudio.make(/* Sine */0, audioCtx);
+var sineOscillator = Oscillator$WebAudio.make(/* Custom */[Oscillator$WebAudio.sampleRandomWave(/* () */0)], audioCtx);
 
 var sineGain = audioCtx.createGain();
 
@@ -26,7 +26,7 @@ sineOscillator.frequency.setValueCurveAtTime(/* array */[
       470.0
     ], 2.0, 2.5);
 
-var sawOscillator = Oscillator$WebAudio.make(/* SawTooth */1, audioCtx);
+var sawOscillator = Oscillator$WebAudio.make(/* Sawtooth */2, audioCtx);
 
 var biquadFilter = audioCtx.createBiquadFilter();
 

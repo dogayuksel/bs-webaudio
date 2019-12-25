@@ -8,6 +8,8 @@ module Impl = (T: {type t;}) => {
   [@bs.send.pipe: T.t] external start: unit => unit = "start";
   [@bs.send.pipe: T.t] external stop: unit => unit = "stop";
   [@bs.send.pipe: T.t] external stopAt: float => unit = "stop";
+  [@bs.get] external getOscillatorType: T.t => string = "type";
+  [@bs.set] external setOscillatorType: (T.t, string) => unit = "type";
   [@bs.get] external frequency: T.t => AudioParam.t = "frequency";
   [@bs.send.pipe: T.t]
   external setPeriodicWave: PeriodicWave.t => unit = "setPeriodicWave";
