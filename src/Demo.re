@@ -1,11 +1,14 @@
 let audioCtx = AudioContext.createAudioContext();
 
+let lfo = LFO.make(audioCtx);
+lfo |> GainNode.connect(AudioContext.getDestination(audioCtx));
+
 let sineOscillator =
   Oscillator.make(Custom(Oscillator.sampleRandomWave()), audioCtx);
 let sineGain = AudioContext.createGain(audioCtx);
 sineOscillator |> Oscillator.connect(sineGain);
 
-sineGain |> GainNode.connect(AudioContext.getDestination(audioCtx));
+sineGain |> GainNode.connect(lfo);
 sineGain->GainNode.gain->AudioParam.setValue(epsilon_float);
 sineOscillator |> Oscillator.start;
 
@@ -32,7 +35,7 @@ BiquadFilterNode.frequency(biquadFilter)
 sawOscillator |> Oscillator.connect(biquadFilter);
 biquadFilter |> BiquadFilterNode.connect(sawGain);
 
-sawGain |> GainNode.connect(AudioContext.getDestination(audioCtx));
+sawGain |> GainNode.connect(lfo);
 sawGain->GainNode.gain->AudioParam.setValue(epsilon_float);
 sawOscillator |> Oscillator.start;
 

@@ -16,6 +16,10 @@ external createOscillator: t => OscillatorNode.t = "createOscillator";
 [@bs.send]
 external createBiquadFilter: t => BiquadFilterNode.t = "createBiquadFilter";
 
+[@bs.send]
+external createConstantSource: t => ConstantSourceNode.t =
+  "createConstantSource";
+
 [@bs.get] external getDestination: t => AudioDestinationNode.t = "destination";
 
 [@bs.send.pipe: t]

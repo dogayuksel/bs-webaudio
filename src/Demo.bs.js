@@ -2,11 +2,16 @@
 'use strict';
 
 var Pervasives = require("bs-platform/lib/js/pervasives.js");
+var LFO$WebAudio = require("./LFO/LFO.bs.js");
 var Envelope$WebAudio = require("./Envelope/Envelope.bs.js");
 var Oscillator$WebAudio = require("./Oscillator/Oscillator.bs.js");
 var BiquadFilterNode$WebAudio = require("./WebAudio/BiquadFilterNode.bs.js");
 
 var audioCtx = new AudioContext();
+
+var lfo = LFO$WebAudio.make(audioCtx);
+
+lfo.connect(audioCtx.destination);
 
 var sineOscillator = Oscillator$WebAudio.make(/* Custom */[Oscillator$WebAudio.sampleRandomWave(/* () */0)], audioCtx);
 
@@ -14,7 +19,7 @@ var sineGain = audioCtx.createGain();
 
 Oscillator$WebAudio.connect(sineGain, sineOscillator);
 
-sineGain.connect(audioCtx.destination);
+sineGain.connect(lfo);
 
 sineGain.gain.value = Pervasives.epsilon_float;
 
@@ -42,7 +47,7 @@ Oscillator$WebAudio.connect(biquadFilter, sawOscillator);
 
 biquadFilter.connect(sawGain);
 
-sawGain.connect(audioCtx.destination);
+sawGain.connect(lfo);
 
 sawGain.gain.value = Pervasives.epsilon_float;
 
@@ -83,6 +88,7 @@ document.addEventListener("keydown", trigger);
 document.addEventListener("keyup", endTrigger);
 
 exports.audioCtx = audioCtx;
+exports.lfo = lfo;
 exports.sineOscillator = sineOscillator;
 exports.sineGain = sineGain;
 exports.sawOscillator = sawOscillator;
