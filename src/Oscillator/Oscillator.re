@@ -1,19 +1,13 @@
-type oscillatorType =
-  | Sine
-  | Square
-  | Sawtooth
-  | Triange
-  | Custom(array(float));
-
 type oscillator = {
   audioContext: AudioContext.t,
   oscillatorNode: OscillatorNode.t,
-  oscillatorType,
+  oscillatorType: OscillatorNode.oscillatorNodeType,
+  oscillatorGain: GainNode.t,
 };
 
 type t = oscillator;
 
-let sampleRandomWave = () => {
+let sampleRandomWave = (): array(float) => {
   let samples = Array.make(256, 0.0);
   let previousValue = ref(0.0);
   samples[0] = previousValue^;
@@ -25,7 +19,7 @@ let sampleRandomWave = () => {
   samples;
 };
 
-let setFrequency = (~frequency: float, oscillator: oscillator) => {
+let setFrequency = (~frequency: float, oscillator: oscillator): unit => {
   oscillator.oscillatorNode
   ->OscillatorNode.frequency
   ->AudioParam.setValue(frequency);
@@ -42,27 +36,39 @@ let start = (oscillator: t): oscillator => {
 
 let connect =
     (~target: AudioNode.audioNode_like('a), oscillator: t): oscillator => {
-  oscillator.oscillatorNode |> OscillatorNode.connect(target);
+  oscillator.oscillatorGain |> GainNode.connect(target);
   oscillator;
 };
 
+let setOscillatorType =
+    (~oscillatorType: OscillatorNode.oscillatorNodeType, oscillator: t): unit => {
+  oscillator.oscillatorNode
+  |> OscillatorNode.setOscillatorNodeType(oscillatorType);
+};
+
 let make =
-    (~oscillatorType: oscillatorType, audioCtx: AudioContext.t): oscillator => {
+    (
+      ~oscillatorType: OscillatorNode.oscillatorNodeType=Sine,
+      audioCtx: AudioContext.t,
+    )
+    : oscillator => {
   let oscillatorNode = audioCtx->AudioContext.createOscillator;
-  let setOscillatorNodeType =
-    OscillatorNode.setOscillatorNodeType(_, oscillatorNode);
-  let oscillatorNode =
-    switch (oscillatorType) {
-    | Sine => setOscillatorNodeType(DefaultWave("sine"))
-    | Square => setOscillatorNodeType(DefaultWave("square"))
-    | Sawtooth => setOscillatorNodeType(DefaultWave("sawtooth"))
-    | Triange => setOscillatorNodeType(DefaultWave("triangle"))
-    | Custom(samples) =>
-      let periodicWave = AudioContext.makePeriodicWave(~samples, audioCtx);
-      OscillatorNode.setOscillatorNodeType(
-        CustomWave(periodicWave),
-        oscillatorNode,
-      );
-    };
-  {audioContext: audioCtx, oscillatorNode, oscillatorType};
+  let oscillatorGain = audioCtx->AudioContext.createGain;
+  oscillatorNode |> OscillatorNode.connect(oscillatorGain);
+  let oscillator = {
+    audioContext: audioCtx,
+    oscillatorNode,
+    oscillatorType,
+    oscillatorGain,
+  };
+  oscillator |> setOscillatorType(~oscillatorType);
+  oscillator;
+};
+
+let makeFromRandom = (audioCtx: AudioContext.t) => {
+  let oscillator = audioCtx->make;
+  let periodicWave =
+    audioCtx |> AudioContext.makePeriodicWave(~samples=sampleRandomWave());
+  oscillator |> setOscillatorType(~oscillatorType=Custom(periodicWave));
+  oscillator;
 };

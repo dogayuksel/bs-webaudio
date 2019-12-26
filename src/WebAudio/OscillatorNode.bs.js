@@ -10,12 +10,26 @@ function Impl(T) {
 AudioNode$WebAudio.Impl({ });
 
 function setOscillatorNodeType(oscillatorType, oscillatorNode) {
-  if (oscillatorType.tag) {
-    oscillatorNode.setPeriodicWave(oscillatorType[0]);
+  if (typeof oscillatorType === "number") {
+    switch (oscillatorType) {
+      case /* Sine */0 :
+          oscillatorNode.type = "sine";
+          return /* () */0;
+      case /* Square */1 :
+          oscillatorNode.type = "square";
+          return /* () */0;
+      case /* Sawtooth */2 :
+          oscillatorNode.type = "sawtooth";
+          return /* () */0;
+      case /* Triange */3 :
+          oscillatorNode.type = "triangle";
+          return /* () */0;
+      
+    }
   } else {
-    oscillatorNode.type = oscillatorType[0];
+    oscillatorNode.setPeriodicWave(oscillatorType[0]);
+    return /* () */0;
   }
-  return oscillatorNode;
 }
 
 exports.Impl = Impl;

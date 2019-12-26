@@ -15,15 +15,9 @@ LFO$WebAudio.setFrequency(10.0, lfo);
 
 LFO$WebAudio.connect(audioCtx.destination, lfo);
 
-var oscOne = Oscillator$WebAudio.make(/* Custom */[Oscillator$WebAudio.sampleRandomWave(/* () */0)], audioCtx);
+var oscOne = Oscillator$WebAudio.connect(lfo.lfo, Oscillator$WebAudio.makeFromRandom(audioCtx));
 
-var oscOneGain = audioCtx.createGain();
-
-Oscillator$WebAudio.connect(oscOneGain, oscOne);
-
-oscOneGain.connect(lfo.lfo);
-
-oscOneGain.gain.value = Pervasives.epsilon_float;
+oscOne.oscillatorGain.gain.value = Pervasives.epsilon_float;
 
 Oscillator$WebAudio.start(oscOne);
 
@@ -37,8 +31,6 @@ var oscTwo = Oscillator$WebAudio.make(/* Sawtooth */2, audioCtx);
 
 var oscTwoFilter = audioCtx.createBiquadFilter();
 
-var oscTwoGain = audioCtx.createGain();
-
 BiquadFilterNode$WebAudio.setType(oscTwoFilter, /* Lowpass */0);
 
 oscTwoFilter.frequency.value = 370.0;
@@ -47,11 +39,9 @@ oscTwoFilter.frequency.setTargetAtTime(300.0, 2.0, 3.0);
 
 Oscillator$WebAudio.connect(oscTwoFilter, oscTwo);
 
-oscTwoFilter.connect(oscTwoGain);
+oscTwoFilter.connect(lfo.lfo);
 
-oscTwoGain.connect(lfo.lfo);
-
-oscTwoGain.gain.value = Pervasives.epsilon_float;
+oscTwo.oscillatorGain.gain.value = Pervasives.epsilon_float;
 
 Oscillator$WebAudio.start(oscTwo);
 
@@ -67,8 +57,8 @@ function trigger(e) {
   if (state.a === false && e.key === "a") {
     state.a = true;
     var currentTime = audioCtx.getOutputTimestamp();
-    Envelope$WebAudio.trigger(currentTime, oscOneGain);
-    return Envelope$WebAudio.trigger(currentTime, oscTwoGain);
+    Envelope$WebAudio.trigger(currentTime, oscOne.oscillatorGain);
+    return Envelope$WebAudio.trigger(currentTime, oscTwo.oscillatorGain);
   } else {
     return 0;
   }
@@ -78,8 +68,8 @@ function endTrigger(e) {
   if (e.key === "a") {
     state.a = false;
     var currentTime = audioCtx.getOutputTimestamp();
-    Envelope$WebAudio.endTrigger(currentTime, oscOneGain);
-    return Envelope$WebAudio.endTrigger(currentTime, oscTwoGain);
+    Envelope$WebAudio.endTrigger(currentTime, oscOne.oscillatorGain);
+    return Envelope$WebAudio.endTrigger(currentTime, oscTwo.oscillatorGain);
   } else {
     return 0;
   }
@@ -92,10 +82,8 @@ document.addEventListener("keyup", endTrigger);
 exports.audioCtx = audioCtx;
 exports.lfo = lfo;
 exports.oscOne = oscOne;
-exports.oscOneGain = oscOneGain;
 exports.oscTwo = oscTwo;
 exports.oscTwoFilter = oscTwoFilter;
-exports.oscTwoGain = oscTwoGain;
 exports.Keyboard = Keyboard;
 exports.trigger = trigger;
 exports.endTrigger = endTrigger;

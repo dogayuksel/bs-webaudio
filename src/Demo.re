@@ -6,13 +6,9 @@ lfo |> LFO.setFrequency(~frequency=10.0);
 lfo |> LFO.connect(~target=AudioContext.getDestination(audioCtx));
 
 let oscOne =
-  audioCtx
-  |> Oscillator.make(~oscillatorType=Custom(Oscillator.sampleRandomWave()));
-let oscOneGain = AudioContext.createGain(audioCtx);
-oscOne |> Oscillator.connect(~target=oscOneGain);
+  audioCtx |> Oscillator.makeFromRandom |> Oscillator.connect(~target=lfo.lfo);
 
-oscOneGain |> GainNode.connect(lfo.lfo);
-oscOneGain->GainNode.gain->AudioParam.setValue(epsilon_float);
+oscOne.oscillatorGain->GainNode.gain->AudioParam.setValue(epsilon_float);
 oscOne |> Oscillator.start;
 
 oscOne
@@ -25,7 +21,6 @@ oscOne
 
 let oscTwo = audioCtx |> Oscillator.make(~oscillatorType=Sawtooth);
 let oscTwoFilter = AudioContext.createBiquadFilter(audioCtx);
-let oscTwoGain = AudioContext.createGain(audioCtx);
 
 oscTwoFilter->BiquadFilterNode.setType(Lowpass);
 BiquadFilterNode.frequency(oscTwoFilter)->AudioParam.setValue(370.0);
@@ -37,10 +32,8 @@ BiquadFilterNode.frequency(oscTwoFilter)
    );
 
 oscTwo |> Oscillator.connect(~target=oscTwoFilter);
-oscTwoFilter |> BiquadFilterNode.connect(oscTwoGain);
-
-oscTwoGain |> GainNode.connect(lfo.lfo);
-oscTwoGain->GainNode.gain->AudioParam.setValue(epsilon_float);
+oscTwoFilter |> BiquadFilterNode.connect(lfo.lfo);
+oscTwo.oscillatorGain->GainNode.gain->AudioParam.setValue(epsilon_float);
 oscTwo |> Oscillator.start;
 
 module Keyboard = {
@@ -52,16 +45,16 @@ let trigger = (e: Webapi.Dom.KeyboardEvent.t) =>
   if (Keyboard.state.a == false && Webapi.Dom.KeyboardEvent.key(e) == "a") {
     Keyboard.state.a = true;
     let currentTime = audioCtx |> AudioContext.getOutputTimestamp();
-    oscOneGain |> Envelope.trigger(currentTime);
-    oscTwoGain |> Envelope.trigger(currentTime);
+    oscOne.oscillatorGain |> Envelope.trigger(currentTime);
+    oscTwo.oscillatorGain |> Envelope.trigger(currentTime);
   };
 
 let endTrigger = (e: Webapi.Dom.KeyboardEvent.t) =>
   if (Webapi.Dom.KeyboardEvent.key(e) == "a") {
     Keyboard.state.a = false;
     let currentTime = audioCtx |> AudioContext.getOutputTimestamp();
-    oscOneGain |> Envelope.endTrigger(currentTime);
-    oscTwoGain |> Envelope.endTrigger(currentTime);
+    oscOne.oscillatorGain |> Envelope.endTrigger(currentTime);
+    oscTwo.oscillatorGain |> Envelope.endTrigger(currentTime);
   };
 
 Webapi.Dom.document

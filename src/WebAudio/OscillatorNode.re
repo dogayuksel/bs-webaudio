@@ -4,8 +4,11 @@ type oscillatorNode = AudioNode.audioNode_like(oscillatorNode_tag);
 type t = oscillatorNode;
 
 type oscillatorNodeType =
-  | DefaultWave(string)
-  | CustomWave(PeriodicWave.t);
+  | Sine
+  | Square
+  | Sawtooth
+  | Triange
+  | Custom(PeriodicWave.t);
 
 module Impl = (T: {type t;}) => {
   [@bs.new] external createOscillator: unit => T.t = "OscillatorNode";
@@ -28,11 +31,13 @@ include Impl({
 });
 
 let setOscillatorNodeType =
-    (oscillatorType: oscillatorNodeType, oscillatorNode: t) => {
-  let setOscillatorType = setOscillatorType(oscillatorNode);
+    (oscillatorType: oscillatorNodeType, oscillatorNode: t): unit => {
+  let setOscillatorNodeType = setOscillatorType(oscillatorNode);
   switch (oscillatorType) {
-  | DefaultWave(waveType) => setOscillatorType(waveType)
-  | CustomWave(periodicWave) => periodicWave->setPeriodicWave(oscillatorNode)
+  | Sine => setOscillatorNodeType("sine")
+  | Square => setOscillatorNodeType("square")
+  | Sawtooth => setOscillatorNodeType("sawtooth")
+  | Triange => setOscillatorNodeType("triangle")
+  | Custom(periodicWave) => oscillatorNode |> setPeriodicWave(periodicWave)
   };
-  oscillatorNode;
 };
