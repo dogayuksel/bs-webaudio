@@ -1,43 +1,47 @@
 let audioCtx = AudioContext.createAudioContext();
 
-let lfo = LFO.make(audioCtx);
-lfo |> GainNode.connect(AudioContext.getDestination(audioCtx));
+let lfo = audioCtx |> LFO.make;
+lfo |> LFO.setFrequency(~frequency=10.0);
 
-let sineOscillator =
-  Oscillator.make(Custom(Oscillator.sampleRandomWave()), audioCtx);
-let sineGain = AudioContext.createGain(audioCtx);
-sineOscillator |> Oscillator.connect(sineGain);
+lfo |> LFO.connect(~target=AudioContext.getDestination(audioCtx));
 
-sineGain |> GainNode.connect(lfo);
-sineGain->GainNode.gain->AudioParam.setValue(epsilon_float);
-sineOscillator |> Oscillator.start;
+let oscOne =
+  audioCtx
+  |> Oscillator.make(~oscillatorType=Custom(Oscillator.sampleRandomWave()));
+let oscOneGain = AudioContext.createGain(audioCtx);
+oscOne |> Oscillator.connect(~target=oscOneGain);
 
-OscillatorNode.frequency(sineOscillator.oscillatorNode)
+oscOneGain |> GainNode.connect(lfo.lfo);
+oscOneGain->GainNode.gain->AudioParam.setValue(epsilon_float);
+oscOne |> Oscillator.start;
+
+oscOne
+|> Oscillator.getFrequency
 |> AudioParam.setValueCurveAtTime(
      ~curve=[|470.0, 370.0, 470.0|],
      ~startTime=2.0,
      ~duration=2.5,
    );
 
-let sawOscillator = Oscillator.make(Sawtooth, audioCtx);
-let biquadFilter = AudioContext.createBiquadFilter(audioCtx);
-let sawGain = AudioContext.createGain(audioCtx);
+let oscTwo = audioCtx |> Oscillator.make(~oscillatorType=Sawtooth);
+let oscTwoFilter = AudioContext.createBiquadFilter(audioCtx);
+let oscTwoGain = AudioContext.createGain(audioCtx);
 
-biquadFilter->BiquadFilterNode.setType(Lowpass);
-BiquadFilterNode.frequency(biquadFilter)->AudioParam.setValue(370.0);
-BiquadFilterNode.frequency(biquadFilter)
+oscTwoFilter->BiquadFilterNode.setType(Lowpass);
+BiquadFilterNode.frequency(oscTwoFilter)->AudioParam.setValue(370.0);
+BiquadFilterNode.frequency(oscTwoFilter)
 |> AudioParam.setTargetAtTime(
      ~target=300.0,
      ~startTime=2.0,
      ~timeConstant=3.0,
    );
 
-sawOscillator |> Oscillator.connect(biquadFilter);
-biquadFilter |> BiquadFilterNode.connect(sawGain);
+oscTwo |> Oscillator.connect(~target=oscTwoFilter);
+oscTwoFilter |> BiquadFilterNode.connect(oscTwoGain);
 
-sawGain |> GainNode.connect(lfo);
-sawGain->GainNode.gain->AudioParam.setValue(epsilon_float);
-sawOscillator |> Oscillator.start;
+oscTwoGain |> GainNode.connect(lfo.lfo);
+oscTwoGain->GainNode.gain->AudioParam.setValue(epsilon_float);
+oscTwo |> Oscillator.start;
 
 module Keyboard = {
   type state = {mutable a: bool};
@@ -48,16 +52,16 @@ let trigger = (e: Webapi.Dom.KeyboardEvent.t) =>
   if (Keyboard.state.a == false && Webapi.Dom.KeyboardEvent.key(e) == "a") {
     Keyboard.state.a = true;
     let currentTime = audioCtx |> AudioContext.getOutputTimestamp();
-    sineGain |> Envelope.trigger(currentTime);
-    sawGain |> Envelope.trigger(currentTime);
+    oscOneGain |> Envelope.trigger(currentTime);
+    oscTwoGain |> Envelope.trigger(currentTime);
   };
 
 let endTrigger = (e: Webapi.Dom.KeyboardEvent.t) =>
   if (Webapi.Dom.KeyboardEvent.key(e) == "a") {
     Keyboard.state.a = false;
     let currentTime = audioCtx |> AudioContext.getOutputTimestamp();
-    sineGain |> Envelope.endTrigger(currentTime);
-    sawGain |> Envelope.endTrigger(currentTime);
+    oscOneGain |> Envelope.endTrigger(currentTime);
+    oscTwoGain |> Envelope.endTrigger(currentTime);
   };
 
 Webapi.Dom.document

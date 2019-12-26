@@ -44,6 +44,15 @@ function setOscillatorNodeType(oscillatorType, oscillator, audioCtx) {
   return oscillator;
 }
 
+function setFrequency(frequency, oscillator) {
+  oscillator.oscillatorNode.frequency.value = frequency;
+  return /* () */0;
+}
+
+function getFrequency(oscillator) {
+  return oscillator.oscillatorNode.frequency;
+}
+
 function start(oscillator) {
   oscillator.oscillatorNode.start();
   return oscillator;
@@ -65,6 +74,8 @@ function make(oscillatorType, audioCtx) {
 
 exports.sampleRandomWave = sampleRandomWave;
 exports.setOscillatorNodeType = setOscillatorNodeType;
+exports.setFrequency = setFrequency;
+exports.getFrequency = getFrequency;
 exports.start = start;
 exports.connect = connect;
 exports.make = make;

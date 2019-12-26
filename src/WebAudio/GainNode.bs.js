@@ -3,6 +3,11 @@
 
 var AudioNode$WebAudio = require("./AudioNode.bs.js");
 
+function Imp(T) {
+  return { };
+}
+
 AudioNode$WebAudio.Impl({ });
 
+exports.Imp = Imp;
 /*  Not a pure module */

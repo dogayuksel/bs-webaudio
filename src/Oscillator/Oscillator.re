@@ -51,19 +51,29 @@ let setOscillatorNodeType =
   oscillator;
 };
 
+let setFrequency = (~frequency: float, oscillator: oscillator) => {
+  oscillator.oscillatorNode
+  ->OscillatorNode.frequency
+  ->AudioParam.setValue(frequency);
+};
+
+let getFrequency = (oscillator: oscillator): AudioParam.t => {
+  oscillator.oscillatorNode->OscillatorNode.frequency;
+};
+
 let start = (oscillator: t): oscillator => {
   oscillator.oscillatorNode |> OscillatorNode.start();
   oscillator;
 };
 
 let connect =
-    (target: AudioNode.audioNode_like('a), oscillator: t): oscillator => {
+    (~target: AudioNode.audioNode_like('a), oscillator: t): oscillator => {
   oscillator.oscillatorNode |> OscillatorNode.connect(target);
   oscillator;
 };
 
 let make =
-    (oscillatorType: oscillatorType, audioCtx: AudioContext.t): oscillator => {
+    (~oscillatorType: oscillatorType, audioCtx: AudioContext.t): oscillator => {
   let oscillatorNode =
     AudioContext.createOscillator(audioCtx)
     |> setOscillatorNodeType(oscillatorType, _, audioCtx);
