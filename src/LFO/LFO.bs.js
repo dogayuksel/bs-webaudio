@@ -35,4 +35,4 @@ exports.defaultFrequency = defaultFrequency;
 exports.make = make;
 exports.connect = connect;
 exports.setFrequency = setFrequency;
-/* No side effect */
+/* Oscillator-WebAudio Not a pure module */

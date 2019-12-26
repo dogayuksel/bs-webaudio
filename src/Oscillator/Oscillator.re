@@ -25,32 +25,6 @@ let sampleRandomWave = () => {
   samples;
 };
 
-let setOscillatorNodeType =
-    (
-      oscillatorType: oscillatorType,
-      oscillator: OscillatorNode.t,
-      audioCtx: AudioContext.t,
-    ) => {
-  switch (oscillatorType) {
-  | Sine => OscillatorNode.setOscillatorType(oscillator, "sine")
-  | Square => OscillatorNode.setOscillatorType(oscillator, "square")
-  | Sawtooth => OscillatorNode.setOscillatorType(oscillator, "sawtooth")
-  | Triange => OscillatorNode.setOscillatorType(oscillator, "triange")
-  | Custom(samples) =>
-    let (realCoefficients, imaginaryCoefficients) =
-      PeriodicWave.calculateCoefficients(samples);
-    let periodicWave =
-      AudioContext.createPeriodicWave(
-        realCoefficients,
-        imaginaryCoefficients,
-        {"disableNormalization": false},
-        audioCtx,
-      );
-    OscillatorNode.setPeriodicWave(periodicWave, oscillator);
-  };
-  oscillator;
-};
-
 let setFrequency = (~frequency: float, oscillator: oscillator) => {
   oscillator.oscillatorNode
   ->OscillatorNode.frequency
@@ -74,8 +48,21 @@ let connect =
 
 let make =
     (~oscillatorType: oscillatorType, audioCtx: AudioContext.t): oscillator => {
+  let oscillatorNode = audioCtx->AudioContext.createOscillator;
+  let setOscillatorNodeType =
+    OscillatorNode.setOscillatorNodeType(_, oscillatorNode);
   let oscillatorNode =
-    AudioContext.createOscillator(audioCtx)
-    |> setOscillatorNodeType(oscillatorType, _, audioCtx);
+    switch (oscillatorType) {
+    | Sine => setOscillatorNodeType(DefaultWave("sine"))
+    | Square => setOscillatorNodeType(DefaultWave("square"))
+    | Sawtooth => setOscillatorNodeType(DefaultWave("sawtooth"))
+    | Triange => setOscillatorNodeType(DefaultWave("triangle"))
+    | Custom(samples) =>
+      let periodicWave = AudioContext.makePeriodicWave(~samples, audioCtx);
+      OscillatorNode.setOscillatorNodeType(
+        CustomWave(periodicWave),
+        oscillatorNode,
+      );
+    };
   {audioContext: audioCtx, oscillatorNode, oscillatorType};
 };

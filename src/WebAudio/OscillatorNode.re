@@ -3,6 +3,10 @@ type oscillatorNode = AudioNode.audioNode_like(oscillatorNode_tag);
 
 type t = oscillatorNode;
 
+type oscillatorNodeType =
+  | DefaultWave(string)
+  | CustomWave(PeriodicWave.t);
+
 module Impl = (T: {type t;}) => {
   [@bs.new] external createOscillator: unit => T.t = "OscillatorNode";
   [@bs.send.pipe: T.t] external start: unit => unit = "start";
@@ -22,3 +26,13 @@ include AudioNode.Impl({
 include Impl({
   type nonrec t = t;
 });
+
+let setOscillatorNodeType =
+    (oscillatorType: oscillatorNodeType, oscillatorNode: t) => {
+  let setOscillatorType = setOscillatorType(oscillatorNode);
+  switch (oscillatorType) {
+  | DefaultWave(waveType) => setOscillatorType(waveType)
+  | CustomWave(periodicWave) => periodicWave->setPeriodicWave(oscillatorNode)
+  };
+  oscillatorNode;
+};

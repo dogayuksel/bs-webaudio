@@ -9,5 +9,15 @@ function Impl(T) {
 
 AudioNode$WebAudio.Impl({ });
 
+function setOscillatorNodeType(oscillatorType, oscillatorNode) {
+  if (oscillatorType.tag) {
+    oscillatorNode.setPeriodicWave(oscillatorType[0]);
+  } else {
+    oscillatorNode.type = oscillatorType[0];
+  }
+  return oscillatorNode;
+}
+
 exports.Impl = Impl;
+exports.setOscillatorNodeType = setOscillatorNodeType;
 /*  Not a pure module */

@@ -34,3 +34,15 @@ external createPeriodicWave:
   ) =>
   PeriodicWave.t =
   "createPeriodicWave";
+
+let makePeriodicWave =
+    (~samples: array(float), audioContext: t): PeriodicWave.t => {
+  let (realCoefficients, imaginaryCoefficients) =
+    PeriodicWave.calculateCoefficients(samples);
+  audioContext
+  |> createPeriodicWave(
+       realCoefficients,
+       imaginaryCoefficients,
+       {"disableNormalization": false},
+     );
+};
