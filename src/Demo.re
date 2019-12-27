@@ -11,14 +11,6 @@ let oscOne =
 oscOne.oscillatorGain->GainNode.gain->AudioParam.setValue(epsilon_float);
 oscOne |> Oscillator.start;
 
-oscOne
-|> Oscillator.getFrequency
-|> AudioParam.setValueCurveAtTime(
-     ~curve=[|470.0, 370.0, 470.0|],
-     ~startTime=2.0,
-     ~duration=2.5,
-   );
-
 let oscTwo = audioCtx |> Oscillator.make(~oscillatorType=Sawtooth);
 let oscTwoFilter = AudioContext.createBiquadFilter(audioCtx);
 
@@ -62,3 +54,8 @@ Webapi.Dom.document
 
 Webapi.Dom.document
 |> Webapi.Dom.Document.addKeyUpEventListener(e => endTrigger(e));
+
+ReactDOMRe.renderToElementWithId(
+  <Knob name="Frequency" param={oscOne |> Oscillator.getFrequency} />,
+  "app",
+);
