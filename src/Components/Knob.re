@@ -1,32 +1,31 @@
-let size = 80;
+let size = 120;
 let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 
 [@react.component]
 let make = (~name, ~param: AudioParam.t) => {
   let mapValueToDegrees = value => {
-    /* 0 to 20000 maps to -180 to 180 */
-    Js.Float.toString(Js.Math.log10(value) *. 36.0) ++ "deg";
+    Js.Float.toString(Js.Math.log10(value) *. 60.0) ++ "deg";
   };
 
-  let (value, setValue) = React.useState(() => param |> AudioParam.getValue);
-  let (initialY, setInitialY) = React.useState(() => 0);
-  let (currentY, setCurrentY) = React.useState(() => 0);
+  let (value, setValue) = React.useState(() => param->AudioParam.getValue);
+  let (previousY, setPreviousY) = React.useState(() => 0);
+  let (nextY, setNextY) = React.useState(() => 0);
 
-  React.useEffect2(
+  React.useEffect3(
     () => {
-      let newValue = value +. float_of_int(initialY - currentY);
-      Js.log("effect: new value => " ++ Js.Float.toString(newValue));
+      let newValue = value +. float_of_int(previousY - nextY);
       param->AudioParam.setValue(newValue);
       setValue(_ => newValue);
+      setPreviousY(_ => nextY);
       None;
     },
-    (initialY, currentY),
+    (value, previousY, nextY),
   );
 
   let handleMouseMove = (event: Webapi.Dom.MouseEvent.t): unit => {
-    Js.log(event);
-    let currentY = Webapi.Dom.MouseEvent.clientY(event);
-    setCurrentY(_ => currentY);
+    let clientY = Webapi.Dom.MouseEvent.clientY(event);
+    setNextY(_ => clientY);
+    ();
   };
 
   let handleMouseUp = _: unit => {
@@ -34,12 +33,13 @@ let make = (~name, ~param: AudioParam.t) => {
       handleMouseMove,
       Webapi.Dom.Document.asEventTarget(Webapi.Dom.document),
     );
+    ();
   };
 
-  let handleMouseDown = (event: ReactEvent.Mouse.t) => {
+  let handleMouseDown = (event: ReactEvent.Mouse.t): unit => {
     let clientY = ReactEvent.Mouse.clientY(event);
-    setInitialY(_ => clientY);
-    setCurrentY(_ => clientY);
+    setNextY(_ => clientY);
+    setPreviousY(_ => clientY);
     Webapi.Dom.EventTarget.addMouseMoveEventListener(
       handleMouseMove,
       Webapi.Dom.Document.asEventTarget(Webapi.Dom.document),
@@ -49,12 +49,13 @@ let make = (~name, ~param: AudioParam.t) => {
       {"capture": false, "once": true, "passive": true},
       Webapi.Dom.Document.asEventTarget(Webapi.Dom.document),
     );
+    ();
   };
 
   <div
     style={ReactDOMRe.Style.make(
       ~padding="10px",
-      ~width=sizeInPixels(size + 20 + 200),
+      ~width=sizeInPixels(size + 20),
       ~fontFamily="sans-serif",
       (),
     )}>
@@ -91,6 +92,5 @@ let make = (~name, ~param: AudioParam.t) => {
       {React.string(name ++ ": ")}
       {React.string(Js.Float.toString(value))}
     </div>
-    <p> {React.string("DEBUG: " ++ mapValueToDegrees(value))} </p>
   </div>;
 };

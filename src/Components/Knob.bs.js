@@ -11,7 +11,7 @@ function Knob(Props) {
   var name = Props.name;
   var param = Props.param;
   var mapValueToDegrees = function (value) {
-    return (Math.log10(value) * 36.0).toString() + "deg";
+    return (Math.log10(value) * 60.0).toString() + "deg";
   };
   var match = React.useState((function () {
           return param.value;
@@ -21,31 +21,34 @@ function Knob(Props) {
   var match$1 = React.useState((function () {
           return 0;
         }));
-  var setInitialY = match$1[1];
-  var initialY = match$1[0];
+  var setPreviousY = match$1[1];
+  var previousY = match$1[0];
   var match$2 = React.useState((function () {
           return 0;
         }));
-  var setCurrentY = match$2[1];
-  var currentY = match$2[0];
-  React.useEffect((function () {
-          var newValue = value + (initialY - currentY | 0);
-          console.log("effect: new value => " + newValue.toString());
+  var setNextY = match$2[1];
+  var nextY = match$2[0];
+  React.useEffect((function (param$1) {
+          var newValue = value + (previousY - nextY | 0);
           param.value = newValue;
           Curry._1(setValue, (function (param) {
                   return newValue;
                 }));
+          Curry._1(setPreviousY, (function (param) {
+                  return nextY;
+                }));
           return ;
         }), /* tuple */[
-        initialY,
-        currentY
+        value,
+        previousY,
+        nextY
       ]);
   var handleMouseMove = function ($$event) {
-    console.log($$event);
-    var currentY = $$event.clientY;
-    return Curry._1(setCurrentY, (function (param) {
-                  return currentY;
-                }));
+    var clientY = $$event.clientY;
+    Curry._1(setNextY, (function (param) {
+            return clientY;
+          }));
+    return /* () */0;
   };
   var handleMouseUp = function (param) {
     document.removeEventListener("mousemove", handleMouseMove);
@@ -53,10 +56,10 @@ function Knob(Props) {
   };
   var handleMouseDown = function ($$event) {
     var clientY = $$event.clientY;
-    Curry._1(setInitialY, (function (param) {
+    Curry._1(setNextY, (function (param) {
             return clientY;
           }));
-    Curry._1(setCurrentY, (function (param) {
+    Curry._1(setPreviousY, (function (param) {
             return clientY;
           }));
     document.addEventListener("mousemove", handleMouseMove);
@@ -71,16 +74,16 @@ function Knob(Props) {
               style: {
                 fontFamily: "sans-serif",
                 padding: "10px",
-                width: String(300) + "px"
+                width: String(140) + "px"
               }
             }, React.createElement("div", {
                   style: {
                     backgroundColor: "#839264",
                     display: "flex",
-                    height: String(80) + "px",
+                    height: String(120) + "px",
                     margin: "10px",
-                    width: String(80) + "px",
-                    borderRadius: String(80) + "px",
+                    width: String(120) + "px",
+                    borderRadius: String(120) + "px",
                     justifyContent: "center",
                     transform: "rotate(" + (mapValueToDegrees(value) + ")")
                   },
@@ -98,10 +101,10 @@ function Knob(Props) {
                     display: "flex",
                     justifyContent: "center"
                   }
-                }, name + ": ", value.toString()), React.createElement("p", undefined, "DEBUG: " + mapValueToDegrees(value)));
+                }, name + ": ", value.toString()));
 }
 
-var size = 80;
+var size = 120;
 
 var make = Knob;
 
