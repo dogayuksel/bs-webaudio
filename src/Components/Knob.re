@@ -56,7 +56,6 @@ let make = (~name, ~param: AudioParam.t) => {
     style={ReactDOMRe.Style.make(
       ~padding="10px",
       ~width=sizeInPixels(size + 20),
-      ~fontFamily="sans-serif",
       (),
     )}>
     <div

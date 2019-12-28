@@ -72,7 +72,6 @@ function Knob(Props) {
   };
   return React.createElement("div", {
               style: {
-                fontFamily: "sans-serif",
                 padding: "10px",
                 width: String(140) + "px"
               }
