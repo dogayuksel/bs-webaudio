@@ -1,10 +1,41 @@
 let size = 120;
 let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 
+let offset = 30.0;
+let range = 300.0;
+
+type knobScale =
+  | Linear
+  | Logarithmic;
+
+type knobConfig = {
+  minValue: float,
+  maxValue: float,
+  scale: knobScale,
+};
+
+let clamp = (value: float, config: knobConfig) => {
+  let value = value < config.minValue ? config.minValue : value;
+  let value = value > config.maxValue ? config.maxValue : value;
+  value;
+};
+
 [@react.component]
-let make = (~name, ~param: AudioParam.t) => {
+let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
   let mapValueToDegrees = value => {
-    Js.Float.toString(Js.Math.log10(value) *. 60.0) ++ "deg";
+    let domain = config.maxValue -. config.minValue;
+    let value = value -. config.minValue;
+    let degrees =
+      value === 0.0
+        ? 0.0
+        : (
+          switch (config.scale) {
+          | Linear => range /. domain *. value
+          | Logarithmic =>
+            range /. Js.Math.log10(domain) *. Js.Math.log10(value)
+          }
+        );
+    Js.Float.toString(degrees +. offset) ++ "deg";
   };
 
   let (value, setValue) = React.useState(() => param->AudioParam.getValue);
@@ -13,9 +44,18 @@ let make = (~name, ~param: AudioParam.t) => {
 
   React.useEffect3(
     () => {
-      let newValue = value +. float_of_int(previousY - nextY);
-      param->AudioParam.setValue(newValue);
-      setValue(_ => newValue);
+      let change = previousY - nextY;
+      let scaledChange =
+        switch (config.scale) {
+        | Linear => float_of_int(Js.Math.abs_int(change))
+        | Logarithmic =>
+          float_of_int(Js.Math.abs_int(change)) ** Js.Math.log10(value)
+        };
+      let newValue =
+        change > 0 ? value +. scaledChange : value -. scaledChange;
+      let clampedValue = clamp(newValue, config);
+      param->AudioParam.setValue(clampedValue);
+      setValue(_ => clampedValue);
       setPreviousY(_ => nextY);
       None;
     },
@@ -89,7 +129,7 @@ let make = (~name, ~param: AudioParam.t) => {
         (),
       )}>
       {React.string(name ++ ": ")}
-      {React.string(Js.Float.toString(value))}
+      {React.string(string_of_int(int_of_float(value)))}
     </div>
   </div>;
 };

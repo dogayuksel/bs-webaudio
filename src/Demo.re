@@ -56,6 +56,10 @@ Webapi.Dom.document
 |> Webapi.Dom.Document.addKeyUpEventListener(e => endTrigger(e));
 
 ReactDOMRe.renderToElementWithId(
-  <Knob name="Frequency" param={oscOne |> Oscillator.getFrequency} />,
+  <Knob
+    name="Frequency"
+    param={oscOne |> Oscillator.getFrequency}
+    config={minValue: 1.0, maxValue: 22500.0, scale: Logarithmic}
+  />,
   "app",
 );

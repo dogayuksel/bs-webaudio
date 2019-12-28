@@ -77,7 +77,12 @@ document.addEventListener("keyup", endTrigger);
 
 ReactDOMRe.renderToElementWithId(React.createElement(Knob$WebAudio.make, {
           name: "Frequency",
-          param: Oscillator$WebAudio.getFrequency(oscOne)
+          param: Oscillator$WebAudio.getFrequency(oscOne),
+          config: {
+            minValue: 1.0,
+            maxValue: 22500.0,
+            scale: /* Logarithmic */1
+          }
         }), "app");
 
 export {

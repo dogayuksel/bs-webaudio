@@ -7,11 +7,33 @@ function sizeInPixels(x) {
   return String(x) + "px";
 }
 
+function clamp(value, config) {
+  var match = value < config.minValue;
+  var value$1 = match ? config.minValue : value;
+  var match$1 = value$1 > config.maxValue;
+  if (match$1) {
+    return config.maxValue;
+  } else {
+    return value$1;
+  }
+}
+
 function Knob(Props) {
   var name = Props.name;
   var param = Props.param;
+  var config = Props.config;
   var mapValueToDegrees = function (value) {
-    return (Math.log10(value) * 60.0).toString() + "deg";
+    var domain = config.maxValue - config.minValue;
+    var value$1 = value - config.minValue;
+    var match = value$1 === 0.0;
+    var degrees;
+    if (match) {
+      degrees = 0.0;
+    } else {
+      var match$1 = config.scale;
+      degrees = match$1 ? 300.0 / Math.log10(domain) * Math.log10(value$1) : 300.0 / domain * value$1;
+    }
+    return (degrees + 30.0).toString() + "deg";
   };
   var match = React.useState((function () {
           return param.value;
@@ -29,10 +51,15 @@ function Knob(Props) {
   var setNextY = match$2[1];
   var nextY = match$2[0];
   React.useEffect((function (param$1) {
-          var newValue = value + (previousY - nextY | 0);
-          param.value = newValue;
+          var change = previousY - nextY | 0;
+          var match = config.scale;
+          var scaledChange = match ? Math.pow(Math.abs(change), Math.log10(value)) : Math.abs(change);
+          var match$1 = change > 0;
+          var newValue = match$1 ? value + scaledChange : value - scaledChange;
+          var clampedValue = clamp(newValue, config);
+          param.value = clampedValue;
           Curry._1(setValue, (function (param) {
-                  return newValue;
+                  return clampedValue;
                 }));
           Curry._1(setPreviousY, (function (param) {
                   return nextY;
@@ -100,16 +127,23 @@ function Knob(Props) {
                     display: "flex",
                     justifyContent: "center"
                   }
-                }, name + ": ", value.toString()));
+                }, name + ": ", String(value | 0)));
 }
 
 var size = 120;
+
+var offset = 30.0;
+
+var range = 300.0;
 
 var make = Knob;
 
 export {
   size ,
   sizeInPixels ,
+  offset ,
+  range ,
+  clamp ,
   make ,
   
 }
