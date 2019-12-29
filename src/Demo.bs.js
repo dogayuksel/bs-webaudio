@@ -75,15 +75,23 @@ document.addEventListener("keydown", trigger);
 
 document.addEventListener("keyup", endTrigger);
 
-ReactDOMRe.renderToElementWithId(React.createElement(Knob$WebAudio.make, {
-          name: "Frequency",
-          param: Oscillator$WebAudio.getFrequency(oscOne),
-          config: {
-            minValue: 1.0,
-            maxValue: 22500.0,
-            scale: /* Logarithmic */1
-          }
-        }), "app");
+ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement(Knob$WebAudio.make, {
+              name: "Frequency",
+              param: Oscillator$WebAudio.getFrequency(oscOne),
+              config: {
+                minValue: 1.0,
+                maxValue: 22500.0,
+                scale: /* Logarithmic */1
+              }
+            }), React.createElement(Knob$WebAudio.make, {
+              name: "Gain",
+              param: Oscillator$WebAudio.getGain(oscOne),
+              config: {
+                minValue: Pervasives.epsilon_float,
+                maxValue: 100.0,
+                scale: /* Linear */0
+              }
+            })), "app");
 
 export {
   audioCtx ,

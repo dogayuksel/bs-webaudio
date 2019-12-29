@@ -29,6 +29,10 @@ let getFrequency = (oscillator: oscillator): AudioParam.t => {
   oscillator.oscillatorNode->OscillatorNode.frequency;
 };
 
+let getGain = (oscillator: oscillator): AudioParam.t => {
+  oscillator.oscillatorGain |> GainNode.gain;
+};
+
 let start = (oscillator: t): oscillator => {
   oscillator.oscillatorNode |> OscillatorNode.start();
   oscillator;

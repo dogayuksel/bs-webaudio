@@ -26,6 +26,10 @@ function getFrequency(oscillator) {
   return oscillator.oscillatorNode.frequency;
 }
 
+function getGain(oscillator) {
+  return oscillator.oscillatorGain.gain;
+}
+
 function start(oscillator) {
   oscillator.oscillatorNode.start();
   return oscillator;
@@ -66,6 +70,7 @@ export {
   sampleRandomWave ,
   setFrequency ,
   getFrequency ,
+  getGain ,
   start ,
   connect ,
   setOscillatorType ,

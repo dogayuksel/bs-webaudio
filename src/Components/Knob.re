@@ -31,40 +31,35 @@ let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
         : (
           switch (config.scale) {
           | Linear => range /. domain *. value
-          | Logarithmic =>
-            range /. Js.Math.log10(domain) *. Js.Math.log10(value)
+          | Logarithmic => range /. Js.Math.log(domain) *. Js.Math.log(value)
           }
         );
     Js.Float.toString(degrees +. offset) ++ "deg";
   };
 
   let (value, setValue) = React.useState(() => param->AudioParam.getValue);
-  let (previousY, setPreviousY) = React.useState(() => 0);
-  let (nextY, setNextY) = React.useState(() => 0);
+  let lastY = React.useRef(0);
 
-  React.useEffect3(
-    () => {
-      let change = previousY - nextY;
+  let handleMouseMove = (event: Webapi.Dom.MouseEvent.t): unit => {
+    let clientY = Webapi.Dom.MouseEvent.clientY(event);
+    setValue(value => {
+      let change = React.Ref.current(lastY) - clientY;
       let scaledChange =
         switch (config.scale) {
         | Linear => float_of_int(Js.Math.abs_int(change))
         | Logarithmic =>
-          float_of_int(Js.Math.abs_int(change)) ** Js.Math.log10(value)
+          let possibleValue =
+            float_of_int(Js.Math.abs_int(change)) ** Js.Math.log(value);
+          possibleValue > value /. 3.0 ? value /. 3.0 : possibleValue;
         };
       let newValue =
         change > 0 ? value +. scaledChange : value -. scaledChange;
+
       let clampedValue = clamp(newValue, config);
       param->AudioParam.setValue(clampedValue);
-      setValue(_ => clampedValue);
-      setPreviousY(_ => nextY);
-      None;
-    },
-    (value, previousY, nextY),
-  );
-
-  let handleMouseMove = (event: Webapi.Dom.MouseEvent.t): unit => {
-    let clientY = Webapi.Dom.MouseEvent.clientY(event);
-    setNextY(_ => clientY);
+      React.Ref.setCurrent(lastY, clientY);
+      clampedValue;
+    });
     ();
   };
 
@@ -78,8 +73,7 @@ let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
 
   let handleMouseDown = (event: ReactEvent.Mouse.t): unit => {
     let clientY = ReactEvent.Mouse.clientY(event);
-    setNextY(_ => clientY);
-    setPreviousY(_ => clientY);
+    React.Ref.setCurrent(lastY, clientY);
     Webapi.Dom.EventTarget.addMouseMoveEventListener(
       handleMouseMove,
       Webapi.Dom.Document.asEventTarget(Webapi.Dom.document),
@@ -94,6 +88,7 @@ let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
 
   <div
     style={ReactDOMRe.Style.make(
+      ~display="inline-block",
       ~padding="10px",
       ~width=sizeInPixels(size + 20),
       (),

@@ -31,7 +31,7 @@ function Knob(Props) {
       degrees = 0.0;
     } else {
       var match$1 = config.scale;
-      degrees = match$1 ? 300.0 / Math.log10(domain) * Math.log10(value$1) : 300.0 / domain * value$1;
+      degrees = match$1 ? 300.0 / Math.log(domain) * Math.log(value$1) : 300.0 / domain * value$1;
     }
     return (degrees + 30.0).toString() + "deg";
   };
@@ -40,40 +40,26 @@ function Knob(Props) {
         }));
   var setValue = match[1];
   var value = match[0];
-  var match$1 = React.useState((function () {
-          return 0;
-        }));
-  var setPreviousY = match$1[1];
-  var previousY = match$1[0];
-  var match$2 = React.useState((function () {
-          return 0;
-        }));
-  var setNextY = match$2[1];
-  var nextY = match$2[0];
-  React.useEffect((function (param$1) {
-          var change = previousY - nextY | 0;
-          var match = config.scale;
-          var scaledChange = match ? Math.pow(Math.abs(change), Math.log10(value)) : Math.abs(change);
-          var match$1 = change > 0;
-          var newValue = match$1 ? value + scaledChange : value - scaledChange;
-          var clampedValue = clamp(newValue, config);
-          param.value = clampedValue;
-          Curry._1(setValue, (function (param) {
-                  return clampedValue;
-                }));
-          Curry._1(setPreviousY, (function (param) {
-                  return nextY;
-                }));
-          return ;
-        }), /* tuple */[
-        value,
-        previousY,
-        nextY
-      ]);
+  var lastY = React.useRef(0);
   var handleMouseMove = function ($$event) {
     var clientY = $$event.clientY;
-    Curry._1(setNextY, (function (param) {
-            return clientY;
+    Curry._1(setValue, (function (value) {
+            var change = lastY.current - clientY | 0;
+            var match = config.scale;
+            var scaledChange;
+            if (match) {
+              var possibleValue = Math.pow(Math.abs(change), Math.log(value));
+              var match$1 = possibleValue > value / 3.0;
+              scaledChange = match$1 ? value / 3.0 : possibleValue;
+            } else {
+              scaledChange = Math.abs(change);
+            }
+            var match$2 = change > 0;
+            var newValue = match$2 ? value + scaledChange : value - scaledChange;
+            var clampedValue = clamp(newValue, config);
+            param.value = clampedValue;
+            lastY.current = clientY;
+            return clampedValue;
           }));
     return /* () */0;
   };
@@ -83,12 +69,7 @@ function Knob(Props) {
   };
   var handleMouseDown = function ($$event) {
     var clientY = $$event.clientY;
-    Curry._1(setNextY, (function (param) {
-            return clientY;
-          }));
-    Curry._1(setPreviousY, (function (param) {
-            return clientY;
-          }));
+    lastY.current = clientY;
     document.addEventListener("mousemove", handleMouseMove);
     document.addEventListener("mouseup", handleMouseUp, {
           capture: false,
@@ -99,6 +80,7 @@ function Knob(Props) {
   };
   return React.createElement("div", {
               style: {
+                display: "inline-block",
                 padding: "10px",
                 width: String(140) + "px"
               }
