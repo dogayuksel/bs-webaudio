@@ -3,6 +3,8 @@
 import * as React from "react";
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 import * as ReactDOMRe from "reason-react/src/ReactDOMRe.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as LFO$WebAudio from "./LFO/LFO.bs.js";
 import * as Knob$WebAudio from "./Components/Knob.bs.js";
 import * as Envelope$WebAudio from "./Envelope/Envelope.bs.js";
@@ -15,7 +17,7 @@ var lfo = LFO$WebAudio.connect(audioCtx.destination, LFO$WebAudio.setFrequency(1
 
 var oscOneEnvelope = Envelope$WebAudio.connect(lfo.lfoGain, Envelope$WebAudio.make(audioCtx));
 
-var oscOne = Oscillator$WebAudio.start(Oscillator$WebAudio.connect(oscOneEnvelope.envelopeGain, Oscillator$WebAudio.make(/* Sine */0, audioCtx)));
+var oscOne = Oscillator$WebAudio.connect(oscOneEnvelope.envelopeGain, Oscillator$WebAudio.make(/* Sine */0, audioCtx));
 
 var oscTwoEnvelope = Envelope$WebAudio.connect(lfo.lfoGain, Envelope$WebAudio.make(audioCtx));
 
@@ -29,7 +31,7 @@ oscTwoFilter.frequency.setTargetAtTime(300.0, 2.0, 3.0);
 
 oscTwoFilter.connect(oscTwoEnvelope.envelopeGain);
 
-var oscTwo = Oscillator$WebAudio.start(Oscillator$WebAudio.connect(oscTwoFilter, Oscillator$WebAudio.make(/* Sine */0, audioCtx)));
+var oscTwo = Oscillator$WebAudio.connect(oscTwoFilter, Oscillator$WebAudio.make(/* Sawtooth */2, audioCtx));
 
 var state = {
   a: false
@@ -63,7 +65,20 @@ document.addEventListener("keydown", trigger);
 
 document.addEventListener("keyup", endTrigger);
 
-ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("div", undefined, "Oscillator One"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+function startOscillators(_event) {
+  Oscillator$WebAudio.start(oscOne);
+  Oscillator$WebAudio.start(oscTwo);
+  return /* () */0;
+}
+
+var __x = document.getElementById("start");
+
+Belt_Option.forEach((__x == null) ? undefined : Caml_option.some(__x), (function (e) {
+        e.addEventListener("mousedown", startOscillators);
+        return /* () */0;
+      }));
+
+ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("h1", undefined, "Oscillator One"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "Frequency",
                       param: Oscillator$WebAudio.getFrequency(oscOne),
                       config: {
@@ -79,7 +94,7 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                         maxValue: 100.0,
                         scale: /* Linear */0
                       }
-                    }))), React.createElement("div", undefined, React.createElement("div", undefined, "Oscillator Two"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+                    }))), React.createElement("div", undefined, React.createElement("h1", undefined, "Oscillator Two"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "Frequency",
                       param: Oscillator$WebAudio.getFrequency(oscTwo),
                       config: {
@@ -108,6 +123,7 @@ export {
   Keyboard ,
   trigger ,
   endTrigger ,
+  startOscillators ,
   
 }
 /* audioCtx Not a pure module */

@@ -18,8 +18,7 @@ let oscOneEnvelope =
 let oscOne =
   audioCtx
   |> Oscillator.make(~oscillatorType=Sine)
-  |> Oscillator.connect(~target=oscOneEnvelope.envelopeGain)
-  |> Oscillator.start;
+  |> Oscillator.connect(~target=oscOneEnvelope.envelopeGain);
 
 /******************/
 /* OSCILLATOR TWO */
@@ -40,9 +39,8 @@ oscTwoFilter |> BiquadFilterNode.connect(oscTwoEnvelope.envelopeGain);
 
 let oscTwo =
   audioCtx
-  |> Oscillator.make(~oscillatorType=Sine)
-  |> Oscillator.connect(~target=oscTwoFilter)
-  |> Oscillator.start;
+  |> Oscillator.make(~oscillatorType=Sawtooth)
+  |> Oscillator.connect(~target=oscTwoFilter);
 
 /**********/
 /* EVENTS */
@@ -72,10 +70,21 @@ Webapi.Dom.document
 Webapi.Dom.document
 |> Webapi.Dom.Document.addKeyUpEventListener(e => endTrigger(e));
 
+let startOscillators = _event => {
+  oscOne |> Oscillator.start |> ignore;
+  oscTwo |> Oscillator.start |> ignore;
+};
+
+Webapi.Dom.document
+|> Webapi.Dom.Document.getElementById("start")
+|> Belt.Option.forEach(_, e =>
+     Webapi.Dom.Element.addMouseDownEventListener(startOscillators, e)
+   );
+
 ReactDOMRe.renderToElementWithId(
   <>
     <div>
-      <div> {React.string("Oscillator One")} </div>
+      <h1> {React.string("Oscillator One")} </h1>
       <div>
         <Knob
           name="Frequency"
@@ -90,7 +99,7 @@ ReactDOMRe.renderToElementWithId(
       </div>
     </div>
     <div>
-      <div> {React.string("Oscillator Two")} </div>
+      <h1> {React.string("Oscillator Two")} </h1>
       <div>
         <Knob
           name="Frequency"
