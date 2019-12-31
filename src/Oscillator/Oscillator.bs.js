@@ -78,4 +78,4 @@ export {
   makeFromRandom ,
   
 }
-/* OscillatorNode-WebAudio Not a pure module */
+/* AudioContext-WebAudio Not a pure module */

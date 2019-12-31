@@ -6,7 +6,14 @@ type audioTimeStamp = {
 type audioContext;
 type t = audioContext;
 
-[@bs.new] external createAudioContext: unit => t = "AudioContext";
+let createAudioContext: unit => t = [%bs.raw
+  {|
+     function () {
+       var AudioContext = window.AudioContext || window.webkitAudioContext;
+       return new AudioContext();
+     }
+  |}
+];
 
 [@bs.send]
 external createOscillator: t => OscillatorNode.t = "createOscillator";
