@@ -113,6 +113,16 @@ ReactDOMRe.renderToElementWithId(
         />
       </div>
     </div>
+    <div>
+      <h1> {React.string("LFO")} </h1>
+      <div>
+        <Knob
+          name="Frequency"
+          param={lfo.lfoOscillator |> Oscillator.getFrequency}
+          config={minValue: 1.0, maxValue: 30.0, scale: Linear}
+        />
+      </div>
+    </div>
   </>,
   "app",
 );

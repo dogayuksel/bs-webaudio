@@ -112,6 +112,14 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                         maxValue: 100.0,
                         scale: /* Linear */0
                       }
+                    }))), React.createElement("div", undefined, React.createElement("h1", undefined, "LFO"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+                      name: "Frequency",
+                      param: Oscillator$WebAudio.getFrequency(lfo.lfoOscillator),
+                      config: {
+                        minValue: 1.0,
+                        maxValue: 30.0,
+                        scale: /* Linear */0
+                      }
                     })))), "app");
 
 export {
