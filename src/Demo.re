@@ -1,19 +1,33 @@
 let audioCtx = AudioContext.createAudioContext();
 
-let lfo = audioCtx |> LFO.make;
-lfo |> LFO.setFrequency(~frequency=10.0);
+/*******/
+/* LFO */
+/*******/
+let lfo =
+  audioCtx
+  |> LFO.make
+  |> LFO.setFrequency(~frequency=10.0)
+  |> LFO.connect(~target=AudioContext.getDestination(audioCtx));
 
-lfo |> LFO.connect(~target=AudioContext.getDestination(audioCtx));
+/******************/
+/* OSCILLATOR ONE */
+/******************/
+let oscOneEnvelope =
+  audioCtx |> Envelope.make |> Envelope.connect(~target=lfo.lfoGain);
 
 let oscOne =
-  audioCtx |> Oscillator.makeFromRandom |> Oscillator.connect(~target=lfo.lfo);
+  audioCtx
+  |> Oscillator.make(~oscillatorType=Sine)
+  |> Oscillator.connect(~target=oscOneEnvelope.envelopeGain)
+  |> Oscillator.start;
 
-oscOne.oscillatorGain->GainNode.gain->AudioParam.setValue(epsilon_float);
-oscOne |> Oscillator.start;
+/******************/
+/* OSCILLATOR TWO */
+/******************/
+let oscTwoEnvelope =
+  audioCtx |> Envelope.make |> Envelope.connect(~target=lfo.lfoGain);
 
-let oscTwo = audioCtx |> Oscillator.make(~oscillatorType=Sawtooth);
 let oscTwoFilter = AudioContext.createBiquadFilter(audioCtx);
-
 oscTwoFilter->BiquadFilterNode.setType(Lowpass);
 BiquadFilterNode.frequency(oscTwoFilter)->AudioParam.setValue(370.0);
 BiquadFilterNode.frequency(oscTwoFilter)
@@ -22,12 +36,17 @@ BiquadFilterNode.frequency(oscTwoFilter)
      ~startTime=2.0,
      ~timeConstant=3.0,
    );
+oscTwoFilter |> BiquadFilterNode.connect(oscTwoEnvelope.envelopeGain);
 
-oscTwo |> Oscillator.connect(~target=oscTwoFilter);
-oscTwoFilter |> BiquadFilterNode.connect(lfo.lfo);
-oscTwo.oscillatorGain->GainNode.gain->AudioParam.setValue(epsilon_float);
-oscTwo |> Oscillator.start;
+let oscTwo =
+  audioCtx
+  |> Oscillator.make(~oscillatorType=Sine)
+  |> Oscillator.connect(~target=oscTwoFilter)
+  |> Oscillator.start;
 
+/**********/
+/* EVENTS */
+/**********/
 module Keyboard = {
   type state = {mutable a: bool};
   let state = {a: false};
@@ -36,17 +55,15 @@ module Keyboard = {
 let trigger = (e: Webapi.Dom.KeyboardEvent.t) =>
   if (Keyboard.state.a == false && Webapi.Dom.KeyboardEvent.key(e) == "a") {
     Keyboard.state.a = true;
-    let currentTime = audioCtx |> AudioContext.getOutputTimestamp();
-    oscOne.oscillatorGain |> Envelope.trigger(currentTime);
-    oscTwo.oscillatorGain |> Envelope.trigger(currentTime);
+    oscOneEnvelope |> Envelope.trigger;
+    oscTwoEnvelope |> Envelope.trigger;
   };
 
 let endTrigger = (e: Webapi.Dom.KeyboardEvent.t) =>
   if (Webapi.Dom.KeyboardEvent.key(e) == "a") {
     Keyboard.state.a = false;
-    let currentTime = audioCtx |> AudioContext.getOutputTimestamp();
-    oscOne.oscillatorGain |> Envelope.endTrigger(currentTime);
-    oscTwo.oscillatorGain |> Envelope.endTrigger(currentTime);
+    oscOneEnvelope |> Envelope.endTrigger;
+    oscTwoEnvelope |> Envelope.endTrigger;
   };
 
 Webapi.Dom.document
@@ -57,16 +74,36 @@ Webapi.Dom.document
 
 ReactDOMRe.renderToElementWithId(
   <>
-    <Knob
-      name="Frequency"
-      param={oscOne |> Oscillator.getFrequency}
-      config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
-    />
-    <Knob
-      name="Gain"
-      param={oscOne |> Oscillator.getGain}
-      config={minValue: epsilon_float, maxValue: 100.0, scale: Linear}
-    />
+    <div>
+      <div> {React.string("Oscillator One")} </div>
+      <div>
+        <Knob
+          name="Frequency"
+          param={oscOne |> Oscillator.getFrequency}
+          config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
+        />
+        <Knob
+          name="Gain"
+          param={oscOne |> Oscillator.getGain}
+          config={minValue: epsilon_float, maxValue: 100.0, scale: Linear}
+        />
+      </div>
+    </div>
+    <div>
+      <div> {React.string("Oscillator Two")} </div>
+      <div>
+        <Knob
+          name="Frequency"
+          param={oscTwo |> Oscillator.getFrequency}
+          config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
+        />
+        <Knob
+          name="Gain"
+          param={oscTwo |> Oscillator.getGain}
+          config={minValue: epsilon_float, maxValue: 100.0, scale: Linear}
+        />
+      </div>
+    </div>
   </>,
   "app",
 );

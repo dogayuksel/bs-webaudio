@@ -5,27 +5,29 @@ import * as Oscillator$WebAudio from "../Oscillator/Oscillator.bs.js";
 function make(audioCtx) {
   var paramOscillator = audioCtx.createGain();
   paramOscillator.gain.value = 0.5;
-  var oscillator = Oscillator$WebAudio.make(/* Sine */0, audioCtx);
-  oscillator.oscillatorNode.frequency.value = 3.0;
-  Oscillator$WebAudio.start(oscillator);
+  var lfoOscillator = Oscillator$WebAudio.make(/* Sine */0, audioCtx);
+  lfoOscillator.oscillatorNode.frequency.value = 3.0;
+  Oscillator$WebAudio.start(lfoOscillator);
   var constantSourceNode = audioCtx.createConstantSource();
-  Oscillator$WebAudio.connect(paramOscillator, oscillator);
+  Oscillator$WebAudio.connect(paramOscillator, lfoOscillator);
   constantSourceNode.connect(paramOscillator);
-  var lfo = audioCtx.createGain();
-  paramOscillator.connect(lfo.gain);
+  var lfoGain = audioCtx.createGain();
+  paramOscillator.connect(lfoGain.gain);
   return {
-          oscillator: oscillator,
-          lfo: lfo
+          lfoOscillator: lfoOscillator,
+          lfoGain: lfoGain,
+          audioContext: audioCtx
         };
 }
 
 function connect(target, lfo) {
-  lfo.lfo.connect(target);
-  return /* () */0;
+  lfo.lfoGain.connect(target);
+  return lfo;
 }
 
 function setFrequency(frequency, lfo) {
-  return Oscillator$WebAudio.setFrequency(frequency, lfo.oscillator);
+  Oscillator$WebAudio.setFrequency(frequency, lfo.lfoOscillator);
+  return lfo;
 }
 
 var defaultFrequency = 3.0;

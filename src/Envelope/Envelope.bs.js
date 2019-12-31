@@ -2,20 +2,36 @@
 
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 
-function trigger(currentTime, gainNode) {
+function trigger(envelope) {
+  var currentTime = envelope.audioContext.getOutputTimestamp();
   var attackTime = currentTime.contextTime + 0.2;
-  var gainParam = gainNode.gain;
+  var gainParam = envelope.envelopeGain.gain;
   gainParam.cancelScheduledValues(currentTime.contextTime);
   gainParam.setTargetAtTime(10.0, currentTime.contextTime + Pervasives.epsilon_float, 0.2 / 3.0);
   gainParam.setTargetAtTime(1.5, attackTime, 0.3 / 3.0);
   return /* () */0;
 }
 
-function endTrigger(currentTime, gainNode) {
-  var gainParam = gainNode.gain;
+function endTrigger(envelope) {
+  var currentTime = envelope.audioContext.getOutputTimestamp();
+  var gainParam = envelope.envelopeGain.gain;
   gainParam.cancelScheduledValues(currentTime.contextTime);
   gainParam.setTargetAtTime(Pervasives.epsilon_float, currentTime.contextTime, 1.0 / 3.0);
   return /* () */0;
+}
+
+function connect(target, envelope) {
+  envelope.envelopeGain.connect(target);
+  return envelope;
+}
+
+function make(audioCtx) {
+  var envelopeGain = audioCtx.createGain();
+  envelopeGain.gain.value = Pervasives.epsilon_float;
+  return {
+          envelopeGain: envelopeGain,
+          audioContext: audioCtx
+        };
 }
 
 var attack = 0.2;
@@ -33,6 +49,8 @@ export {
   release ,
   trigger ,
   endTrigger ,
+  connect ,
+  make ,
   
 }
 /* No side effect */

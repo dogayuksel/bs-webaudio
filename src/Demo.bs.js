@@ -11,19 +11,13 @@ import * as BiquadFilterNode$WebAudio from "./WebAudio/BiquadFilterNode.bs.js";
 
 var audioCtx = new AudioContext();
 
-var lfo = LFO$WebAudio.make(audioCtx);
+var lfo = LFO$WebAudio.connect(audioCtx.destination, LFO$WebAudio.setFrequency(10.0, LFO$WebAudio.make(audioCtx)));
 
-LFO$WebAudio.setFrequency(10.0, lfo);
+var oscOneEnvelope = Envelope$WebAudio.connect(lfo.lfoGain, Envelope$WebAudio.make(audioCtx));
 
-LFO$WebAudio.connect(audioCtx.destination, lfo);
+var oscOne = Oscillator$WebAudio.start(Oscillator$WebAudio.connect(oscOneEnvelope.envelopeGain, Oscillator$WebAudio.make(/* Sine */0, audioCtx)));
 
-var oscOne = Oscillator$WebAudio.connect(lfo.lfo, Oscillator$WebAudio.makeFromRandom(audioCtx));
-
-oscOne.oscillatorGain.gain.value = Pervasives.epsilon_float;
-
-Oscillator$WebAudio.start(oscOne);
-
-var oscTwo = Oscillator$WebAudio.make(/* Sawtooth */2, audioCtx);
+var oscTwoEnvelope = Envelope$WebAudio.connect(lfo.lfoGain, Envelope$WebAudio.make(audioCtx));
 
 var oscTwoFilter = audioCtx.createBiquadFilter();
 
@@ -33,13 +27,9 @@ oscTwoFilter.frequency.value = 370.0;
 
 oscTwoFilter.frequency.setTargetAtTime(300.0, 2.0, 3.0);
 
-Oscillator$WebAudio.connect(oscTwoFilter, oscTwo);
+oscTwoFilter.connect(oscTwoEnvelope.envelopeGain);
 
-oscTwoFilter.connect(lfo.lfo);
-
-oscTwo.oscillatorGain.gain.value = Pervasives.epsilon_float;
-
-Oscillator$WebAudio.start(oscTwo);
+var oscTwo = Oscillator$WebAudio.start(Oscillator$WebAudio.connect(oscTwoFilter, Oscillator$WebAudio.make(/* Sine */0, audioCtx)));
 
 var state = {
   a: false
@@ -52,9 +42,8 @@ var Keyboard = {
 function trigger(e) {
   if (state.a === false && e.key === "a") {
     state.a = true;
-    var currentTime = audioCtx.getOutputTimestamp();
-    Envelope$WebAudio.trigger(currentTime, oscOne.oscillatorGain);
-    return Envelope$WebAudio.trigger(currentTime, oscTwo.oscillatorGain);
+    Envelope$WebAudio.trigger(oscOneEnvelope);
+    return Envelope$WebAudio.trigger(oscTwoEnvelope);
   } else {
     return 0;
   }
@@ -63,9 +52,8 @@ function trigger(e) {
 function endTrigger(e) {
   if (e.key === "a") {
     state.a = false;
-    var currentTime = audioCtx.getOutputTimestamp();
-    Envelope$WebAudio.endTrigger(currentTime, oscOne.oscillatorGain);
-    return Envelope$WebAudio.endTrigger(currentTime, oscTwo.oscillatorGain);
+    Envelope$WebAudio.endTrigger(oscOneEnvelope);
+    return Envelope$WebAudio.endTrigger(oscTwoEnvelope);
   } else {
     return 0;
   }
@@ -75,30 +63,48 @@ document.addEventListener("keydown", trigger);
 
 document.addEventListener("keyup", endTrigger);
 
-ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement(Knob$WebAudio.make, {
-              name: "Frequency",
-              param: Oscillator$WebAudio.getFrequency(oscOne),
-              config: {
-                minValue: 1.0,
-                maxValue: 18000.0,
-                scale: /* Logarithmic */1
-              }
-            }), React.createElement(Knob$WebAudio.make, {
-              name: "Gain",
-              param: Oscillator$WebAudio.getGain(oscOne),
-              config: {
-                minValue: Pervasives.epsilon_float,
-                maxValue: 100.0,
-                scale: /* Linear */0
-              }
-            })), "app");
+ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("div", undefined, "Oscillator One"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+                      name: "Frequency",
+                      param: Oscillator$WebAudio.getFrequency(oscOne),
+                      config: {
+                        minValue: 1.0,
+                        maxValue: 18000.0,
+                        scale: /* Logarithmic */1
+                      }
+                    }), React.createElement(Knob$WebAudio.make, {
+                      name: "Gain",
+                      param: Oscillator$WebAudio.getGain(oscOne),
+                      config: {
+                        minValue: Pervasives.epsilon_float,
+                        maxValue: 100.0,
+                        scale: /* Linear */0
+                      }
+                    }))), React.createElement("div", undefined, React.createElement("div", undefined, "Oscillator Two"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+                      name: "Frequency",
+                      param: Oscillator$WebAudio.getFrequency(oscTwo),
+                      config: {
+                        minValue: 1.0,
+                        maxValue: 18000.0,
+                        scale: /* Logarithmic */1
+                      }
+                    }), React.createElement(Knob$WebAudio.make, {
+                      name: "Gain",
+                      param: Oscillator$WebAudio.getGain(oscTwo),
+                      config: {
+                        minValue: Pervasives.epsilon_float,
+                        maxValue: 100.0,
+                        scale: /* Linear */0
+                      }
+                    })))), "app");
 
 export {
   audioCtx ,
   lfo ,
+  oscOneEnvelope ,
   oscOne ,
-  oscTwo ,
+  oscTwoEnvelope ,
   oscTwoFilter ,
+  oscTwo ,
   Keyboard ,
   trigger ,
   endTrigger ,

@@ -1,37 +1,40 @@
 type lfo = {
-  oscillator: Oscillator.t,
-  lfo: GainNode.t,
+  lfoOscillator: Oscillator.t,
+  lfoGain: GainNode.t,
+  audioContext: AudioContext.t,
 };
 
 type t = lfo;
 
 let defaultFrequency = 3.0;
 
-let make = (audioCtx: AudioContext.t): lfo => {
+let make = (audioCtx: AudioContext.t): t => {
   let paramOscillator = AudioContext.createGain(audioCtx);
   paramOscillator->GainNode.gain->AudioParam.setValue(0.5);
 
-  let oscillator = Oscillator.make(~oscillatorType=Sine, audioCtx);
-  oscillator.oscillatorNode
+  let lfoOscillator = Oscillator.make(~oscillatorType=Sine, audioCtx);
+  lfoOscillator.oscillatorNode
   ->OscillatorNode.frequency
   ->AudioParam.setValue(defaultFrequency);
-  Oscillator.start(oscillator) |> ignore;
+  Oscillator.start(lfoOscillator) |> ignore;
 
   let constantSourceNode = AudioContext.createConstantSource(audioCtx);
 
-  oscillator |> Oscillator.connect(~target=paramOscillator) |> ignore;
+  lfoOscillator |> Oscillator.connect(~target=paramOscillator) |> ignore;
   constantSourceNode |> ConstantSourceNode.connect(paramOscillator);
 
-  let lfo = AudioContext.createGain(audioCtx);
-  paramOscillator |> GainNode.connectToAudioParam(GainNode.gain(lfo));
+  let lfoGain = AudioContext.createGain(audioCtx);
+  paramOscillator |> GainNode.connectToAudioParam(GainNode.gain(lfoGain));
 
-  {lfo, oscillator};
+  {lfoGain, lfoOscillator, audioContext: audioCtx};
 };
 
-let connect = (~target: AudioNode.audioNode_like('a), lfo: lfo) => {
-  lfo.lfo |> GainNode.connect(target);
+let connect = (~target: AudioNode.audioNode_like('a), lfo: t) => {
+  lfo.lfoGain |> GainNode.connect(target);
+  lfo;
 };
 
-let setFrequency = (~frequency: float, lfo: lfo) => {
-  lfo.oscillator |> Oscillator.setFrequency(~frequency);
+let setFrequency = (~frequency: float, lfo: t) => {
+  lfo.lfoOscillator |> Oscillator.setFrequency(~frequency);
+  lfo;
 };
