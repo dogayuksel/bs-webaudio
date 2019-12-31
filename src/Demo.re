@@ -60,7 +60,7 @@ ReactDOMRe.renderToElementWithId(
     <Knob
       name="Frequency"
       param={oscOne |> Oscillator.getFrequency}
-      config={minValue: 1.0, maxValue: 22500.0, scale: Logarithmic}
+      config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
     />
     <Knob
       name="Gain"

@@ -1,8 +1,12 @@
 let size = 120;
 let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 
-let offset = 30.0;
-let range = 300.0;
+let knobSensitivityFactor = 4;
+let knobDomainInPixels = float_of_int(size * knobSensitivityFactor);
+
+// Range of degrees displayed
+let knobMin = 30.0;
+let knobMax = 330.0;
 
 type knobScale =
   | Linear
@@ -20,21 +24,31 @@ let clamp = (value: float, config: knobConfig) => {
   value;
 };
 
+let mapValue = (~from: (float, float), ~target: (float, float), value) => {
+  let (xmin, xmax) = from;
+  let (ymin, ymax) = target;
+  (value -. xmin) /. (xmax -. xmin) *. (ymax -. ymin) +. ymin;
+};
+
 [@react.component]
 let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
-  let mapValueToDegrees = value => {
-    let domain = config.maxValue -. config.minValue;
-    let value = value -. config.minValue;
+  let mapParam = mapValue(~from=(config.minValue, config.maxValue));
+  let mapToParam = mapValue(~target=(config.minValue, config.maxValue));
+  let mapToDegrees = mapValue(~target=(knobMin, knobMax));
+
+  let mapValueToDegrees = (value: float): string => {
     let degrees =
-      value === 0.0
-        ? 0.0
-        : (
-          switch (config.scale) {
-          | Linear => range /. domain *. value
-          | Logarithmic => range /. Js.Math.log(domain) *. Js.Math.log(value)
-          }
-        );
-    Js.Float.toString(degrees +. offset) ++ "deg";
+      switch (config.scale) {
+      | Linear => value |> mapParam(~target=(knobMin, knobMax))
+      | Logarithmic =>
+        /* log10(1)=0 */
+        /* log10(10)=1 */
+        value
+        |> mapParam(~target=(1.0, 10.0))
+        |> log10
+        |> mapToDegrees(~from=(0.0, 1.0))
+      };
+    Js.Float.toString(degrees) ++ "deg";
   };
 
   let (value, setValue) = React.useState(() => param->AudioParam.getValue);
@@ -43,18 +57,28 @@ let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
   let handleMouseMove = (event: Webapi.Dom.MouseEvent.t): unit => {
     let clientY = Webapi.Dom.MouseEvent.clientY(event);
     setValue(value => {
-      let change = React.Ref.current(lastY) - clientY;
-      let scaledChange =
-        switch (config.scale) {
-        | Linear => float_of_int(Js.Math.abs_int(change))
-        | Logarithmic =>
-          let possibleValue =
-            float_of_int(Js.Math.abs_int(change)) ** Js.Math.log(value);
-          possibleValue > value /. 3.0 ? value /. 3.0 : possibleValue;
-        };
+      let change =
+        React.Ref.current(lastY)
+        |> (x => x - clientY)
+        |> float_of_int
+        |> mapValue(~from=(0.0, knobDomainInPixels), ~target=(0.0, 1.0));
       let newValue =
-        change > 0 ? value +. scaledChange : value -. scaledChange;
-
+        switch (config.scale) {
+        | Linear =>
+          value
+          |> mapParam(~target=(0.0, 1.0))
+          |> (+.)(change)
+          |> mapToParam(~from=(0.0, 1.0))
+        | Logarithmic =>
+          /* log10(1)=0  <--> 10**0=1  */
+          /* log10(10)=1 <--> 10**1=10 */
+          value
+          |> mapParam(~target=(1.0, 10.0))
+          |> log10
+          |> (+.)(change)
+          |> (x => 10.0 ** x)
+          |> mapToParam(~from=(1.0, 10.0))
+        };
       let clampedValue = clamp(newValue, config);
       param->AudioParam.setValue(clampedValue);
       React.Ref.setCurrent(lastY, clientY);

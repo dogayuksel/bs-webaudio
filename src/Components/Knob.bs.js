@@ -7,6 +7,8 @@ function sizeInPixels(x) {
   return String(x) + "px";
 }
 
+var knobDomainInPixels = 480;
+
 function clamp(value, config) {
   var match = value < config.minValue;
   var value$1 = match ? config.minValue : value;
@@ -18,22 +20,48 @@ function clamp(value, config) {
   }
 }
 
+function mapValue(from, target, value) {
+  var ymin = target[0];
+  var xmin = from[0];
+  return (value - xmin) / (from[1] - xmin) * (target[1] - ymin) + ymin;
+}
+
 function Knob(Props) {
   var name = Props.name;
   var param = Props.param;
   var config = Props.config;
+  var partial_arg_000 = config.minValue;
+  var partial_arg_001 = config.maxValue;
+  var partial_arg = /* tuple */[
+    partial_arg_000,
+    partial_arg_001
+  ];
+  var mapParam = function (param, param$1) {
+    return mapValue(partial_arg, param, param$1);
+  };
+  var arg_000 = config.minValue;
+  var arg_001 = config.maxValue;
+  var arg = /* tuple */[
+    arg_000,
+    arg_001
+  ];
+  var arg$1 = /* tuple */[
+    30.0,
+    330.0
+  ];
   var mapValueToDegrees = function (value) {
-    var domain = config.maxValue - config.minValue;
-    var value$1 = value - config.minValue;
-    var match = value$1 === 0.0;
-    var degrees;
-    if (match) {
-      degrees = 0.0;
-    } else {
-      var match$1 = config.scale;
-      degrees = match$1 ? 300.0 / Math.log(domain) * Math.log(value$1) : 300.0 / domain * value$1;
-    }
-    return (degrees + 30.0).toString() + "deg";
+    var match = config.scale;
+    var degrees = match ? mapValue(/* tuple */[
+            0.0,
+            1.0
+          ], arg$1, Math.log10(Curry._2(mapParam, /* tuple */[
+                    1.0,
+                    10.0
+                  ], value))) : Curry._2(mapParam, /* tuple */[
+            30.0,
+            330.0
+          ], value);
+    return degrees.toString() + "deg";
   };
   var match = React.useState((function () {
           return param.value;
@@ -44,18 +72,27 @@ function Knob(Props) {
   var handleMouseMove = function ($$event) {
     var clientY = $$event.clientY;
     Curry._1(setValue, (function (value) {
-            var change = lastY.current - clientY | 0;
+            var change = mapValue(/* tuple */[
+                  0.0,
+                  knobDomainInPixels
+                ], /* tuple */[
+                  0.0,
+                  1.0
+                ], lastY.current - clientY | 0);
             var match = config.scale;
-            var scaledChange;
-            if (match) {
-              var possibleValue = Math.pow(Math.abs(change), Math.log(value));
-              var match$1 = possibleValue > value / 3.0;
-              scaledChange = match$1 ? value / 3.0 : possibleValue;
-            } else {
-              scaledChange = Math.abs(change);
-            }
-            var match$2 = change > 0;
-            var newValue = match$2 ? value + scaledChange : value - scaledChange;
+            var newValue = match ? mapValue(/* tuple */[
+                    1.0,
+                    10.0
+                  ], arg, Math.pow(10.0, change + Math.log10(Curry._2(mapParam, /* tuple */[
+                                1.0,
+                                10.0
+                              ], value)))) : mapValue(/* tuple */[
+                    0.0,
+                    1.0
+                  ], arg, change + Curry._2(mapParam, /* tuple */[
+                        0.0,
+                        1.0
+                      ], value));
             var clampedValue = clamp(newValue, config);
             param.value = clampedValue;
             lastY.current = clientY;
@@ -114,18 +151,23 @@ function Knob(Props) {
 
 var size = 120;
 
-var offset = 30.0;
+var knobSensitivityFactor = 4;
 
-var range = 300.0;
+var knobMin = 30.0;
+
+var knobMax = 330.0;
 
 var make = Knob;
 
 export {
   size ,
   sizeInPixels ,
-  offset ,
-  range ,
+  knobSensitivityFactor ,
+  knobDomainInPixels ,
+  knobMin ,
+  knobMax ,
   clamp ,
+  mapValue ,
   make ,
   
 }

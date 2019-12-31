@@ -80,7 +80,7 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
               param: Oscillator$WebAudio.getFrequency(oscOne),
               config: {
                 minValue: 1.0,
-                maxValue: 22500.0,
+                maxValue: 18000.0,
                 scale: /* Logarithmic */1
               }
             }), React.createElement(Knob$WebAudio.make, {
