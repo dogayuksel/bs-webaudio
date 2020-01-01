@@ -15,6 +15,8 @@ let createAudioContext: unit => t = [%bs.raw
   |}
 ];
 
+[@bs.send] external resume: t => unit = "resume";
+
 [@bs.send]
 external createOscillator: t => OscillatorNode.t = "createOscillator";
 

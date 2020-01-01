@@ -4,11 +4,10 @@ import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 import * as ReactDOMRe from "reason-react/src/ReactDOMRe.js";
-import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
-import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as LFO$WebAudio from "./LFO/LFO.bs.js";
 import * as Knob$WebAudio from "./Components/Knob.bs.js";
 import * as Slider$WebAudio from "./Components/Slider.bs.js";
+import * as Switch$WebAudio from "./Components/Switch.bs.js";
 import * as Envelope$WebAudio from "./Envelope/Envelope.bs.js";
 import * as Oscillator$WebAudio from "./Oscillator/Oscillator.bs.js";
 import * as AudioContext$WebAudio from "./WebAudio/AudioContext.bs.js";
@@ -69,19 +68,24 @@ document.addEventListener("keydown", trigger);
 document.addEventListener("keyup", endTrigger);
 
 function startOscillators(_event) {
+  audioCtx.resume();
   Oscillator$WebAudio.start(oscOne);
   Oscillator$WebAudio.start(oscTwo);
+  LFO$WebAudio.start(lfo);
   return /* () */0;
 }
 
-var __x = document.getElementById("start");
-
-Belt_Option.forEach((__x == null) ? undefined : Caml_option.some(__x), (function (e) {
-        e.addEventListener("mousedown", startOscillators);
-        return /* () */0;
-      }));
-
-ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("h2", undefined, "Oscillator One"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement("div", {
+              style: {
+                position: "absolute",
+                right: "0",
+                top: "0"
+              }
+            }, React.createElement(Switch$WebAudio.make, {
+                  toggle: startOscillators,
+                  initialState: false,
+                  children: "Power"
+                })), React.createElement("div", undefined, React.createElement("h2", undefined, "Oscillator One"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "Frequency",
                       param: Oscillator$WebAudio.getFrequency(oscOne),
                       config: {

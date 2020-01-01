@@ -71,18 +71,25 @@ Webapi.Dom.document
 |> Webapi.Dom.Document.addKeyUpEventListener(e => endTrigger(e));
 
 let startOscillators = _event => {
+  audioCtx |> AudioContext.resume;
   oscOne |> Oscillator.start |> ignore;
   oscTwo |> Oscillator.start |> ignore;
+  lfo |> LFO.start |> ignore;
 };
-
-Webapi.Dom.document
-|> Webapi.Dom.Document.getElementById("start")
-|> Belt.Option.forEach(_, e =>
-     Webapi.Dom.Element.addMouseDownEventListener(startOscillators, e)
-   );
 
 ReactDOMRe.renderToElementWithId(
   <>
+    <div
+      style={ReactDOMRe.Style.make(
+        ~position="absolute",
+        ~top="0",
+        ~right="0",
+        (),
+      )}>
+      <Switch toggle=startOscillators initialState=false>
+        {React.string("Power")}
+      </Switch>
+    </div>
     <div>
       <h2> {React.string("Oscillator One")} </h2>
       <div>

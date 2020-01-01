@@ -16,7 +16,6 @@ let make = (audioCtx: AudioContext.t): t => {
   lfoOscillator.oscillatorNode
   ->OscillatorNode.frequency
   ->AudioParam.setValue(defaultFrequency);
-  Oscillator.start(lfoOscillator) |> ignore;
 
   let constantSourceNode = AudioContext.createConstantSource(audioCtx);
 
@@ -29,8 +28,13 @@ let make = (audioCtx: AudioContext.t): t => {
   {lfoGain, lfoOscillator, audioContext: audioCtx};
 };
 
-let connect = (~target: AudioNode.audioNode_like('a), lfo: t) => {
+let connect = (~target: AudioNode.audioNode_like('a), lfo: t): t => {
   lfo.lfoGain |> GainNode.connect(target);
+  lfo;
+};
+
+let start = (lfo: t): t => {
+  Oscillator.start(lfo.lfoOscillator) |> ignore;
   lfo;
 };
 

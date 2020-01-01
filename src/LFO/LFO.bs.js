@@ -7,7 +7,6 @@ function make(audioCtx) {
   paramOscillator.gain.value = 0.5;
   var lfoOscillator = Oscillator$WebAudio.make(/* Sine */0, audioCtx);
   lfoOscillator.oscillatorNode.frequency.value = 3.0;
-  Oscillator$WebAudio.start(lfoOscillator);
   var constantSourceNode = audioCtx.createConstantSource();
   Oscillator$WebAudio.connect(paramOscillator, lfoOscillator);
   constantSourceNode.connect(paramOscillator);
@@ -25,6 +24,11 @@ function connect(target, lfo) {
   return lfo;
 }
 
+function start(lfo) {
+  Oscillator$WebAudio.start(lfo.lfoOscillator);
+  return lfo;
+}
+
 function setFrequency(frequency, lfo) {
   Oscillator$WebAudio.setFrequency(frequency, lfo.lfoOscillator);
   return lfo;
@@ -36,6 +40,7 @@ export {
   defaultFrequency ,
   make ,
   connect ,
+  start ,
   setFrequency ,
   
 }
