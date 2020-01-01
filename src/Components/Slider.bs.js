@@ -7,8 +7,6 @@ function sizeInPixels(x) {
   return String(x) + "px";
 }
 
-var knobDomainInPixels = 480;
-
 function clamp(value, config) {
   var match = value < config.minValue;
   var value$1 = match ? config.minValue : value;
@@ -26,7 +24,7 @@ function mapValue(from, target, value) {
   return (value - xmin) / (from[1] - xmin) * (target[1] - ymin) + ymin;
 }
 
-function Knob(Props) {
+function Slider(Props) {
   var name = Props.name;
   var param = Props.param;
   var config = Props.config;
@@ -45,23 +43,12 @@ function Knob(Props) {
     arg_000,
     arg_001
   ];
-  var arg$1 = /* tuple */[
-    30.0,
-    330.0
-  ];
-  var mapValueToDegrees = function (value) {
-    var match = config.scale;
-    var degrees = match ? mapValue(/* tuple */[
-            0.0,
-            1.0
-          ], arg$1, Math.log10(Curry._2(mapParam, /* tuple */[
-                    1.0,
-                    10.0
-                  ], value))) : Curry._2(mapParam, /* tuple */[
-            30.0,
-            330.0
-          ], value);
-    return degrees.toString() + "deg";
+  var mapValueToHeight = function (value) {
+    var height = Curry._2(mapParam, /* tuple */[
+          110,
+          0.0
+        ], value);
+    return height.toString() + "px";
   };
   var match = React.useState((function () {
           return param.value;
@@ -74,25 +61,18 @@ function Knob(Props) {
     Curry._1(setValue, (function (value) {
             var change = mapValue(/* tuple */[
                   0.0,
-                  knobDomainInPixels
+                  120
                 ], /* tuple */[
                   0.0,
                   1.0
                 ], lastY.current - clientY | 0);
-            var match = config.scale;
-            var newValue = match ? mapValue(/* tuple */[
-                    1.0,
-                    10.0
-                  ], arg, Math.pow(10.0, change + Math.log10(Curry._2(mapParam, /* tuple */[
-                                1.0,
-                                10.0
-                              ], value)))) : mapValue(/* tuple */[
-                    0.0,
-                    1.0
-                  ], arg, change + Curry._2(mapParam, /* tuple */[
-                        0.0,
-                        1.0
-                      ], value));
+            var newValue = mapValue(/* tuple */[
+                  0.0,
+                  1.0
+                ], arg, change + Curry._2(mapParam, /* tuple */[
+                      0.0,
+                      1.0
+                    ], value));
             var clampedValue = clamp(newValue, config);
             param.value = clampedValue;
             lastY.current = clientY;
@@ -127,22 +107,17 @@ function Knob(Props) {
                 }, name), React.createElement("div", {
                   style: {
                     backgroundColor: "#839264",
-                    display: "flex",
                     height: String(120) + "px",
                     margin: "0 20px",
-                    width: String(120) + "px",
-                    borderRadius: String(120) + "px",
-                    justifyContent: "center",
-                    transform: "rotate(" + (mapValueToDegrees(value) + ")")
+                    width: String(30) + "px"
                   },
                   onMouseDown: handleMouseDown
                 }, React.createElement("div", {
                       style: {
-                        borderRight: "10px solid transparent",
-                        borderBottom: "10px solid black",
-                        borderLeft: "10px solid transparent",
-                        height: "0",
-                        width: "0"
+                        backgroundColor: "#112211",
+                        height: String(10) + "px",
+                        width: String(30) + "px",
+                        transform: "translateY(" + (mapValueToHeight(value) + ")")
                       }
                     })), React.createElement("h3", {
                   style: {
@@ -151,23 +126,19 @@ function Knob(Props) {
                 }, String(value | 0)));
 }
 
-var size = 120;
+var height = 120;
 
-var knobSensitivityFactor = 4;
+var width = 30;
 
-var knobMin = 30.0;
+var buttonHeight = 10;
 
-var knobMax = 330.0;
-
-var make = Knob;
+var make = Slider;
 
 export {
-  size ,
+  height ,
+  width ,
+  buttonHeight ,
   sizeInPixels ,
-  knobSensitivityFactor ,
-  knobDomainInPixels ,
-  knobMin ,
-  knobMax ,
   clamp ,
   mapValue ,
   make ,

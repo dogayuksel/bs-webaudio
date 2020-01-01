@@ -1,24 +1,14 @@
-let size = 120;
+let height = 120;
+let width = 30;
+let buttonHeight = 10;
 let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 
-let knobSensitivityFactor = 4;
-let knobDomainInPixels = float_of_int(size * knobSensitivityFactor);
-
-// Range of degrees displayed
-let knobMin = 30.0;
-let knobMax = 330.0;
-
-type knobScale =
-  | Linear
-  | Logarithmic;
-
-type knobConfig = {
+type sliderConfig = {
   minValue: float,
   maxValue: float,
-  scale: knobScale,
 };
 
-let clamp = (value: float, config: knobConfig) => {
+let clamp = (value: float, config: sliderConfig) => {
   let value = value < config.minValue ? config.minValue : value;
   let value = value > config.maxValue ? config.maxValue : value;
   value;
@@ -31,24 +21,14 @@ let mapValue = (~from: (float, float), ~target: (float, float), value) => {
 };
 
 [@react.component]
-let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
+let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
   let mapParam = mapValue(~from=(config.minValue, config.maxValue));
   let mapToParam = mapValue(~target=(config.minValue, config.maxValue));
-  let mapToDegrees = mapValue(~target=(knobMin, knobMax));
 
-  let mapValueToDegrees = (value: float): string => {
-    let degrees =
-      switch (config.scale) {
-      | Linear => value |> mapParam(~target=(knobMin, knobMax))
-      | Logarithmic =>
-        /* log10(1)=0 */
-        /* log10(10)=1 */
-        value
-        |> mapParam(~target=(1.0, 10.0))
-        |> log10
-        |> mapToDegrees(~from=(0.0, 1.0))
-      };
-    Js.Float.toString(degrees) ++ "deg";
+  let mapValueToHeight = (value: float): string => {
+    let height =
+      value |> mapParam(~target=(float_of_int(height - buttonHeight), 0.0));
+    Js.Float.toString(height) ++ "px";
   };
 
   let (value, setValue) = React.useState(() => param->AudioParam.getValue);
@@ -61,24 +41,12 @@ let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
         React.Ref.current(lastY)
         |> (x => x - clientY)
         |> float_of_int
-        |> mapValue(~from=(0.0, knobDomainInPixels), ~target=(0.0, 1.0));
+        |> mapValue(~from=(0.0, float_of_int(height)), ~target=(0.0, 1.0));
       let newValue =
-        switch (config.scale) {
-        | Linear =>
-          value
-          |> mapParam(~target=(0.0, 1.0))
-          |> (+.)(change)
-          |> mapToParam(~from=(0.0, 1.0))
-        | Logarithmic =>
-          /* log10(1)=0  <--> 10**0=1  */
-          /* log10(10)=1 <--> 10**1=10 */
-          value
-          |> mapParam(~target=(1.0, 10.0))
-          |> log10
-          |> (+.)(change)
-          |> (x => 10.0 ** x)
-          |> mapToParam(~from=(1.0, 10.0))
-        };
+        value
+        |> mapParam(~target=(0.0, 1.0))
+        |> (+.)(change)
+        |> mapToParam(~from=(0.0, 1.0));
       let clampedValue = clamp(newValue, config);
       param->AudioParam.setValue(clampedValue);
       React.Ref.setCurrent(lastY, clientY);
@@ -123,22 +91,17 @@ let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
         ~backgroundColor="#839264",
-        ~width=sizeInPixels(size),
-        ~height=sizeInPixels(size),
+        ~width=sizeInPixels(width),
+        ~height=sizeInPixels(height),
         ~margin="0 20px",
-        ~borderRadius=sizeInPixels(size),
-        ~display="flex",
-        ~justifyContent="center",
-        ~transform="rotate(" ++ mapValueToDegrees(value) ++ ")",
         (),
       )}>
       <div
         style={ReactDOMRe.Style.make(
-          ~width="0",
-          ~height="0",
-          ~borderLeft="10px solid transparent",
-          ~borderRight="10px solid transparent",
-          ~borderBottom="10px solid black",
+          ~width=sizeInPixels(width),
+          ~height=sizeInPixels(buttonHeight),
+          ~backgroundColor="#112211",
+          ~transform="translateY(" ++ mapValueToHeight(value) ++ ")",
           (),
         )}
       />

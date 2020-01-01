@@ -8,6 +8,7 @@ import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as LFO$WebAudio from "./LFO/LFO.bs.js";
 import * as Knob$WebAudio from "./Components/Knob.bs.js";
+import * as Slider$WebAudio from "./Components/Slider.bs.js";
 import * as Envelope$WebAudio from "./Envelope/Envelope.bs.js";
 import * as Oscillator$WebAudio from "./Oscillator/Oscillator.bs.js";
 import * as AudioContext$WebAudio from "./WebAudio/AudioContext.bs.js";
@@ -80,7 +81,7 @@ Belt_Option.forEach((__x == null) ? undefined : Caml_option.some(__x), (function
         return /* () */0;
       }));
 
-ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("h1", undefined, "Oscillator One"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, React.createElement("div", undefined, React.createElement("h2", undefined, "Oscillator One"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "Frequency",
                       param: Oscillator$WebAudio.getFrequency(oscOne),
                       config: {
@@ -88,15 +89,14 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                         maxValue: 18000.0,
                         scale: /* Logarithmic */1
                       }
-                    }), React.createElement(Knob$WebAudio.make, {
+                    }), React.createElement(Slider$WebAudio.make, {
                       name: "Gain",
                       param: Oscillator$WebAudio.getGain(oscOne),
                       config: {
                         minValue: Pervasives.epsilon_float,
-                        maxValue: 100.0,
-                        scale: /* Linear */0
+                        maxValue: 100.0
                       }
-                    }))), React.createElement("div", undefined, React.createElement("h1", undefined, "Oscillator Two"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+                    }))), React.createElement("div", undefined, React.createElement("h2", undefined, "Oscillator Two"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "Frequency",
                       param: Oscillator$WebAudio.getFrequency(oscTwo),
                       config: {
@@ -104,15 +104,14 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                         maxValue: 18000.0,
                         scale: /* Logarithmic */1
                       }
-                    }), React.createElement(Knob$WebAudio.make, {
+                    }), React.createElement(Slider$WebAudio.make, {
                       name: "Gain",
                       param: Oscillator$WebAudio.getGain(oscTwo),
                       config: {
                         minValue: Pervasives.epsilon_float,
-                        maxValue: 100.0,
-                        scale: /* Linear */0
+                        maxValue: 100.0
                       }
-                    }))), React.createElement("div", undefined, React.createElement("h1", undefined, "LFO"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
+                    }))), React.createElement("div", undefined, React.createElement("h2", undefined, "LFO"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "Frequency",
                       param: Oscillator$WebAudio.getFrequency(lfo.lfoOscillator),
                       config: {

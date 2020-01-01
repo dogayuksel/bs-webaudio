@@ -84,37 +84,37 @@ Webapi.Dom.document
 ReactDOMRe.renderToElementWithId(
   <>
     <div>
-      <h1> {React.string("Oscillator One")} </h1>
+      <h2> {React.string("Oscillator One")} </h2>
       <div>
         <Knob
           name="Frequency"
           param={oscOne |> Oscillator.getFrequency}
           config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
         />
-        <Knob
+        <Slider
           name="Gain"
           param={oscOne |> Oscillator.getGain}
-          config={minValue: epsilon_float, maxValue: 100.0, scale: Linear}
+          config={minValue: epsilon_float, maxValue: 100.0}
         />
       </div>
     </div>
     <div>
-      <h1> {React.string("Oscillator Two")} </h1>
+      <h2> {React.string("Oscillator Two")} </h2>
       <div>
         <Knob
           name="Frequency"
           param={oscTwo |> Oscillator.getFrequency}
           config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
         />
-        <Knob
+        <Slider
           name="Gain"
           param={oscTwo |> Oscillator.getGain}
-          config={minValue: epsilon_float, maxValue: 100.0, scale: Linear}
+          config={minValue: epsilon_float, maxValue: 100.0}
         />
       </div>
     </div>
     <div>
-      <h1> {React.string("LFO")} </h1>
+      <h2> {React.string("LFO")} </h2>
       <div>
         <Knob
           name="Frequency"
