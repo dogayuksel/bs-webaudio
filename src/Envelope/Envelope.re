@@ -1,5 +1,5 @@
 type envelope = {
-  envelopeGain: GainNode.t,
+  targetParam: AudioParam.t,
   audioContext: AudioContext.t,
 };
 
@@ -13,16 +13,15 @@ let release = 1.0;
 let trigger = (envelope: t): unit => {
   let currentTime = envelope.audioContext |> AudioContext.getOutputTimestamp();
   let attackTime = currentTime.contextTime +. attack;
-  let gainParam = envelope.envelopeGain |> GainNode.gain;
-  gainParam
+  envelope.targetParam
   |> AudioParam.cancelScheduledValues(~startTime=currentTime.contextTime);
-  gainParam
+  envelope.targetParam
   |> AudioParam.setTargetAtTime(
        ~target=10.0,
        ~startTime=currentTime.contextTime +. epsilon_float,
        ~timeConstant=attack /. 3.0,
      );
-  gainParam
+  envelope.targetParam
   |> AudioParam.setTargetAtTime(
        ~target=sustain,
        ~startTime=attackTime,
@@ -32,10 +31,9 @@ let trigger = (envelope: t): unit => {
 
 let endTrigger = (envelope: t): unit => {
   let currentTime = envelope.audioContext |> AudioContext.getOutputTimestamp();
-  let gainParam = envelope.envelopeGain |> GainNode.gain;
-  gainParam
+  envelope.targetParam
   |> AudioParam.cancelScheduledValues(~startTime=currentTime.contextTime);
-  gainParam
+  envelope.targetParam
   |> AudioParam.setTargetAtTime(
        ~target=epsilon_float,
        ~startTime=currentTime.contextTime,
@@ -43,13 +41,7 @@ let endTrigger = (envelope: t): unit => {
      );
 };
 
-let connect = (~target: AudioNode.audioNode_like('a), envelope: t): envelope => {
-  envelope.envelopeGain |> GainNode.connect(target);
-  envelope;
-};
-
-let make = (audioCtx: AudioContext.t): t => {
-  let envelopeGain = AudioContext.createGain(audioCtx);
-  envelopeGain->GainNode.gain->AudioParam.setValue(epsilon_float);
-  {envelopeGain, audioContext: audioCtx};
+let make = (targetParam: AudioParam.t, audioCtx: AudioContext.t): t => {
+  targetParam->AudioParam.setValue(epsilon_float);
+  {targetParam, audioContext: audioCtx};
 };

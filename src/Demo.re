@@ -12,20 +12,17 @@ let lfo =
 /******************/
 /* OSCILLATOR ONE */
 /******************/
-let oscOneEnvelope =
-  audioCtx |> Envelope.make |> Envelope.connect(~target=lfo.lfoGain);
-
 let oscOne =
   audioCtx
   |> Oscillator.make(~oscillatorType=Sine)
-  |> Oscillator.connect(~target=oscOneEnvelope.envelopeGain);
+  |> Oscillator.connect(~target=lfo.outputGain);
+
+let oscOneEnvelope =
+  audioCtx |> Envelope.make(Oscillator.getEnvelopeGain(oscOne));
 
 /******************/
 /* OSCILLATOR TWO */
 /******************/
-let oscTwoEnvelope =
-  audioCtx |> Envelope.make |> Envelope.connect(~target=lfo.lfoGain);
-
 let oscTwoFilter = AudioContext.createBiquadFilter(audioCtx);
 oscTwoFilter->BiquadFilterNode.setType(Lowpass);
 BiquadFilterNode.frequency(oscTwoFilter)->AudioParam.setValue(370.0);
@@ -35,12 +32,15 @@ BiquadFilterNode.frequency(oscTwoFilter)
      ~startTime=2.0,
      ~timeConstant=3.0,
    );
-oscTwoFilter |> BiquadFilterNode.connect(oscTwoEnvelope.envelopeGain);
+oscTwoFilter |> BiquadFilterNode.connect(lfo.outputGain);
 
 let oscTwo =
   audioCtx
   |> Oscillator.make(~oscillatorType=Sawtooth)
   |> Oscillator.connect(~target=oscTwoFilter);
+
+let oscTwoEnvelope =
+  audioCtx |> Envelope.make(Oscillator.getEnvelopeGain(oscTwo));
 
 /**********/
 /* EVENTS */
@@ -100,7 +100,7 @@ ReactDOMRe.renderToElementWithId(
         />
         <Slider
           name="Gain"
-          param={oscOne |> Oscillator.getGain}
+          param={oscOne |> Oscillator.getOscillatorGain}
           config={minValue: epsilon_float, maxValue: 100.0}
         />
       </div>
@@ -115,7 +115,7 @@ ReactDOMRe.renderToElementWithId(
         />
         <Slider
           name="Gain"
-          param={oscTwo |> Oscillator.getGain}
+          param={oscTwo |> Oscillator.getOscillatorGain}
           config={minValue: epsilon_float, maxValue: 100.0}
         />
       </div>
@@ -125,7 +125,7 @@ ReactDOMRe.renderToElementWithId(
       <div>
         <Knob
           name="Frequency"
-          param={lfo.lfoOscillator |> Oscillator.getFrequency}
+          param={lfo.oscillatorNode |> Oscillator.getFrequency}
           config={minValue: 1.0, maxValue: 30.0, scale: Linear}
         />
       </div>

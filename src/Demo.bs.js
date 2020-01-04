@@ -17,11 +17,9 @@ var audioCtx = Curry._1(AudioContext$WebAudio.createAudioContext, /* () */0);
 
 var lfo = LFO$WebAudio.connect(audioCtx.destination, LFO$WebAudio.setFrequency(10.0, LFO$WebAudio.make(audioCtx)));
 
-var oscOneEnvelope = Envelope$WebAudio.connect(lfo.lfoGain, Envelope$WebAudio.make(audioCtx));
+var oscOne = Oscillator$WebAudio.connect(lfo.outputGain, Oscillator$WebAudio.make(/* Sine */0, audioCtx));
 
-var oscOne = Oscillator$WebAudio.connect(oscOneEnvelope.envelopeGain, Oscillator$WebAudio.make(/* Sine */0, audioCtx));
-
-var oscTwoEnvelope = Envelope$WebAudio.connect(lfo.lfoGain, Envelope$WebAudio.make(audioCtx));
+var oscOneEnvelope = Envelope$WebAudio.make(Oscillator$WebAudio.getEnvelopeGain(oscOne), audioCtx);
 
 var oscTwoFilter = audioCtx.createBiquadFilter();
 
@@ -31,9 +29,11 @@ oscTwoFilter.frequency.value = 370.0;
 
 oscTwoFilter.frequency.setTargetAtTime(300.0, 2.0, 3.0);
 
-oscTwoFilter.connect(oscTwoEnvelope.envelopeGain);
+oscTwoFilter.connect(lfo.outputGain);
 
 var oscTwo = Oscillator$WebAudio.connect(oscTwoFilter, Oscillator$WebAudio.make(/* Sawtooth */2, audioCtx));
+
+var oscTwoEnvelope = Envelope$WebAudio.make(Oscillator$WebAudio.getEnvelopeGain(oscTwo), audioCtx);
 
 var state = {
   a: false
@@ -95,7 +95,7 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                       }
                     }), React.createElement(Slider$WebAudio.make, {
                       name: "Gain",
-                      param: Oscillator$WebAudio.getGain(oscOne),
+                      param: Oscillator$WebAudio.getOscillatorGain(oscOne),
                       config: {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 100.0
@@ -110,14 +110,14 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                       }
                     }), React.createElement(Slider$WebAudio.make, {
                       name: "Gain",
-                      param: Oscillator$WebAudio.getGain(oscTwo),
+                      param: Oscillator$WebAudio.getOscillatorGain(oscTwo),
                       config: {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 100.0
                       }
                     }))), React.createElement("div", undefined, React.createElement("h2", undefined, "LFO"), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "Frequency",
-                      param: Oscillator$WebAudio.getFrequency(lfo.lfoOscillator),
+                      param: Oscillator$WebAudio.getFrequency(lfo.oscillatorNode),
                       config: {
                         minValue: 1.0,
                         maxValue: 30.0,
@@ -128,11 +128,11 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
 export {
   audioCtx ,
   lfo ,
-  oscOneEnvelope ,
   oscOne ,
-  oscTwoEnvelope ,
+  oscOneEnvelope ,
   oscTwoFilter ,
   oscTwo ,
+  oscTwoEnvelope ,
   Keyboard ,
   trigger ,
   endTrigger ,

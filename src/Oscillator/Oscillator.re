@@ -1,8 +1,18 @@
+/********************************************************************************
+ *                                                                              *
+ *  +--------------------+    +---------------------+    +-------------------+  *
+ *  |                    |    |                     |    |                   |  *
+ *  |   oscillatorNode   |--->|    envelopeGain     |--->|    outputGain     |  *
+ *  |                    |    |                     |    |                   |  *
+ *  +--------------------+    +---------------------+    +-------------------+  *
+ *                                                                              *
+ ********************************************************************************/
 type oscillator = {
   audioContext: AudioContext.t,
   oscillatorNode: OscillatorNode.t,
   oscillatorType: OscillatorNode.oscillatorNodeType,
-  oscillatorGain: GainNode.t,
+  envelopeGain: GainNode.t,
+  outputGain: GainNode.t,
 };
 
 type t = oscillator;
@@ -29,8 +39,12 @@ let getFrequency = (oscillator: oscillator): AudioParam.t => {
   oscillator.oscillatorNode->OscillatorNode.frequency;
 };
 
-let getGain = (oscillator: oscillator): AudioParam.t => {
-  oscillator.oscillatorGain |> GainNode.gain;
+let getOscillatorGain = (oscillator: oscillator): AudioParam.t => {
+  oscillator.outputGain |> GainNode.gain;
+};
+
+let getEnvelopeGain = (oscillator: oscillator): AudioParam.t => {
+  oscillator.envelopeGain |> GainNode.gain;
 };
 
 let start = (oscillator: t): oscillator => {
@@ -40,7 +54,7 @@ let start = (oscillator: t): oscillator => {
 
 let connect =
     (~target: AudioNode.audioNode_like('a), oscillator: t): oscillator => {
-  oscillator.oscillatorGain |> GainNode.connect(target);
+  oscillator.outputGain |> GainNode.connect(target);
   oscillator;
 };
 
@@ -57,13 +71,16 @@ let make =
     )
     : oscillator => {
   let oscillatorNode = audioCtx->AudioContext.createOscillator;
-  let oscillatorGain = audioCtx->AudioContext.createGain;
-  oscillatorNode |> OscillatorNode.connect(oscillatorGain);
+  let envelopeGain = audioCtx->AudioContext.createGain;
+  oscillatorNode |> OscillatorNode.connect(envelopeGain);
+  let outputGain = audioCtx->AudioContext.createGain;
+  envelopeGain |> GainNode.connect(outputGain);
   let oscillator = {
     audioContext: audioCtx,
     oscillatorNode,
     oscillatorType,
-    oscillatorGain,
+    outputGain,
+    envelopeGain,
   };
   oscillator |> setOscillatorType(~oscillatorType);
   oscillator;

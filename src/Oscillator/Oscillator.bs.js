@@ -26,8 +26,12 @@ function getFrequency(oscillator) {
   return oscillator.oscillatorNode.frequency;
 }
 
-function getGain(oscillator) {
-  return oscillator.oscillatorGain.gain;
+function getOscillatorGain(oscillator) {
+  return oscillator.outputGain.gain;
+}
+
+function getEnvelopeGain(oscillator) {
+  return oscillator.envelopeGain.gain;
 }
 
 function start(oscillator) {
@@ -36,7 +40,7 @@ function start(oscillator) {
 }
 
 function connect(target, oscillator) {
-  oscillator.oscillatorGain.connect(target);
+  oscillator.outputGain.connect(target);
   return oscillator;
 }
 
@@ -47,13 +51,16 @@ function setOscillatorType(oscillatorType, oscillator) {
 function make($staropt$star, audioCtx) {
   var oscillatorType = $staropt$star !== undefined ? $staropt$star : /* Sine */0;
   var oscillatorNode = audioCtx.createOscillator();
-  var oscillatorGain = audioCtx.createGain();
-  oscillatorNode.connect(oscillatorGain);
+  var envelopeGain = audioCtx.createGain();
+  oscillatorNode.connect(envelopeGain);
+  var outputGain = audioCtx.createGain();
+  envelopeGain.connect(outputGain);
   var oscillator = {
     audioContext: audioCtx,
     oscillatorNode: oscillatorNode,
     oscillatorType: oscillatorType,
-    oscillatorGain: oscillatorGain
+    envelopeGain: envelopeGain,
+    outputGain: outputGain
   };
   OscillatorNode$WebAudio.setOscillatorNodeType(oscillatorType, oscillatorNode);
   return oscillator;
@@ -70,7 +77,8 @@ export {
   sampleRandomWave ,
   setFrequency ,
   getFrequency ,
-  getGain ,
+  getOscillatorGain ,
+  getEnvelopeGain ,
   start ,
   connect ,
   setOscillatorType ,
