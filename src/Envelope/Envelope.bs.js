@@ -3,44 +3,77 @@
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 
 function trigger(envelope) {
+  var match = envelope.envelopeParams;
+  var attack = match.attack;
+  var decay = match.decay;
+  var sustain = match.sustain;
   var currentTime = envelope.audioContext.getOutputTimestamp();
-  var attackTime = currentTime.contextTime + 0.2;
+  var attackTime = currentTime.contextTime + attack;
   envelope.targetParam.cancelScheduledValues(currentTime.contextTime);
-  envelope.targetParam.setTargetAtTime(10.0, currentTime.contextTime + Pervasives.epsilon_float, 0.2 / 3.0);
-  envelope.targetParam.setTargetAtTime(1.5, attackTime, 0.3 / 3.0);
+  envelope.targetParam.setTargetAtTime(1.0, currentTime.contextTime + Pervasives.epsilon_float, attack / 3.0);
+  envelope.targetParam.setTargetAtTime(sustain, attackTime, decay / 3.0);
   return /* () */0;
 }
 
 function endTrigger(envelope) {
+  var match = envelope.envelopeParams;
+  var release = match.release;
   var currentTime = envelope.audioContext.getOutputTimestamp();
   envelope.targetParam.cancelScheduledValues(currentTime.contextTime);
-  envelope.targetParam.setTargetAtTime(Pervasives.epsilon_float, currentTime.contextTime, 1.0 / 3.0);
+  envelope.targetParam.setTargetAtTime(Pervasives.epsilon_float, currentTime.contextTime, release / 3.0);
   return /* () */0;
+}
+
+function update(param, envelope) {
+  var envelopeParams = envelope.envelopeParams;
+  switch (param.tag | 0) {
+    case /* Attack */0 :
+        envelopeParams.attack = param[0];
+        return /* () */0;
+    case /* Decay */1 :
+        envelopeParams.decay = param[0];
+        return /* () */0;
+    case /* Sustain */2 :
+        envelopeParams.sustain = param[0];
+        return /* () */0;
+    case /* Release */3 :
+        envelopeParams.release = param[0];
+        return /* () */0;
+    
+  }
 }
 
 function make(targetParam, audioCtx) {
   targetParam.value = Pervasives.epsilon_float;
+  var envelopeParams = {
+    attack: 0.2,
+    decay: 0.3,
+    sustain: 0.1,
+    release: 1.0
+  };
   return {
+          envelopeParams: envelopeParams,
           targetParam: targetParam,
           audioContext: audioCtx
         };
 }
 
-var attack = 0.2;
+var defaultAttack = 0.2;
 
-var decay = 0.3;
+var defaultDecay = 0.3;
 
-var sustain = 1.5;
+var defaultSustain = 0.1;
 
-var release = 1.0;
+var defaultRelease = 1.0;
 
 export {
-  attack ,
-  decay ,
-  sustain ,
-  release ,
+  defaultAttack ,
+  defaultDecay ,
+  defaultSustain ,
+  defaultRelease ,
   trigger ,
   endTrigger ,
+  update ,
   make ,
   
 }
