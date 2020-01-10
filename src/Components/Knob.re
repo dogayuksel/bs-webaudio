@@ -31,7 +31,13 @@ let mapValue = (~from: (float, float), ~target: (float, float), value) => {
 };
 
 [@react.component]
-let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
+let make =
+    (
+      ~name,
+      ~config: knobConfig,
+      ~initialParamValue: float,
+      ~setParamValue: float => unit,
+    ) => {
   let mapParam = mapValue(~from=(config.minValue, config.maxValue));
   let mapToParam = mapValue(~target=(config.minValue, config.maxValue));
   let mapToDegrees = mapValue(~target=(knobMin, knobMax));
@@ -51,7 +57,7 @@ let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
     Js.Float.toString(degrees) ++ "deg";
   };
 
-  let (value, setValue) = React.useState(() => param->AudioParam.getValue);
+  let (value, setValue) = React.useState(() => initialParamValue);
   let lastY = React.useRef(0);
 
   let handleMouseMove = (event: Webapi.Dom.MouseEvent.t): unit => {
@@ -80,7 +86,7 @@ let make = (~name, ~param: AudioParam.t, ~config: knobConfig) => {
           |> mapToParam(~from=(1.0, 10.0))
         };
       let clampedValue = clamp(newValue, config);
-      param->AudioParam.setValue(clampedValue);
+      setParamValue(clampedValue);
       React.Ref.setCurrent(lastY, clientY);
       clampedValue;
     });

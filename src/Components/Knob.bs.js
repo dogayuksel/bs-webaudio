@@ -28,8 +28,9 @@ function mapValue(from, target, value) {
 
 function Knob(Props) {
   var name = Props.name;
-  var param = Props.param;
   var config = Props.config;
+  var initialParamValue = Props.initialParamValue;
+  var setParamValue = Props.setParamValue;
   var partial_arg_000 = config.minValue;
   var partial_arg_001 = config.maxValue;
   var partial_arg = /* tuple */[
@@ -64,7 +65,7 @@ function Knob(Props) {
     return degrees.toString() + "deg";
   };
   var match = React.useState((function () {
-          return param.value;
+          return initialParamValue;
         }));
   var setValue = match[1];
   var value = match[0];
@@ -94,7 +95,7 @@ function Knob(Props) {
                         1.0
                       ], value));
             var clampedValue = clamp(newValue, config);
-            param.value = clampedValue;
+            Curry._1(setParamValue, clampedValue);
             lastY.current = clientY;
             return clampedValue;
           }));

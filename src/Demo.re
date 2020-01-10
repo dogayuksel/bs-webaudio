@@ -95,7 +95,12 @@ ReactDOMRe.renderToElementWithId(
       <div>
         <Knob
           name="Frequency"
-          param={oscOne |> Oscillator.getFrequency}
+          initialParamValue={
+            oscOne |> Oscillator.getFrequency |> AudioParam.getValue
+          }
+          setParamValue={frequency =>
+            oscOne |> Oscillator.setFrequency(~frequency)
+          }
           config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
         />
         <Slider
@@ -110,7 +115,12 @@ ReactDOMRe.renderToElementWithId(
       <div>
         <Knob
           name="Frequency"
-          param={oscTwo |> Oscillator.getFrequency}
+          initialParamValue={
+            oscTwo |> Oscillator.getFrequency |> AudioParam.getValue
+          }
+          setParamValue={frequency =>
+            oscTwo |> Oscillator.setFrequency(~frequency)
+          }
           config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
         />
         <Slider
@@ -125,7 +135,14 @@ ReactDOMRe.renderToElementWithId(
       <div>
         <Knob
           name="Frequency"
-          param={lfo.oscillatorNode |> Oscillator.getFrequency}
+          initialParamValue={
+            lfo.oscillatorNode
+            |> Oscillator.getFrequency
+            |> AudioParam.getValue
+          }
+          setParamValue={frequency =>
+            lfo.oscillatorNode |> Oscillator.setFrequency(~frequency)
+          }
           config={minValue: 1.0, maxValue: 30.0, scale: Linear}
         />
       </div>
