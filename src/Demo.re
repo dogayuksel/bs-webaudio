@@ -113,6 +113,64 @@ ReactDOMRe.renderToElementWithId(
           param={oscOne |> Oscillator.getOscillatorGain}
           config={minValue: epsilon_float, maxValue: 100.0}
         />
+        <div style={ReactDOMRe.Style.make(~display="inline-block", ())}>
+          <div>
+            <Knob
+              name="Attack"
+              initialParamValue={oscOneEnvelope.envelopeParams.attack}
+              setParamValue={value =>
+                oscOneEnvelope |> Envelope.update(~param=Attack(value))
+              }
+              config={
+                minValue: epsilon_float,
+                maxValue: 2.0,
+                scale: Linear,
+                size: 60,
+              }
+            />
+            <Knob
+              name="Decay"
+              initialParamValue={oscOneEnvelope.envelopeParams.decay}
+              setParamValue={value =>
+                oscOneEnvelope |> Envelope.update(~param=Decay(value))
+              }
+              config={
+                minValue: epsilon_float,
+                maxValue: 5.0,
+                scale: Linear,
+                size: 60,
+              }
+            />
+          </div>
+          <div>
+            <Knob
+              name="Sustain"
+              initialParamValue={oscOneEnvelope.envelopeParams.sustain}
+              setParamValue={value =>
+                oscOneEnvelope |> Envelope.update(~param=Sustain(value))
+              }
+              config={
+                minValue: epsilon_float,
+                maxValue: 1.0,
+                scale: Linear,
+                size: 60,
+              }
+            />
+            <Knob
+              name="Release"
+              initialParamValue={oscOneEnvelope.envelopeParams.release}
+              setParamValue={value =>
+                oscOneEnvelope |> Envelope.update(~param=Release(value))
+              }
+              config={
+                minValue: epsilon_float,
+                maxValue: 5.0,
+                scale: Linear,
+                size: 60,
+              }
+            />
+          </div>
+        </div>
       </div>
     </div>
     <div>
