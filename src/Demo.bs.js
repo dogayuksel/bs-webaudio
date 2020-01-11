@@ -90,7 +90,8 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                       config: {
                         minValue: 1.0,
                         maxValue: 18000.0,
-                        scale: /* Logarithmic */1
+                        scale: /* Logarithmic */1,
+                        size: 120
                       },
                       initialParamValue: Oscillator$WebAudio.getFrequency(oscOne).value,
                       setParamValue: (function (frequency) {
@@ -108,7 +109,8 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                       config: {
                         minValue: 1.0,
                         maxValue: 18000.0,
-                        scale: /* Logarithmic */1
+                        scale: /* Logarithmic */1,
+                        size: 120
                       },
                       initialParamValue: Oscillator$WebAudio.getFrequency(oscTwo).value,
                       setParamValue: (function (frequency) {
@@ -126,7 +128,8 @@ ReactDOMRe.renderToElementWithId(React.createElement(React.Fragment, undefined, 
                       config: {
                         minValue: 1.0,
                         maxValue: 30.0,
-                        scale: /* Linear */0
+                        scale: /* Linear */0,
+                        size: 80
                       },
                       initialParamValue: Oscillator$WebAudio.getFrequency(lfo.oscillatorNode).value,
                       setParamValue: (function (frequency) {

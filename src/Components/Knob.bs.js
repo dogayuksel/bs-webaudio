@@ -7,8 +7,6 @@ function sizeInPixels(x) {
   return String(x) + "px";
 }
 
-var knobDomainInPixels = 480;
-
 function clamp(value, config) {
   var match = value < config.minValue;
   var value$1 = match ? config.minValue : value;
@@ -31,6 +29,9 @@ function Knob(Props) {
   var config = Props.config;
   var initialParamValue = Props.initialParamValue;
   var setParamValue = Props.setParamValue;
+  var knobDomainInPixels = React.useMemo((function () {
+          return (config.size << 2);
+        }), /* array */[config.size]);
   var partial_arg_000 = config.minValue;
   var partial_arg_001 = config.maxValue;
   var partial_arg = /* tuple */[
@@ -129,10 +130,10 @@ function Knob(Props) {
                   style: {
                     backgroundColor: "#839264",
                     display: "flex",
-                    height: String(120) + "px",
+                    height: String(config.size) + "px",
                     margin: "0 20px",
-                    width: String(120) + "px",
-                    borderRadius: String(120) + "px",
+                    width: String(config.size) + "px",
+                    borderRadius: String(config.size) + "px",
                     justifyContent: "center",
                     transform: "rotate(" + (mapValueToDegrees(value) + ")")
                   },
@@ -152,8 +153,6 @@ function Knob(Props) {
                 }, String(value | 0)));
 }
 
-var size = 120;
-
 var knobSensitivityFactor = 4;
 
 var knobMin = 30.0;
@@ -163,10 +162,8 @@ var knobMax = 330.0;
 var make = Knob;
 
 export {
-  size ,
-  sizeInPixels ,
   knobSensitivityFactor ,
-  knobDomainInPixels ,
+  sizeInPixels ,
   knobMin ,
   knobMax ,
   clamp ,

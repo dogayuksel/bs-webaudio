@@ -101,7 +101,12 @@ ReactDOMRe.renderToElementWithId(
           setParamValue={frequency =>
             oscOne |> Oscillator.setFrequency(~frequency)
           }
-          config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
+          config={
+            minValue: 1.0,
+            maxValue: 18000.0,
+            scale: Logarithmic,
+            size: 120,
+          }
         />
         <Slider
           name="Gain"
@@ -121,7 +126,12 @@ ReactDOMRe.renderToElementWithId(
           setParamValue={frequency =>
             oscTwo |> Oscillator.setFrequency(~frequency)
           }
-          config={minValue: 1.0, maxValue: 18000.0, scale: Logarithmic}
+          config={
+            minValue: 1.0,
+            maxValue: 18000.0,
+            scale: Logarithmic,
+            size: 120,
+          }
         />
         <Slider
           name="Gain"
@@ -143,7 +153,7 @@ ReactDOMRe.renderToElementWithId(
           setParamValue={frequency =>
             lfo.oscillatorNode |> Oscillator.setFrequency(~frequency)
           }
-          config={minValue: 1.0, maxValue: 30.0, scale: Linear}
+          config={minValue: 1.0, maxValue: 30.0, scale: Linear, size: 80}
         />
       </div>
     </div>

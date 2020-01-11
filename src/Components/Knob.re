@@ -1,8 +1,5 @@
-let size = 120;
-let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
-
 let knobSensitivityFactor = 4;
-let knobDomainInPixels = float_of_int(size * knobSensitivityFactor);
+let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 
 // Range of degrees displayed
 let knobMin = 30.0;
@@ -16,6 +13,7 @@ type knobConfig = {
   minValue: float,
   maxValue: float,
   scale: knobScale,
+  size: int,
 };
 
 let clamp = (value: float, config: knobConfig) => {
@@ -38,6 +36,11 @@ let make =
       ~initialParamValue: float,
       ~setParamValue: float => unit,
     ) => {
+  let knobDomainInPixels =
+    React.useMemo1(
+      () => float_of_int(config.size * knobSensitivityFactor),
+      [|config.size|],
+    );
   let mapParam = mapValue(~from=(config.minValue, config.maxValue));
   let mapToParam = mapValue(~target=(config.minValue, config.maxValue));
   let mapToDegrees = mapValue(~target=(knobMin, knobMax));
@@ -129,10 +132,10 @@ let make =
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
         ~backgroundColor="#839264",
-        ~width=sizeInPixels(size),
-        ~height=sizeInPixels(size),
+        ~width=sizeInPixels(config.size),
+        ~height=sizeInPixels(config.size),
         ~margin="0 20px",
-        ~borderRadius=sizeInPixels(size),
+        ~borderRadius=sizeInPixels(config.size),
         ~display="flex",
         ~justifyContent="center",
         ~transform="rotate(" ++ mapValueToDegrees(value) ++ ")",
