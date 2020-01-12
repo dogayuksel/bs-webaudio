@@ -6,6 +6,17 @@ let make =
   let (oscillator, setOscillator) = React.useState(() => None);
   let (envelope, setEnvelope) = React.useState(() => None);
 
+  React.useEffect0(() => {
+    Some(
+      () => {
+        oscillator->Belt.Option.map(Oscillator.cleanUp)->ignore;
+        envelope
+        ->Belt.Option.map(appContext.removeFromTriggerTargets)
+        ->ignore;
+      },
+    )
+  });
+
   let toggleOscillator = _: unit =>
     if (oscillatorOn == false) {
       switch (appContext.audioContext) {
@@ -30,10 +41,7 @@ let make =
       | None => Js.log("Missing Audio Context")
       };
     } else {
-      oscillator
-      ->Belt.Option.map(Oscillator.stop)
-      ->Belt.Option.map(Oscillator.disconnect)
-      ->ignore;
+      oscillator->Belt.Option.map(Oscillator.cleanUp)->ignore;
       setOscillator(_ => None);
       envelope->Belt.Option.map(appContext.removeFromTriggerTargets)->ignore;
       setEnvelope(_ => None);

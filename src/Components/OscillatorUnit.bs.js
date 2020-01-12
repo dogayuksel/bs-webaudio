@@ -33,6 +33,13 @@ function OscillatorUnit(Props) {
         }));
   var setEnvelope = match$2[1];
   var envelope = match$2[0];
+  React.useEffect((function () {
+          return (function (param) {
+                    Belt_Option.map(oscillator, Oscillator$WebAudio.cleanUp);
+                    Belt_Option.map(envelope, appContext.removeFromTriggerTargets);
+                    return /* () */0;
+                  });
+        }), ([]));
   var toggleOscillator = function (param) {
     if (oscillatorOn === false) {
       var match = appContext.audioContext;
@@ -57,7 +64,7 @@ function OscillatorUnit(Props) {
         return /* () */0;
       }
     } else {
-      Belt_Option.map(Belt_Option.map(oscillator, Oscillator$WebAudio.stop), Oscillator$WebAudio.disconnect);
+      Belt_Option.map(oscillator, Oscillator$WebAudio.cleanUp);
       Curry._1(setOscillator, (function (param) {
               return ;
             }));

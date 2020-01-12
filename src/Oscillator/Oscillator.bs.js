@@ -54,6 +54,15 @@ function disconnect(oscillator) {
   return /* () */0;
 }
 
+function cleanUp(oscillator) {
+  oscillator.outputGain.disconnect();
+  oscillator.envelopeGain.disconnect();
+  oscillator.oscillatorNode.disconnect();
+  OscillatorNode$WebAudio.setOscillatorNodeType(/* Sine */0, oscillator.oscillatorNode);
+  oscillator.oscillatorNode.stop();
+  return /* () */0;
+}
+
 function setOscillatorType(oscillatorType, oscillator) {
   return OscillatorNode$WebAudio.setOscillatorNodeType(oscillatorType, oscillator.oscillatorNode);
 }
@@ -93,6 +102,7 @@ export {
   stop ,
   connect ,
   disconnect ,
+  cleanUp ,
   setOscillatorType ,
   make ,
   makeFromRandom ,

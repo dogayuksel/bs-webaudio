@@ -67,6 +67,14 @@ let disconnect = (oscillator: t): unit => {
   oscillator.outputGain |> GainNode.disconnect();
 };
 
+let cleanUp = (oscillator: t): unit => {
+  oscillator.outputGain |> GainNode.disconnect();
+  oscillator.envelopeGain |> GainNode.disconnect();
+  oscillator.oscillatorNode |> OscillatorNode.disconnect();
+  oscillator.oscillatorNode |> OscillatorNode.setOscillatorNodeType(Sine);
+  oscillator.oscillatorNode |> OscillatorNode.stop();
+};
+
 let setOscillatorType =
     (~oscillatorType: OscillatorNode.oscillatorNodeType, oscillator: t): unit => {
   oscillator.oscillatorNode
