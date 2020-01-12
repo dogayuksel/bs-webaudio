@@ -48,6 +48,11 @@ let make =
     {switch (oscillator, envelope) {
      | (Some(osc), Some(env)) =>
        <>
+         <WaveSampler
+           setWaveCallback={wave =>
+             Oscillator.setOscillatorType(~oscillatorType=Custom(wave), osc)
+           }
+         />
          <Knob
            name="Frequency"
            initialParamValue={

@@ -10,6 +10,7 @@ import * as Slider$WebAudio from "./Slider.bs.js";
 import * as Switch$WebAudio from "./Switch.bs.js";
 import * as Envelope$WebAudio from "../Envelope/Envelope.bs.js";
 import * as Oscillator$WebAudio from "../Oscillator/Oscillator.bs.js";
+import * as WaveSampler$WebAudio from "./WaveSampler.bs.js";
 import * as EnvelopeUnit$WebAudio from "./EnvelopeUnit.bs.js";
 import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 
@@ -72,7 +73,11 @@ function OscillatorUnit(Props) {
   var tmp;
   if (oscillator !== undefined && envelope !== undefined) {
     var osc = oscillator;
-    tmp = React.createElement(React.Fragment, undefined, React.createElement(Knob$WebAudio.make, {
+    tmp = React.createElement(React.Fragment, undefined, React.createElement(WaveSampler$WebAudio.make, {
+              setWaveCallback: (function (wave) {
+                  return Oscillator$WebAudio.setOscillatorType(/* Custom */[wave], osc);
+                })
+            }), React.createElement(Knob$WebAudio.make, {
               name: "Frequency",
               config: {
                 minValue: 1.0,
