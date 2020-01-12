@@ -58,6 +58,10 @@ let connect =
   oscillator;
 };
 
+let disconnect = (oscillator: t): unit => {
+  oscillator.outputGain |> GainNode.disconnect();
+};
+
 let setOscillatorType =
     (~oscillatorType: OscillatorNode.oscillatorNodeType, oscillator: t): unit => {
   oscillator.oscillatorNode

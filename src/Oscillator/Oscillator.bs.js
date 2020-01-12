@@ -44,6 +44,11 @@ function connect(target, oscillator) {
   return oscillator;
 }
 
+function disconnect(oscillator) {
+  oscillator.outputGain.disconnect();
+  return /* () */0;
+}
+
 function setOscillatorType(oscillatorType, oscillator) {
   return OscillatorNode$WebAudio.setOscillatorNodeType(oscillatorType, oscillator.oscillatorNode);
 }
@@ -81,6 +86,7 @@ export {
   getEnvelopeGain ,
   start ,
   connect ,
+  disconnect ,
   setOscillatorType ,
   make ,
   makeFromRandom ,
