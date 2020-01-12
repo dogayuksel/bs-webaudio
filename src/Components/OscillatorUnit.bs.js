@@ -18,40 +18,60 @@ function OscillatorUnit(Props) {
   var targetOutput = Props.targetOutput;
   var appContext = React.useContext(AppContextProvider$WebAudio.appContext);
   var match = React.useState((function () {
-          return ;
+          return false;
         }));
-  var setOscillator = match[1];
-  var oscillator = match[0];
+  var setOscillatorOn = match[1];
+  var oscillatorOn = match[0];
   var match$1 = React.useState((function () {
           return ;
         }));
-  var setEnvelope = match$1[1];
-  var envelope = match$1[0];
-  React.useEffect((function () {
-          var match = appContext.audioContext;
-          if (match !== undefined) {
-            var audioCtx = Caml_option.valFromOption(match);
-            var target = targetOutput !== undefined ? Caml_option.valFromOption(targetOutput) : audioCtx.destination;
-            var osc = Oscillator$WebAudio.connect(target, Oscillator$WebAudio.make(/* Sine */0, audioCtx));
-            Curry._1(setOscillator, (function (param) {
-                    return osc;
+  var setOscillator = match$1[1];
+  var oscillator = match$1[0];
+  var match$2 = React.useState((function () {
+          return ;
+        }));
+  var setEnvelope = match$2[1];
+  var envelope = match$2[0];
+  var toggleOscillator = function (param) {
+    if (oscillatorOn === false) {
+      var match = appContext.audioContext;
+      if (match !== undefined) {
+        var audioContext = Caml_option.valFromOption(match);
+        var target = targetOutput !== undefined ? Caml_option.valFromOption(targetOutput) : audioContext.destination;
+        var osc = Oscillator$WebAudio.start(Oscillator$WebAudio.connect(target, Oscillator$WebAudio.make(/* Sine */0, audioContext)));
+        Curry._1(setOscillator, (function (param) {
+                return osc;
+              }));
+        var env = Envelope$WebAudio.make(Oscillator$WebAudio.getEnvelopeGain(osc), audioContext);
+        Curry._1(appContext.addToTriggerTargets, env);
+        Curry._1(setEnvelope, (function (param) {
+                return env;
+              }));
+        Curry._1(setOscillatorOn, (function (param) {
+                return true;
+              }));
+        return /* () */0;
+      } else {
+        console.log("Missing Audio Context");
+        return /* () */0;
+      }
+    } else {
+      Belt_Option.map(Belt_Option.map(oscillator, Oscillator$WebAudio.stop), Oscillator$WebAudio.disconnect);
+      Curry._1(setOscillator, (function (param) {
+              return ;
+            }));
+      Belt_Option.map(envelope, appContext.removeFromTriggerTargets);
+      Curry._1(setEnvelope, (function (param) {
+              return ;
+            }));
+      return Curry._1(setOscillatorOn, (function (param) {
+                    return false;
                   }));
-            var envelope$1 = Envelope$WebAudio.make(Oscillator$WebAudio.getEnvelopeGain(osc), audioCtx);
-            Curry._1(setEnvelope, (function (param) {
-                    return envelope$1;
-                  }));
-          } else {
-            console.log("Missing Audio Context");
-          }
-          return (function (param) {
-                    Belt_Option.map(oscillator, Oscillator$WebAudio.disconnect);
-                    Belt_Option.map(envelope, appContext.removeFromTriggerTargets);
-                    return /* () */0;
-                  });
-        }), ([]));
+    }
+  };
   var tmp;
   if (oscillator !== undefined && envelope !== undefined) {
-    var o = oscillator;
+    var osc = oscillator;
     tmp = React.createElement(React.Fragment, undefined, React.createElement(Knob$WebAudio.make, {
               name: "Frequency",
               config: {
@@ -60,13 +80,13 @@ function OscillatorUnit(Props) {
                 scale: /* Logarithmic */1,
                 size: 120
               },
-              initialParamValue: Oscillator$WebAudio.getFrequency(o).value,
+              initialParamValue: Oscillator$WebAudio.getFrequency(osc).value,
               setParamValue: (function (frequency) {
-                  return Oscillator$WebAudio.setFrequency(frequency, o);
+                  return Oscillator$WebAudio.setFrequency(frequency, osc);
                 })
             }), React.createElement(Slider$WebAudio.make, {
               name: "Gain",
-              param: Oscillator$WebAudio.getOscillatorGain(o),
+              param: Oscillator$WebAudio.getOscillatorGain(osc),
               config: {
                 minValue: Pervasives.epsilon_float,
                 maxValue: 100.0
@@ -77,16 +97,12 @@ function OscillatorUnit(Props) {
   } else {
     tmp = null;
   }
-  return React.createElement("div", undefined, React.createElement("h2", undefined, name), React.createElement(Switch$WebAudio.make, {
-                  toggle: (function (param) {
-                      var envelope$1 = envelope;
-                      Belt_Option.map(oscillator, Oscillator$WebAudio.start);
-                      Belt_Option.map(envelope$1, appContext.addToTriggerTargets);
-                      return /* () */0;
-                    }),
-                  initialState: false,
-                  children: "Start"
-                }), tmp);
+  return React.createElement("div", undefined, React.createElement("h2", undefined, name), React.createElement("div", {
+                  onClick: toggleOscillator
+                }, React.createElement(Switch$WebAudio.make, {
+                      isOn: oscillatorOn,
+                      children: "Start"
+                    })), tmp);
 }
 
 var make = OscillatorUnit;

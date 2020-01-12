@@ -3,13 +3,7 @@ let height = 20;
 let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 
 [@react.component]
-let make = (~toggle, ~initialState: bool, ~children) => {
-  let (isOn, setIsOn) = React.useState(() => initialState);
-  let handleClick = _: unit => {
-    toggle();
-    setIsOn(state => !state);
-  };
-
+let make = (~isOn: bool, ~children) => {
   <div
     style={ReactDOMRe.Style.make(
       ~display="inline-block",
@@ -18,7 +12,6 @@ let make = (~toggle, ~initialState: bool, ~children) => {
     )}>
     <h3 style={ReactDOMRe.Style.make(~textAlign="center", ())}> children </h3>
     <div
-      onClick={_ => handleClick()}
       style={ReactDOMRe.Style.make(
         ~backgroundColor="#839264",
         ~width=sizeInPixels(width),

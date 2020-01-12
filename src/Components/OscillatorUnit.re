@@ -2,57 +2,59 @@
 let make =
     (~name: string, ~targetOutput: option(AudioNode.audioNode_like('a))) => {
   let appContext = React.useContext(AppContextProvider.appContext);
+  let (oscillatorOn, setOscillatorOn) = React.useState(() => false);
   let (oscillator, setOscillator) = React.useState(() => None);
   let (envelope, setEnvelope) = React.useState(() => None);
 
-  React.useEffect0(() => {
-    switch (appContext.audioContext) {
-    | Some(audioCtx) =>
-      let target =
-        switch (targetOutput) {
-        | Some(target) => target
-        | None => audioCtx |> AudioContext.getDestination
-        };
-      let osc =
-        audioCtx
-        |> Oscillator.make(~oscillatorType=Sine)
-        |> Oscillator.connect(~target);
-      setOscillator(_ => Some(osc));
-      let envelope =
-        audioCtx |> Envelope.make(Oscillator.getEnvelopeGain(osc));
-      setEnvelope(_ => Some(envelope));
-      ();
-    | None => Js.log("Missing Audio Context")
+  let toggleOscillator = _: unit =>
+    if (oscillatorOn == false) {
+      switch (appContext.audioContext) {
+      | Some(audioContext) =>
+        let target =
+          switch (targetOutput) {
+          | Some(target) => target
+          | None => audioContext |> AudioContext.getDestination
+          };
+        let osc =
+          audioContext
+          |> Oscillator.make(~oscillatorType=Sine)
+          |> Oscillator.connect(~target)
+          |> Oscillator.start;
+        setOscillator(_ => Some(osc));
+        let env =
+          audioContext |> Envelope.make(Oscillator.getEnvelopeGain(osc));
+        env |> appContext.addToTriggerTargets;
+        setEnvelope(_ => Some(env));
+        setOscillatorOn(_ => true);
+        ();
+      | None => Js.log("Missing Audio Context")
+      };
+    } else {
+      oscillator
+      ->Belt.Option.map(Oscillator.stop)
+      ->Belt.Option.map(Oscillator.disconnect)
+      ->ignore;
+      setOscillator(_ => None);
+      envelope->Belt.Option.map(appContext.removeFromTriggerTargets)->ignore;
+      setEnvelope(_ => None);
+      setOscillatorOn(_ => false);
     };
-    Some(
-      () => {
-        oscillator->Belt.Option.map(Oscillator.disconnect) |> ignore;
-        envelope->Belt.Option.map(appContext.removeFromTriggerTargets)
-        |> ignore;
-      },
-    );
-  });
-
-  let startOscillator = (envelope: option(Envelope.t), ()): unit => {
-    oscillator->Belt.Option.map(Oscillator.start) |> ignore;
-    envelope->Belt.Option.map(appContext.addToTriggerTargets) |> ignore;
-  };
 
   <div>
     <h2> {React.string(name)} </h2>
-    <Switch toggle={startOscillator(envelope)} initialState=false>
-      {React.string("Start")}
-    </Switch>
+    <div onClick=toggleOscillator>
+      <Switch isOn=oscillatorOn> {React.string("Start")} </Switch>
+    </div>
     {switch (oscillator, envelope) {
-     | (Some(o), Some(e)) =>
+     | (Some(osc), Some(env)) =>
        <>
          <Knob
            name="Frequency"
            initialParamValue={
-             o |> Oscillator.getFrequency |> AudioParam.getValue
+             osc |> Oscillator.getFrequency |> AudioParam.getValue
            }
            setParamValue={frequency =>
-             o |> Oscillator.setFrequency(~frequency)
+             osc |> Oscillator.setFrequency(~frequency)
            }
            config={
              minValue: 1.0,
@@ -63,10 +65,10 @@ let make =
          />
          <Slider
            name="Gain"
-           param={o |> Oscillator.getOscillatorGain}
+           param={osc |> Oscillator.getOscillatorGain}
            config={minValue: epsilon_float, maxValue: 100.0}
          />
-         <EnvelopeUnit envelope=e />
+         <EnvelopeUnit envelope=env />
        </>
      | _ => ReasonReact.null
      }}

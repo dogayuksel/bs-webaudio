@@ -4,6 +4,7 @@ import * as List from "bs-platform/lib/es6/list.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Caml_obj from "bs-platform/lib/es6/caml_obj.js";
+import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Switch$WebAudio from "./Components/Switch.bs.js";
 import * as Keyboard$WebAudio from "./Components/Keyboard.bs.js";
@@ -13,14 +14,19 @@ import * as AppContextProvider$WebAudio from "./Components/AppContextProvider.bs
 
 function App(Props) {
   var match = React.useState((function () {
+          return false;
+        }));
+  var setAudioContextOn = match[1];
+  var audioContextOn = match[0];
+  var match$1 = React.useState((function () {
           return /* [] */0;
         }));
-  var setTriggerTargets = match[1];
-  var match$1 = React.useState((function () {
+  var setTriggerTargets = match$1[1];
+  var match$2 = React.useState((function () {
           return ;
         }));
-  var setAudioContext = match$1[1];
-  var audioContext = match$1[0];
+  var setAudioContext = match$2[1];
+  var audioContext = match$2[0];
   var addToTriggerTargets = function (envelope) {
     return Curry._1(setTriggerTargets, (function (targets) {
                   return /* :: */[
@@ -36,14 +42,39 @@ function App(Props) {
                                 }))(targets);
                 }));
   };
-  var createAudioContext = function (param) {
-    return Curry._1(setAudioContext, (function (param) {
-                  return Caml_option.some(Curry._1(AudioContext$WebAudio.createAudioContext, /* () */0));
-                }));
+  var toggleAudioContextOn = function (param) {
+    if (audioContextOn === false) {
+      if (audioContext !== undefined) {
+        Caml_option.valFromOption(audioContext).resume().then((function (param) {
+                return Promise.resolve(Curry._1(setAudioContextOn, (function (param) {
+                                  return true;
+                                })));
+              }));
+        return /* () */0;
+      } else {
+        Curry._1(setAudioContext, (function (param) {
+                return Caml_option.some(Curry._1(AudioContext$WebAudio.createAudioContext, /* () */0));
+              }));
+        return Curry._1(setAudioContextOn, (function (param) {
+                      return true;
+                    }));
+      }
+    } else {
+      Belt_Option.map(Belt_Option.map(audioContext, (function (prim) {
+                  return prim.suspend();
+                })), (function (param) {
+              return param.then((function (param) {
+                            return Promise.resolve(Curry._1(setAudioContextOn, (function (param) {
+                                              return false;
+                                            })));
+                          }));
+            }));
+      return /* () */0;
+    }
   };
   return React.createElement(AppContextProvider$WebAudio.make, AppContextProvider$WebAudio.makeProps({
                   audioContext: audioContext,
-                  triggerTargets: match[0],
+                  triggerTargets: match$1[0],
                   addToTriggerTargets: addToTriggerTargets,
                   removeFromTriggerTargets: removeFromTriggerTargets
                 }, null, /* () */0), React.createElement("div", {
@@ -51,10 +82,10 @@ function App(Props) {
                     position: "absolute",
                     right: "0",
                     top: "0"
-                  }
+                  },
+                  onClick: toggleAudioContextOn
                 }, React.createElement(Switch$WebAudio.make, {
-                      toggle: createAudioContext,
-                      initialState: false,
+                      isOn: audioContextOn,
                       children: "Power"
                     })), audioContext !== undefined ? React.createElement(React.Fragment, undefined, React.createElement(OscillatorUnit$WebAudio.make, {
                         name: "Oscillator One",

@@ -52,6 +52,11 @@ let start = (oscillator: t): oscillator => {
   oscillator;
 };
 
+let stop = (oscillator: t): oscillator => {
+  oscillator.oscillatorNode |> OscillatorNode.stop();
+  oscillator;
+};
+
 let connect =
     (~target: AudioNode.audioNode_like('a), oscillator: t): oscillator => {
   oscillator.outputGain |> GainNode.connect(target);

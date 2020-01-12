@@ -39,6 +39,11 @@ function start(oscillator) {
   return oscillator;
 }
 
+function stop(oscillator) {
+  oscillator.oscillatorNode.stop();
+  return oscillator;
+}
+
 function connect(target, oscillator) {
   oscillator.outputGain.connect(target);
   return oscillator;
@@ -85,6 +90,7 @@ export {
   getOscillatorGain ,
   getEnvelopeGain ,
   start ,
+  stop ,
   connect ,
   disconnect ,
   setOscillatorType ,

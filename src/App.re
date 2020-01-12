@@ -1,5 +1,6 @@
 [@react.component]
 let make = () => {
+  let (audioContextOn, setAudioContextOn) = React.useState(() => false);
   let (triggerTargets, setTriggerTargets) = React.useState(() => []);
   let (audioContext, setAudioContext) = React.useState(() => None);
 
@@ -10,9 +11,30 @@ let make = () => {
     setTriggerTargets(targets => targets |> List.filter(e => e != envelope));
   };
 
-  let createAudioContext = (): unit => {
-    setAudioContext(_ => Some(AudioContext.createAudioContext()));
-  };
+  let toggleAudioContextOn = _ =>
+    if (audioContextOn == false) {
+      switch (audioContext) {
+      | Some(audioCtx) =>
+        audioCtx
+        |> AudioContext.resume
+        |> Js.Promise.then_(_ => {
+             Js.Promise.resolve(setAudioContextOn(_ => true))
+           })
+        |> ignore
+      | None =>
+        setAudioContext(_ => Some(AudioContext.createAudioContext()));
+        setAudioContextOn(_ => true);
+      };
+    } else {
+      audioContext
+      ->Belt.Option.map(AudioContext.suspend)
+      ->Belt.Option.map(
+          Js.Promise.then_(_ => {
+            Js.Promise.resolve(setAudioContextOn(_ => false))
+          }),
+        )
+      |> ignore;
+    };
 
   <AppContextProvider
     value=AppContextProvider.{
@@ -22,15 +44,14 @@ let make = () => {
       removeFromTriggerTargets,
     }>
     <div
+      onClick=toggleAudioContextOn
       style={ReactDOMRe.Style.make(
         ~position="absolute",
         ~top="0",
         ~right="0",
         (),
       )}>
-      <Switch toggle=createAudioContext initialState=false>
-        {React.string("Power")}
-      </Switch>
+      <Switch isOn=audioContextOn> {React.string("Power")} </Switch>
     </div>
     {switch (audioContext) {
      | Some(_) =>
