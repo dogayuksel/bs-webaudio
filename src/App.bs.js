@@ -9,7 +9,7 @@ import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Switch$WebAudio from "./Components/Switch.bs.js";
 import * as Keyboard$WebAudio from "./Components/Keyboard.bs.js";
 import * as AudioContext$WebAudio from "./WebAudio/AudioContext.bs.js";
-import * as OscillatorUnit$WebAudio from "./Components/OscillatorUnit.bs.js";
+import * as OscillatorRack$WebAudio from "./Components/OscillatorRack.bs.js";
 import * as AppContextProvider$WebAudio from "./Components/AppContextProvider.bs.js";
 
 function App(Props) {
@@ -87,13 +87,7 @@ function App(Props) {
                 }, React.createElement(Switch$WebAudio.make, {
                       isOn: audioContextOn,
                       children: "Power"
-                    })), audioContext !== undefined ? React.createElement(React.Fragment, undefined, React.createElement(OscillatorUnit$WebAudio.make, {
-                        name: "Oscillator One",
-                        targetOutput: undefined
-                      }), React.createElement(OscillatorUnit$WebAudio.make, {
-                        name: "Oscillator Two",
-                        targetOutput: undefined
-                      })) : null, React.createElement(Keyboard$WebAudio.make, { }));
+                    })), audioContext !== undefined ? React.createElement(OscillatorRack$WebAudio.make, { }) : null, React.createElement(Keyboard$WebAudio.make, { }));
 }
 
 var make = App;
