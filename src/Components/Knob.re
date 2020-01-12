@@ -45,6 +45,21 @@ let make =
   let mapToParam = mapValue(~target=(config.minValue, config.maxValue));
   let mapToDegrees = mapValue(~target=(knobMin, knobMax));
 
+  let indicatorPrecission =
+    React.useMemo2(
+      (): int => {
+        let logRange = log10(config.maxValue -. config.minValue);
+        if (logRange > 3.0) {
+          0;
+        } else if (logRange > 1.0) {
+          1;
+        } else {
+          2;
+        };
+      },
+      (config.minValue, config.maxValue),
+    );
+
   let mapValueToDegrees = (value: float): string => {
     let degrees =
       switch (config.scale) {
@@ -153,7 +168,9 @@ let make =
       />
     </div>
     <h3 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
-      {React.string(string_of_int(int_of_float(value)))}
+      {React.string(
+         Js.Float.toFixedWithPrecision(value, ~digits=indicatorPrecission),
+       )}
     </h3>
   </div>;
 };

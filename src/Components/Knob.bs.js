@@ -51,6 +51,19 @@ function Knob(Props) {
     30.0,
     330.0
   ];
+  var indicatorPrecission = React.useMemo((function () {
+          var logRange = Math.log10(config.maxValue - config.minValue);
+          if (logRange > 3.0) {
+            return 0;
+          } else if (logRange > 1.0) {
+            return 1;
+          } else {
+            return 2;
+          }
+        }), /* tuple */[
+        config.minValue,
+        config.maxValue
+      ]);
   var mapValueToDegrees = function (value) {
     var match = config.scale;
     var degrees = match ? mapValue(/* tuple */[
@@ -150,7 +163,7 @@ function Knob(Props) {
                   style: {
                     textAlign: "center"
                   }
-                }, String(value | 0)));
+                }, value.toFixed(indicatorPrecission)));
 }
 
 var knobSensitivityFactor = 4;
