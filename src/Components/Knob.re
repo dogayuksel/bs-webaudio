@@ -51,7 +51,7 @@ let make =
         let logRange = log10(config.maxValue -. config.minValue);
         if (logRange > 3.0) {
           0;
-        } else if (logRange > 1.0) {
+        } else if (logRange > 0.8) {
           1;
         } else {
           2;

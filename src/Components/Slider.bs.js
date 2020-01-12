@@ -43,6 +43,19 @@ function Slider(Props) {
     arg_000,
     arg_001
   ];
+  var indicatorPrecission = React.useMemo((function () {
+          var logRange = Math.log10(config.maxValue - config.minValue);
+          if (logRange > 3.0) {
+            return 0;
+          } else if (logRange > 0.8) {
+            return 1;
+          } else {
+            return 2;
+          }
+        }), /* tuple */[
+        config.minValue,
+        config.maxValue
+      ]);
   var mapValueToHeight = function (value) {
     var height = Curry._2(mapParam, /* tuple */[
           110,
@@ -123,7 +136,7 @@ function Slider(Props) {
                   style: {
                     textAlign: "center"
                   }
-                }, String(value | 0)));
+                }, value.toFixed(indicatorPrecission)));
 }
 
 var height = 120;

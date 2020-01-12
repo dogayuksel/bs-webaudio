@@ -25,6 +25,21 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
   let mapParam = mapValue(~from=(config.minValue, config.maxValue));
   let mapToParam = mapValue(~target=(config.minValue, config.maxValue));
 
+  let indicatorPrecission =
+    React.useMemo2(
+      (): int => {
+        let logRange = log10(config.maxValue -. config.minValue);
+        if (logRange > 3.0) {
+          0;
+        } else if (logRange > 0.8) {
+          1;
+        } else {
+          2;
+        };
+      },
+      (config.minValue, config.maxValue),
+    );
+
   let mapValueToHeight = (value: float): string => {
     let height =
       value |> mapParam(~target=(float_of_int(height - buttonHeight), 0.0));
@@ -107,7 +122,9 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
       />
     </div>
     <h3 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
-      {React.string(string_of_int(int_of_float(value)))}
+      {React.string(
+         Js.Float.toFixedWithPrecision(~digits=indicatorPrecission, value),
+       )}
     </h3>
   </div>;
 };

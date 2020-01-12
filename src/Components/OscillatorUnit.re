@@ -71,7 +71,7 @@ let make =
          <Slider
            name="Gain"
            param={osc |> Oscillator.getOscillatorGain}
-           config={minValue: epsilon_float, maxValue: 100.0}
+           config={minValue: epsilon_float, maxValue: 10.0}
          />
          <EnvelopeUnit envelope=env />
        </>

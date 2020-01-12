@@ -94,7 +94,7 @@ function OscillatorUnit(Props) {
               param: Oscillator$WebAudio.getOscillatorGain(osc),
               config: {
                 minValue: Pervasives.epsilon_float,
-                maxValue: 100.0
+                maxValue: 10.0
               }
             }), React.createElement(EnvelopeUnit$WebAudio.make, {
               envelope: envelope
