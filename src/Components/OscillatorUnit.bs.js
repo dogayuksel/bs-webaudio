@@ -109,7 +109,7 @@ function OscillatorUnit(Props) {
   } else {
     tmp = null;
   }
-  return React.createElement("div", undefined, React.createElement("h2", undefined, name), React.createElement("div", {
+  return React.createElement("div", undefined, React.createElement("h3", undefined, name), React.createElement("div", {
                   onClick: toggleOscillator
                 }, React.createElement(Switch$WebAudio.make, {
                       isOn: oscillatorOn,

@@ -12,7 +12,7 @@ let make = (~envelope: Envelope.t) => {
           minValue: epsilon_float,
           maxValue: 2.0,
           scale: Linear,
-          size: 60,
+          size: 50,
         }
       />
       <Knob
@@ -25,7 +25,7 @@ let make = (~envelope: Envelope.t) => {
           minValue: epsilon_float,
           maxValue: 5.0,
           scale: Linear,
-          size: 60,
+          size: 50,
         }
       />
     </div>
@@ -40,7 +40,7 @@ let make = (~envelope: Envelope.t) => {
           minValue: epsilon_float,
           maxValue: 1.0,
           scale: Linear,
-          size: 60,
+          size: 50,
         }
       />
       <Knob
@@ -53,7 +53,7 @@ let make = (~envelope: Envelope.t) => {
           minValue: epsilon_float,
           maxValue: 5.0,
           scale: Linear,
-          size: 60,
+          size: 50,
         }
       />
     </div>

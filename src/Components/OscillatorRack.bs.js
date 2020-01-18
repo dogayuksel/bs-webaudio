@@ -25,7 +25,7 @@ function OscillatorRack(Props) {
                     color: "#FFF3F5",
                     display: "inline-block",
                     margin: "10px 15px",
-                    padding: "10px"
+                    padding: "0 20px"
                   },
                   onClick: (function (param) {
                       Curry._1(setOscillators, (function (oList) {
@@ -38,7 +38,7 @@ function OscillatorRack(Props) {
                                     return idx + 1 | 0;
                                   }));
                     })
-                }, "Add Oscillator"), React.createElement("div", undefined, $$Array.of_list(List.map((function (osc) {
+                }, React.createElement("h4", undefined, "Add Oscillator")), React.createElement("div", undefined, $$Array.of_list(List.map((function (osc) {
                             return React.createElement("div", {
                                         key: String(osc)
                                       }, React.createElement("div", {
@@ -46,8 +46,8 @@ function OscillatorRack(Props) {
                                               backgroundColor: "#839264",
                                               color: "#FFF3F5",
                                               display: "inline-block",
-                                              margin: "10px",
-                                              padding: "10px"
+                                              margin: "0 15px",
+                                              padding: "0 20px"
                                             },
                                             onClick: (function (param) {
                                                 var osc$1 = osc;
@@ -57,7 +57,7 @@ function OscillatorRack(Props) {
                                                                             }))(oList);
                                                             }));
                                               })
-                                          }, "X"), React.createElement(OscillatorUnit$WebAudio.make, {
+                                          }, React.createElement("h4", undefined, "X")), React.createElement(OscillatorUnit$WebAudio.make, {
                                             name: "Oscillator " + String(osc),
                                             targetOutput: undefined
                                           }));

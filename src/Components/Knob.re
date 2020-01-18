@@ -140,9 +140,9 @@ let make =
       ~padding="10px 20px",
       (),
     )}>
-    <h3 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
+    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
       {React.string(name)}
-    </h3>
+    </h5>
     <div
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
@@ -167,10 +167,10 @@ let make =
         )}
       />
     </div>
-    <h3 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
+    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
       {React.string(
          Js.Float.toFixedWithPrecision(value, ~digits=indicatorPrecission),
        )}
-    </h3>
+    </h5>
   </div>;
 };

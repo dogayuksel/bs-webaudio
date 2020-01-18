@@ -20,10 +20,10 @@ let make = () => {
         ~backgroundColor="#839264",
         ~color="#FFF3F5",
         ~margin="10px 15px",
-        ~padding="10px",
+        ~padding="0 20px",
         (),
       )}>
-      {React.string("Add Oscillator")}
+      <h4> {React.string("Add Oscillator")} </h4>
     </div>
     <div>
       {oscillators
@@ -35,11 +35,11 @@ let make = () => {
                   ~display="inline-block",
                   ~backgroundColor="#839264",
                   ~color="#FFF3F5",
-                  ~margin="10px",
-                  ~padding="10px",
+                  ~margin="0 15px",
+                  ~padding="0 20px",
                   (),
                 )}>
-                {React.string("X")}
+                <h4> {React.string("X")} </h4>
               </div>
               <OscillatorUnit
                 name={"Oscillator " ++ string_of_int(osc)}

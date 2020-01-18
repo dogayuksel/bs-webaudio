@@ -72,13 +72,13 @@ let make = (~setWaveCallback: PeriodicWave.t => unit) => {
         name="Sine"
         initialParamValue=sineFactor
         setParamValue={value => setSineFactor(_ => value)}
-        config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 60}
+        config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}
       />
       <Knob
         name="Sawtooth"
         initialParamValue=sawFactor
         setParamValue={value => setSawFactor(_ => value)}
-        config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 60}
+        config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}
       />
     </div>
     <div>
@@ -86,13 +86,13 @@ let make = (~setWaveCallback: PeriodicWave.t => unit) => {
         name="Triangle"
         initialParamValue=triangleFactor
         setParamValue={value => setTriangleFactor(_ => value)}
-        config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 60}
+        config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}
       />
       <Knob
         name="Square"
         initialParamValue=squareFactor
         setParamValue={value => setSquareFactor(_ => value)}
-        config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 60}
+        config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}
       />
     </div>
   </div>;

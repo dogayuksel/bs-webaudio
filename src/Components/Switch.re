@@ -10,7 +10,7 @@ let make = (~isOn: bool, ~children) => {
       ~padding="10px 20px",
       (),
     )}>
-    <h3 style={ReactDOMRe.Style.make(~textAlign="center", ())}> children </h3>
+    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}> children </h5>
     <div
       style={ReactDOMRe.Style.make(
         ~backgroundColor="#839264",

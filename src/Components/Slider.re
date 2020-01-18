@@ -99,9 +99,9 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
       ~padding="10px 20px",
       (),
     )}>
-    <h3 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
+    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
       {React.string(name)}
-    </h3>
+    </h5>
     <div
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
@@ -121,10 +121,10 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
         )}
       />
     </div>
-    <h3 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
+    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
       {React.string(
          Js.Float.toFixedWithPrecision(~digits=indicatorPrecission, value),
        )}
-    </h3>
+    </h5>
   </div>;
 };

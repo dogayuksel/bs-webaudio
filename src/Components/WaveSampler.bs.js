@@ -93,7 +93,7 @@ function WaveSampler(Props) {
                         minValue: 0.0,
                         maxValue: 1.0,
                         scale: /* Linear */0,
-                        size: 60
+                        size: 50
                       },
                       initialParamValue: sineFactor,
                       setParamValue: (function (value) {
@@ -107,7 +107,7 @@ function WaveSampler(Props) {
                         minValue: 0.0,
                         maxValue: 1.0,
                         scale: /* Linear */0,
-                        size: 60
+                        size: 50
                       },
                       initialParamValue: sawFactor,
                       setParamValue: (function (value) {
@@ -121,7 +121,7 @@ function WaveSampler(Props) {
                         minValue: 0.0,
                         maxValue: 1.0,
                         scale: /* Linear */0,
-                        size: 60
+                        size: 50
                       },
                       initialParamValue: triangleFactor,
                       setParamValue: (function (value) {
@@ -135,7 +135,7 @@ function WaveSampler(Props) {
                         minValue: 0.0,
                         maxValue: 1.0,
                         scale: /* Linear */0,
-                        size: 60
+                        size: 50
                       },
                       initialParamValue: squareFactor,
                       setParamValue: (function (value) {

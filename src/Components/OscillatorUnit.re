@@ -49,7 +49,7 @@ let make =
     };
 
   <div>
-    <h2> {React.string(name)} </h2>
+    <h3> {React.string(name)} </h3>
     <div onClick=toggleOscillator>
       <Switch isOn=oscillatorOn> {React.string("Start")} </Switch>
     </div>

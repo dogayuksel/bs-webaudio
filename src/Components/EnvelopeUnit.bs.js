@@ -18,7 +18,7 @@ function EnvelopeUnit(Props) {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 2.0,
                         scale: /* Linear */0,
-                        size: 60
+                        size: 50
                       },
                       initialParamValue: envelope.envelopeParams.attack,
                       setParamValue: (function (value) {
@@ -30,7 +30,7 @@ function EnvelopeUnit(Props) {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 5.0,
                         scale: /* Linear */0,
-                        size: 60
+                        size: 50
                       },
                       initialParamValue: envelope.envelopeParams.decay,
                       setParamValue: (function (value) {
@@ -42,7 +42,7 @@ function EnvelopeUnit(Props) {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 1.0,
                         scale: /* Linear */0,
-                        size: 60
+                        size: 50
                       },
                       initialParamValue: envelope.envelopeParams.sustain,
                       setParamValue: (function (value) {
@@ -54,7 +54,7 @@ function EnvelopeUnit(Props) {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 5.0,
                         scale: /* Linear */0,
-                        size: 60
+                        size: 50
                       },
                       initialParamValue: envelope.envelopeParams.release,
                       setParamValue: (function (value) {

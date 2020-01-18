@@ -113,7 +113,7 @@ function Slider(Props) {
                 display: "inline-block",
                 padding: "10px 20px"
               }
-            }, React.createElement("h3", {
+            }, React.createElement("h5", {
                   style: {
                     textAlign: "center"
                   }
@@ -132,7 +132,7 @@ function Slider(Props) {
                         width: String(30) + "px",
                         transform: "translateY(" + (mapValueToHeight(value) + ")")
                       }
-                    })), React.createElement("h3", {
+                    })), React.createElement("h5", {
                   style: {
                     textAlign: "center"
                   }

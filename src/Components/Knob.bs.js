@@ -135,7 +135,7 @@ function Knob(Props) {
                 display: "inline-block",
                 padding: "10px 20px"
               }
-            }, React.createElement("h3", {
+            }, React.createElement("h5", {
                   style: {
                     textAlign: "center"
                   }
@@ -159,7 +159,7 @@ function Knob(Props) {
                         height: "0",
                         width: "0"
                       }
-                    })), React.createElement("h3", {
+                    })), React.createElement("h5", {
                   style: {
                     textAlign: "center"
                   }
