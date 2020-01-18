@@ -7,6 +7,7 @@ import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Knob$WebAudio from "./Knob.bs.js";
 import * as AudioContext$WebAudio from "../WebAudio/AudioContext.bs.js";
+import * as ColorPalette$WebAudio from "../ColorPalette.bs.js";
 import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 
 var range = Caml_array.caml_make_vect(256, 0.0);
@@ -85,7 +86,12 @@ function WaveSampler(Props) {
       ]);
   return React.createElement("div", {
               style: {
-                display: "inline-block"
+                backgroundColor: ColorPalette$WebAudio.blue,
+                border: "3px solid " + ColorPalette$WebAudio.white,
+                display: "inline-block",
+                margin: "10px",
+                padding: "0 20px",
+                borderRadius: "20px"
               }
             }, React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "SINE",
@@ -102,7 +108,7 @@ function WaveSampler(Props) {
                                       }));
                         })
                     }), React.createElement(Knob$WebAudio.make, {
-                      name: "SAWTOOTH",
+                      name: "SAW",
                       config: {
                         minValue: 0.0,
                         maxValue: 1.0,

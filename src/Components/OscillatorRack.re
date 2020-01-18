@@ -42,7 +42,7 @@ let make = () => {
                 <h4> {React.string("X")} </h4>
               </div>
               <OscillatorUnit
-                name={"Oscillator " ++ string_of_int(osc)}
+                name={"OSCILLATOR " ++ string_of_int(osc)}
                 targetOutput=None
                 alone={oscillators |> List.length == 1}
               />

@@ -135,7 +135,8 @@ function Knob(Props) {
               style: {
                 backgroundColor: ColorPalette$WebAudio.blue,
                 display: "inline-block",
-                padding: "5px 10px"
+                padding: "5px 10px",
+                width: String(config.size + 60 | 0) + "px"
               }
             }, React.createElement("h5", {
                   className: "knob-label",

@@ -56,9 +56,15 @@ let make =
     Some(() => cleanUp());
   });
 
-  <div>
-    <h3> {React.string(name)} </h3>
-    <div onClick=toggleOscillator>
+  <div style={ReactDOMRe.Style.make(~backgroundColor=ColorPalette.green, ())}>
+    <h3
+      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}
+      className="knob-label">
+      {React.string(name)}
+    </h3>
+    <div
+      style={ReactDOMRe.Style.make(~display="inline-block", ())}
+      onClick=toggleOscillator>
       <Switch isOn=oscillatorOn> {React.string("START")} </Switch>
     </div>
     {switch (React.Ref.current(oscillator), React.Ref.current(envelope)) {
@@ -69,26 +75,37 @@ let make =
              Oscillator.setOscillatorType(~oscillatorType=Custom(wave), osc)
            }
          />
-         <Knob
-           name="FREQUENCY"
-           initialParamValue={
-             osc |> Oscillator.getFrequency |> AudioParam.getValue
-           }
-           setParamValue={frequency =>
-             osc |> Oscillator.setFrequency(~frequency)
-           }
-           config={
-             minValue: 1.0,
-             maxValue: 18000.0,
-             scale: Logarithmic,
-             size: 120,
-           }
-         />
-         <Slider
-           name="GAIN"
-           param={osc |> Oscillator.getOscillatorGain}
-           config={minValue: epsilon_float, maxValue: 1.0}
-         />
+         <div
+           style={ReactDOMRe.Style.make(
+             ~display="inline-block",
+             ~backgroundColor=ColorPalette.blue,
+             ~padding="0 20px",
+             ~margin="10px",
+             ~border="3px solid " ++ ColorPalette.white,
+             ~borderRadius="20px",
+             (),
+           )}>
+           <Knob
+             name="FREQUENCY"
+             initialParamValue={
+               osc |> Oscillator.getFrequency |> AudioParam.getValue
+             }
+             setParamValue={frequency =>
+               osc |> Oscillator.setFrequency(~frequency)
+             }
+             config={
+               minValue: 1.0,
+               maxValue: 18000.0,
+               scale: Logarithmic,
+               size: 120,
+             }
+           />
+           <Slider
+             name="GAIN"
+             param={osc |> Oscillator.getOscillatorGain}
+             config={minValue: epsilon_float, maxValue: 1.0}
+           />
+         </div>
          <EnvelopeUnit envelope=env />
        </>
      | _ => ReasonReact.null

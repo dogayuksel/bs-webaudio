@@ -59,7 +59,7 @@ function OscillatorRack(Props) {
                                                             }));
                                               })
                                           }, React.createElement("h4", undefined, "X")), React.createElement(OscillatorUnit$WebAudio.make, {
-                                            name: "Oscillator " + String(osc),
+                                            name: "OSCILLATOR " + String(osc),
                                             targetOutput: undefined,
                                             alone: List.length(oscillators) === 1
                                           }));

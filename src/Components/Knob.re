@@ -138,6 +138,7 @@ let make =
     style={ReactDOMRe.Style.make(
       ~backgroundColor=ColorPalette.blue,
       ~display="inline-block",
+      ~width={sizeInPixels(config.size + 60)},
       ~padding="5px 10px",
       (),
     )}>

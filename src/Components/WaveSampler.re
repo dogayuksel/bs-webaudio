@@ -66,7 +66,16 @@ let make = (~setWaveCallback: PeriodicWave.t => unit) => {
     (sineFactor, sawFactor, triangleFactor, squareFactor),
   );
 
-  <div style={ReactDOMRe.Style.make(~display="inline-block", ())}>
+  <div
+    style={ReactDOMRe.Style.make(
+      ~display="inline-block",
+      ~backgroundColor=ColorPalette.blue,
+      ~padding="0 20px",
+      ~margin="10px",
+      ~border="3px solid " ++ ColorPalette.white,
+      ~borderRadius="20px",
+      (),
+    )}>
     <div>
       <Knob
         name="SINE"
@@ -75,7 +84,7 @@ let make = (~setWaveCallback: PeriodicWave.t => unit) => {
         config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}
       />
       <Knob
-        name="SAWTOOTH"
+        name="SAW"
         initialParamValue=sawFactor
         setParamValue={value => setSawFactor(_ => value)}
         config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}

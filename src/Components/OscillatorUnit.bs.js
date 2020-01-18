@@ -11,6 +11,7 @@ import * as Switch$WebAudio from "./Switch.bs.js";
 import * as Envelope$WebAudio from "../Envelope/Envelope.bs.js";
 import * as Oscillator$WebAudio from "../Oscillator/Oscillator.bs.js";
 import * as WaveSampler$WebAudio from "./WaveSampler.bs.js";
+import * as ColorPalette$WebAudio from "../ColorPalette.bs.js";
 import * as EnvelopeUnit$WebAudio from "./EnvelopeUnit.bs.js";
 import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 
@@ -77,32 +78,53 @@ function OscillatorUnit(Props) {
               setWaveCallback: (function (wave) {
                   return Oscillator$WebAudio.setOscillatorType(/* Custom */[wave], osc);
                 })
-            }), React.createElement(Knob$WebAudio.make, {
-              name: "FREQUENCY",
-              config: {
-                minValue: 1.0,
-                maxValue: 18000.0,
-                scale: /* Logarithmic */1,
-                size: 120
-              },
-              initialParamValue: Oscillator$WebAudio.getFrequency(osc).value,
-              setParamValue: (function (frequency) {
-                  return Oscillator$WebAudio.setFrequency(frequency, osc);
-                })
-            }), React.createElement(Slider$WebAudio.make, {
-              name: "GAIN",
-              param: Oscillator$WebAudio.getOscillatorGain(osc),
-              config: {
-                minValue: Pervasives.epsilon_float,
-                maxValue: 1.0
+            }), React.createElement("div", {
+              style: {
+                backgroundColor: ColorPalette$WebAudio.blue,
+                border: "3px solid " + ColorPalette$WebAudio.white,
+                display: "inline-block",
+                margin: "10px",
+                padding: "0 20px",
+                borderRadius: "20px"
               }
-            }), React.createElement(EnvelopeUnit$WebAudio.make, {
+            }, React.createElement(Knob$WebAudio.make, {
+                  name: "FREQUENCY",
+                  config: {
+                    minValue: 1.0,
+                    maxValue: 18000.0,
+                    scale: /* Logarithmic */1,
+                    size: 120
+                  },
+                  initialParamValue: Oscillator$WebAudio.getFrequency(osc).value,
+                  setParamValue: (function (frequency) {
+                      return Oscillator$WebAudio.setFrequency(frequency, osc);
+                    })
+                }), React.createElement(Slider$WebAudio.make, {
+                  name: "GAIN",
+                  param: Oscillator$WebAudio.getOscillatorGain(osc),
+                  config: {
+                    minValue: Pervasives.epsilon_float,
+                    maxValue: 1.0
+                  }
+                })), React.createElement(EnvelopeUnit$WebAudio.make, {
               envelope: match$3
             }));
   } else {
     tmp = null;
   }
-  return React.createElement("div", undefined, React.createElement("h3", undefined, name), React.createElement("div", {
+  return React.createElement("div", {
+              style: {
+                backgroundColor: ColorPalette$WebAudio.green
+              }
+            }, React.createElement("h3", {
+                  className: "knob-label",
+                  style: {
+                    color: ColorPalette$WebAudio.white
+                  }
+                }, name), React.createElement("div", {
+                  style: {
+                    display: "inline-block"
+                  },
                   onClick: toggleOscillator
                 }, React.createElement(Switch$WebAudio.make, {
                       isOn: oscillatorOn,
