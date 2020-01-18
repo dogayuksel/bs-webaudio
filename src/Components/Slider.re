@@ -1,5 +1,5 @@
 let height = 120;
-let width = 30;
+let width = 30; // Should be power of 5
 let buttonHeight = 10;
 let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 
@@ -96,32 +96,43 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
   <div
     style={ReactDOMRe.Style.make(
       ~display="inline-block",
+      ~backgroundColor=ColorPalette.blue,
       ~padding="10px 20px",
       (),
     )}>
-    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
+    <h5
+      className="knob-label"
+      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
       {React.string(name)}
     </h5>
     <div
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
-        ~backgroundColor="#839264",
-        ~width=sizeInPixels(width),
+        ~backgroundColor=ColorPalette.black,
+        ~width=sizeInPixels(width / 5),
         ~height=sizeInPixels(height),
-        ~margin="0 20px",
+        ~margin="0 auto",
         (),
       )}>
       <div
         style={ReactDOMRe.Style.make(
           ~width=sizeInPixels(width),
           ~height=sizeInPixels(buttonHeight),
-          ~backgroundColor="#112211",
-          ~transform="translateY(" ++ mapValueToHeight(value) ++ ")",
+          ~backgroundColor=ColorPalette.silver,
+          ~border="1px solid " ++ ColorPalette.white,
+          ~transform=
+            "translate("
+            ++ sizeInPixels(int_of_float(float_of_int(width) *. (-0.4)))
+            ++ ", "
+            ++ mapValueToHeight(value)
+            ++ ")",
           (),
         )}
       />
     </div>
-    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
+    <h5
+      className="knob-label"
+      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
       {React.string(
          Js.Float.toFixedWithPrecision(~digits=indicatorPrecission, value),
        )}

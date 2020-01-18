@@ -2,6 +2,7 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as ColorPalette$WebAudio from "../ColorPalette.bs.js";
 
 function sizeInPixels(x) {
   return String(x) + "px";
@@ -110,31 +111,35 @@ function Slider(Props) {
   };
   return React.createElement("div", {
               style: {
+                backgroundColor: ColorPalette$WebAudio.blue,
                 display: "inline-block",
                 padding: "10px 20px"
               }
             }, React.createElement("h5", {
+                  className: "knob-label",
                   style: {
-                    textAlign: "center"
+                    color: ColorPalette$WebAudio.white
                   }
                 }, name), React.createElement("div", {
                   style: {
-                    backgroundColor: "#839264",
+                    backgroundColor: ColorPalette$WebAudio.black,
                     height: String(120) + "px",
-                    margin: "0 20px",
-                    width: String(30) + "px"
+                    margin: "0 auto",
+                    width: String(6) + "px"
                   },
                   onMouseDown: handleMouseDown
                 }, React.createElement("div", {
                       style: {
-                        backgroundColor: "#112211",
+                        backgroundColor: ColorPalette$WebAudio.silver,
+                        border: "1px solid " + ColorPalette$WebAudio.white,
                         height: String(10) + "px",
                         width: String(30) + "px",
-                        transform: "translateY(" + (mapValueToHeight(value) + ")")
+                        transform: "translate(" + (String(30 * -0.4 | 0) + "px, " + (mapValueToHeight(value) + ")"))
                       }
                     })), React.createElement("h5", {
+                  className: "knob-label",
                   style: {
-                    textAlign: "center"
+                    color: ColorPalette$WebAudio.white
                   }
                 }, value.toFixed(indicatorPrecission)));
 }

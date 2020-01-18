@@ -3,7 +3,7 @@ let make = (~envelope: Envelope.t) => {
   <div style={ReactDOMRe.Style.make(~display="inline-block", ())}>
     <div>
       <Knob
-        name="Attack"
+        name="ATTACK"
         initialParamValue={envelope.envelopeParams.attack}
         setParamValue={value =>
           envelope |> Envelope.update(~param=Attack(value))
@@ -16,7 +16,7 @@ let make = (~envelope: Envelope.t) => {
         }
       />
       <Knob
-        name="Decay"
+        name="DECAY"
         initialParamValue={envelope.envelopeParams.decay}
         setParamValue={value =>
           envelope |> Envelope.update(~param=Decay(value))
@@ -31,7 +31,7 @@ let make = (~envelope: Envelope.t) => {
     </div>
     <div>
       <Knob
-        name="Sustain"
+        name="SUSTAIN"
         initialParamValue={envelope.envelopeParams.sustain}
         setParamValue={value =>
           envelope |> Envelope.update(~param=Sustain(value))
@@ -44,7 +44,7 @@ let make = (~envelope: Envelope.t) => {
         }
       />
       <Knob
-        name="Release"
+        name="RELEASE"
         initialParamValue={envelope.envelopeParams.release}
         setParamValue={value =>
           envelope |> Envelope.update(~param=Release(value))

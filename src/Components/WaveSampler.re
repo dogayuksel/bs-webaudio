@@ -69,13 +69,13 @@ let make = (~setWaveCallback: PeriodicWave.t => unit) => {
   <div style={ReactDOMRe.Style.make(~display="inline-block", ())}>
     <div>
       <Knob
-        name="Sine"
+        name="SINE"
         initialParamValue=sineFactor
         setParamValue={value => setSineFactor(_ => value)}
         config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}
       />
       <Knob
-        name="Sawtooth"
+        name="SAWTOOTH"
         initialParamValue=sawFactor
         setParamValue={value => setSawFactor(_ => value)}
         config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}
@@ -83,13 +83,13 @@ let make = (~setWaveCallback: PeriodicWave.t => unit) => {
     </div>
     <div>
       <Knob
-        name="Triangle"
+        name="TRIANGLE"
         initialParamValue=triangleFactor
         setParamValue={value => setTriangleFactor(_ => value)}
         config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}
       />
       <Knob
-        name="Square"
+        name="SQUARE"
         initialParamValue=squareFactor
         setParamValue={value => setSquareFactor(_ => value)}
         config={minValue: 0.0, maxValue: 1.0, scale: Linear, size: 50}

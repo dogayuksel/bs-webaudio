@@ -59,7 +59,7 @@ let make =
   <div>
     <h3> {React.string(name)} </h3>
     <div onClick=toggleOscillator>
-      <Switch isOn=oscillatorOn> {React.string("Start")} </Switch>
+      <Switch isOn=oscillatorOn> {React.string("START")} </Switch>
     </div>
     {switch (React.Ref.current(oscillator), React.Ref.current(envelope)) {
      | (Some(osc), Some(env)) =>
@@ -70,7 +70,7 @@ let make =
            }
          />
          <Knob
-           name="Frequency"
+           name="FREQUENCY"
            initialParamValue={
              osc |> Oscillator.getFrequency |> AudioParam.getValue
            }
@@ -85,7 +85,7 @@ let make =
            }
          />
          <Slider
-           name="Gain"
+           name="GAIN"
            param={osc |> Oscillator.getOscillatorGain}
            config={minValue: epsilon_float, maxValue: 1.0}
          />

@@ -136,21 +136,25 @@ let make =
 
   <div
     style={ReactDOMRe.Style.make(
+      ~backgroundColor=ColorPalette.blue,
       ~display="inline-block",
-      ~padding="10px 20px",
+      ~padding="5px 10px",
       (),
     )}>
-    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
+    <h5
+      className="knob-label"
+      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
       {React.string(name)}
     </h5>
     <div
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
-        ~backgroundColor="#839264",
+        ~backgroundColor=ColorPalette.silver,
         ~width=sizeInPixels(config.size),
         ~height=sizeInPixels(config.size),
-        ~margin="0 20px",
+        ~margin="0 auto",
         ~borderRadius=sizeInPixels(config.size),
+        ~border="1px solid " ++ ColorPalette.white,
         ~display="flex",
         ~justifyContent="center",
         ~transform="rotate(" ++ mapValueToDegrees(value) ++ ")",
@@ -160,14 +164,16 @@ let make =
         style={ReactDOMRe.Style.make(
           ~width="0",
           ~height="0",
-          ~borderLeft="10px solid transparent",
-          ~borderRight="10px solid transparent",
-          ~borderBottom="10px solid black",
+          ~borderLeft="5px solid transparent",
+          ~borderRight="5px solid transparent",
+          ~borderBottom="12px solid " ++ ColorPalette.black,
           (),
         )}
       />
     </div>
-    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}>
+    <h5
+      className="knob-label"
+      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
       {React.string(
          Js.Float.toFixedWithPrecision(value, ~digits=indicatorPrecission),
        )}

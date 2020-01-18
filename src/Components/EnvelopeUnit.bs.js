@@ -13,7 +13,7 @@ function EnvelopeUnit(Props) {
                 display: "inline-block"
               }
             }, React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
-                      name: "Attack",
+                      name: "ATTACK",
                       config: {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 2.0,
@@ -25,7 +25,7 @@ function EnvelopeUnit(Props) {
                           return Envelope$WebAudio.update(/* Attack */Block.__(0, [value]), envelope);
                         })
                     }), React.createElement(Knob$WebAudio.make, {
-                      name: "Decay",
+                      name: "DECAY",
                       config: {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 5.0,
@@ -37,7 +37,7 @@ function EnvelopeUnit(Props) {
                           return Envelope$WebAudio.update(/* Decay */Block.__(1, [value]), envelope);
                         })
                     })), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
-                      name: "Sustain",
+                      name: "SUSTAIN",
                       config: {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 1.0,
@@ -49,7 +49,7 @@ function EnvelopeUnit(Props) {
                           return Envelope$WebAudio.update(/* Sustain */Block.__(2, [value]), envelope);
                         })
                     }), React.createElement(Knob$WebAudio.make, {
-                      name: "Release",
+                      name: "RELEASE",
                       config: {
                         minValue: Pervasives.epsilon_float,
                         maxValue: 5.0,

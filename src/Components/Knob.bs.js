@@ -2,6 +2,7 @@
 
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as ColorPalette$WebAudio from "../ColorPalette.bs.js";
 
 function sizeInPixels(x) {
   return String(x) + "px";
@@ -132,19 +133,22 @@ function Knob(Props) {
   };
   return React.createElement("div", {
               style: {
+                backgroundColor: ColorPalette$WebAudio.blue,
                 display: "inline-block",
-                padding: "10px 20px"
+                padding: "5px 10px"
               }
             }, React.createElement("h5", {
+                  className: "knob-label",
                   style: {
-                    textAlign: "center"
+                    color: ColorPalette$WebAudio.white
                   }
                 }, name), React.createElement("div", {
                   style: {
-                    backgroundColor: "#839264",
+                    backgroundColor: ColorPalette$WebAudio.silver,
+                    border: "1px solid " + ColorPalette$WebAudio.white,
                     display: "flex",
                     height: String(config.size) + "px",
-                    margin: "0 20px",
+                    margin: "0 auto",
                     width: String(config.size) + "px",
                     borderRadius: String(config.size) + "px",
                     justifyContent: "center",
@@ -153,15 +157,16 @@ function Knob(Props) {
                   onMouseDown: handleMouseDown
                 }, React.createElement("div", {
                       style: {
-                        borderRight: "10px solid transparent",
-                        borderBottom: "10px solid black",
-                        borderLeft: "10px solid transparent",
+                        borderRight: "5px solid transparent",
+                        borderBottom: "12px solid " + ColorPalette$WebAudio.black,
+                        borderLeft: "5px solid transparent",
                         height: "0",
                         width: "0"
                       }
                     })), React.createElement("h5", {
+                  className: "knob-label",
                   style: {
-                    textAlign: "center"
+                    color: ColorPalette$WebAudio.white
                   }
                 }, value.toFixed(indicatorPrecission)));
 }

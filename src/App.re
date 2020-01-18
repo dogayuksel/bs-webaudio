@@ -51,7 +51,7 @@ let make = () => {
         ~right="0",
         (),
       )}>
-      <Switch isOn=audioContextOn> {React.string("Power")} </Switch>
+      <Switch isOn=audioContextOn> {React.string("POWER")} </Switch>
     </div>
     {switch (audioContext) {
      | Some(_) => <OscillatorRack />

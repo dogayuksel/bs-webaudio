@@ -8,12 +8,17 @@ let make = (~isOn: bool, ~children) => {
     style={ReactDOMRe.Style.make(
       ~display="inline-block",
       ~padding="10px 20px",
+      ~backgroundColor=ColorPalette.blue,
       (),
     )}>
-    <h5 style={ReactDOMRe.Style.make(~textAlign="center", ())}> children </h5>
+    <h5
+      className="knob-label"
+      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
+      children
+    </h5>
     <div
       style={ReactDOMRe.Style.make(
-        ~backgroundColor="#839264",
+        ~backgroundColor=ColorPalette.black,
         ~width=sizeInPixels(width),
         ~height=sizeInPixels(height),
         ~margin="10px 20px",
@@ -21,11 +26,13 @@ let make = (~isOn: bool, ~children) => {
       )}>
       <div
         style={ReactDOMRe.Style.make(
-          ~backgroundColor="#112211",
+          ~backgroundColor=ColorPalette.silver,
+          ~border="1px solid " ++ ColorPalette.white,
           ~width=sizeInPixels(width / 2),
           ~height=sizeInPixels(height),
           ~transform=
             "translateX(" ++ (isOn ? sizeInPixels(width / 2) : "0") ++ ")",
+          ~transition="transform 0.2s",
           (),
         )}
       />

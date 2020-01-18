@@ -88,7 +88,7 @@ function WaveSampler(Props) {
                 display: "inline-block"
               }
             }, React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
-                      name: "Sine",
+                      name: "SINE",
                       config: {
                         minValue: 0.0,
                         maxValue: 1.0,
@@ -102,7 +102,7 @@ function WaveSampler(Props) {
                                       }));
                         })
                     }), React.createElement(Knob$WebAudio.make, {
-                      name: "Sawtooth",
+                      name: "SAWTOOTH",
                       config: {
                         minValue: 0.0,
                         maxValue: 1.0,
@@ -116,7 +116,7 @@ function WaveSampler(Props) {
                                       }));
                         })
                     })), React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
-                      name: "Triangle",
+                      name: "TRIANGLE",
                       config: {
                         minValue: 0.0,
                         maxValue: 1.0,
@@ -130,7 +130,7 @@ function WaveSampler(Props) {
                                       }));
                         })
                     }), React.createElement(Knob$WebAudio.make, {
-                      name: "Square",
+                      name: "SQUARE",
                       config: {
                         minValue: 0.0,
                         maxValue: 1.0,

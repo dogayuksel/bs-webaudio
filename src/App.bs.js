@@ -86,7 +86,7 @@ function App(Props) {
                   onClick: toggleAudioContextOn
                 }, React.createElement(Switch$WebAudio.make, {
                       isOn: audioContextOn,
-                      children: "Power"
+                      children: "POWER"
                     })), audioContext !== undefined ? React.createElement(OscillatorRack$WebAudio.make, { }) : null, React.createElement(Keyboard$WebAudio.make, { }));
 }
 

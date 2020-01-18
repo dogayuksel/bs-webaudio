@@ -78,7 +78,7 @@ function OscillatorUnit(Props) {
                   return Oscillator$WebAudio.setOscillatorType(/* Custom */[wave], osc);
                 })
             }), React.createElement(Knob$WebAudio.make, {
-              name: "Frequency",
+              name: "FREQUENCY",
               config: {
                 minValue: 1.0,
                 maxValue: 18000.0,
@@ -90,7 +90,7 @@ function OscillatorUnit(Props) {
                   return Oscillator$WebAudio.setFrequency(frequency, osc);
                 })
             }), React.createElement(Slider$WebAudio.make, {
-              name: "Gain",
+              name: "GAIN",
               param: Oscillator$WebAudio.getOscillatorGain(osc),
               config: {
                 minValue: Pervasives.epsilon_float,
@@ -106,7 +106,7 @@ function OscillatorUnit(Props) {
                   onClick: toggleOscillator
                 }, React.createElement(Switch$WebAudio.make, {
                       isOn: oscillatorOn,
-                      children: "Start"
+                      children: "START"
                     })), tmp);
 }
 
