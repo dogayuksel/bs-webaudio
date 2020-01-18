@@ -21,33 +21,37 @@ let make =
     ->ignore;
   };
 
-  let toggleOscillator = _: unit =>
-    if (oscillatorOn == false) {
-      switch (appContext.audioContext) {
-      | Some(audioContext) =>
-        let target =
-          switch (targetOutput) {
-          | Some(target) => target
-          | None => audioContext |> AudioContext.getDestination
+  let toggleOscillator =
+    React.useCallback3(
+      _: unit =>
+        if (oscillatorOn == false) {
+          switch (appContext.audioContext) {
+          | Some(audioContext) =>
+            let target =
+              switch (targetOutput) {
+              | Some(target) => target
+              | None => audioContext |> AudioContext.getDestination
+              };
+            let osc =
+              audioContext
+              |> Oscillator.make
+              |> Oscillator.connect(~target)
+              |> Oscillator.start;
+            oscillator->React.Ref.setCurrent(Some(osc));
+            let env =
+              audioContext |> Envelope.make(Oscillator.getEnvelopeGain(osc));
+            env |> appContext.addToTriggerTargets;
+            envelope->React.Ref.setCurrent(Some(env));
+            setOscillatorOn(_ => true);
+            ();
+          | None => Js.log("Missing Audio Context")
           };
-        let osc =
-          audioContext
-          |> Oscillator.make
-          |> Oscillator.connect(~target)
-          |> Oscillator.start;
-        oscillator->React.Ref.setCurrent(Some(osc));
-        let env =
-          audioContext |> Envelope.make(Oscillator.getEnvelopeGain(osc));
-        env |> appContext.addToTriggerTargets;
-        envelope->React.Ref.setCurrent(Some(env));
-        setOscillatorOn(_ => true);
-        ();
-      | None => Js.log("Missing Audio Context")
-      };
-    } else {
-      cleanUp();
-      setOscillatorOn(_ => false);
-    };
+        } else {
+          cleanUp();
+          setOscillatorOn(_ => false);
+        },
+      (oscillatorOn, appContext.audioContext, targetOutput),
+    );
 
   React.useEffect0(() => {
     if (alone) {
@@ -58,12 +62,10 @@ let make =
 
   <div style={ReactDOMRe.Style.make(~backgroundColor=ColorPalette.green, ())}>
     <h3 className="unit-label"> {React.string(name)} </h3>
-    <div
-      style={ReactDOMRe.Style.make(~display="inline-block", ())}
-      onClick=toggleOscillator>
-      <div className="unit-container">
-        <Switch isOn=oscillatorOn> {React.string("START")} </Switch>
-      </div>
+    <div className="unit-container">
+      <Switch isOn=oscillatorOn toggle=toggleOscillator>
+        {React.string("START")}
+      </Switch>
     </div>
     {switch (React.Ref.current(oscillator), React.Ref.current(envelope)) {
      | (Some(osc), Some(env)) =>

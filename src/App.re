@@ -2,7 +2,7 @@
 let make = () => {
   let (audioContextOn, setAudioContextOn) = React.useState(() => false);
   let (triggerTargets, setTriggerTargets) = React.useState(() => []);
-  let (audioContext, setAudioContext) = React.useState(() => None);
+  let audioContext = React.useRef(None);
 
   let addToTriggerTargets = (envelope: Envelope.t): unit => {
     setTriggerTargets(targets => [envelope, ...targets]);
@@ -11,40 +11,46 @@ let make = () => {
     setTriggerTargets(targets => targets |> List.filter(e => e != envelope));
   };
 
-  let toggleAudioContextOn = _ =>
-    if (audioContextOn == false) {
-      switch (audioContext) {
-      | Some(audioCtx) =>
-        audioCtx
-        |> AudioContext.resume
-        |> Js.Promise.then_(_ => {
-             Js.Promise.resolve(setAudioContextOn(_ => true))
-           })
-        |> ignore
-      | None =>
-        setAudioContext(_ => Some(AudioContext.createAudioContext()));
-        setAudioContextOn(_ => true);
-      };
-    } else {
-      audioContext
-      ->Belt.Option.map(AudioContext.suspend)
-      ->Belt.Option.map(
-          Js.Promise.then_(_ => {
-            Js.Promise.resolve(setAudioContextOn(_ => false))
-          }),
-        )
-      |> ignore;
-    };
+  let toggleAudioContextOn =
+    React.useCallback1(
+      _ =>
+        if (audioContextOn == false) {
+          switch (audioContext->React.Ref.current) {
+          | Some(audioCtx) =>
+            audioCtx
+            |> AudioContext.resume
+            |> Js.Promise.then_(_ => {
+                 Js.Promise.resolve(setAudioContextOn(_ => true))
+               })
+            |> ignore
+          | None =>
+            audioContext->React.Ref.setCurrent(
+              Some(AudioContext.createAudioContext()),
+            );
+            setAudioContextOn(_ => true);
+          };
+        } else {
+          audioContext
+          ->React.Ref.current
+          ->Belt.Option.map(AudioContext.suspend)
+          ->Belt.Option.map(
+              Js.Promise.then_(_ => {
+                Js.Promise.resolve(setAudioContextOn(_ => false))
+              }),
+            )
+          |> ignore;
+        },
+      [|audioContextOn|],
+    );
 
   <AppContextProvider
     value=AppContextProvider.{
-      audioContext,
+      audioContext: audioContext->React.Ref.current,
       triggerTargets,
       addToTriggerTargets,
       removeFromTriggerTargets,
     }>
     <div
-      onClick=toggleAudioContextOn
       style={ReactDOMRe.Style.make(
         ~position="absolute",
         ~top="0",
@@ -52,10 +58,12 @@ let make = () => {
         (),
       )}>
       <div className="unit-container">
-        <Switch isOn=audioContextOn> {React.string("POWER")} </Switch>
+        <Switch isOn=audioContextOn toggle=toggleAudioContextOn>
+          {React.string("POWER")}
+        </Switch>
       </div>
     </div>
-    {switch (audioContext) {
+    {switch (audioContext->React.Ref.current) {
      | Some(_) => <OscillatorRack />
      | None => React.null
      }}

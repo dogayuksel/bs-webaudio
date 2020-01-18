@@ -33,37 +33,41 @@ function OscillatorUnit(Props) {
     Belt_Option.map(envelope.current, appContext.removeFromTriggerTargets);
     return /* () */0;
   };
-  var toggleOscillator = function (param) {
-    if (oscillatorOn === false) {
-      var match = appContext.audioContext;
-      if (match !== undefined) {
-        var audioContext = Caml_option.valFromOption(match);
-        var target = targetOutput !== undefined ? Caml_option.valFromOption(targetOutput) : audioContext.destination;
-        var osc = Oscillator$WebAudio.start(Oscillator$WebAudio.connect(target, (function (eta) {
-                      return Oscillator$WebAudio.make(undefined, eta);
-                    })(audioContext)));
-        oscillator.current = osc;
-        var env = Envelope$WebAudio.make(Oscillator$WebAudio.getEnvelopeGain(osc), audioContext);
-        Curry._1(appContext.addToTriggerTargets, env);
-        envelope.current = env;
-        Curry._1(setOscillatorOn, (function (param) {
-                return true;
-              }));
-        return /* () */0;
-      } else {
-        console.log("Missing Audio Context");
-        return /* () */0;
-      }
-    } else {
-      cleanUp(/* () */0);
-      return Curry._1(setOscillatorOn, (function (param) {
-                    return false;
-                  }));
-    }
-  };
+  var toggleOscillator = React.useCallback((function (param) {
+          if (oscillatorOn === false) {
+            var match = appContext.audioContext;
+            if (match !== undefined) {
+              var audioContext = Caml_option.valFromOption(match);
+              var target = targetOutput !== undefined ? Caml_option.valFromOption(targetOutput) : audioContext.destination;
+              var osc = Oscillator$WebAudio.start(Oscillator$WebAudio.connect(target, (function (eta) {
+                            return Oscillator$WebAudio.make(undefined, eta);
+                          })(audioContext)));
+              oscillator.current = osc;
+              var env = Envelope$WebAudio.make(Oscillator$WebAudio.getEnvelopeGain(osc), audioContext);
+              Curry._1(appContext.addToTriggerTargets, env);
+              envelope.current = env;
+              Curry._1(setOscillatorOn, (function (param) {
+                      return true;
+                    }));
+              return /* () */0;
+            } else {
+              console.log("Missing Audio Context");
+              return /* () */0;
+            }
+          } else {
+            cleanUp(/* () */0);
+            return Curry._1(setOscillatorOn, (function (param) {
+                          return false;
+                        }));
+          }
+        }), /* tuple */[
+        oscillatorOn,
+        appContext.audioContext,
+        targetOutput
+      ]);
   React.useEffect((function () {
           if (alone) {
-            toggleOscillator(/* () */0);
+            Curry._1(toggleOscillator, /* () */0);
           }
           return (function (param) {
                     return cleanUp(/* () */0);
@@ -112,16 +116,12 @@ function OscillatorUnit(Props) {
             }, React.createElement("h3", {
                   className: "unit-label"
                 }, name), React.createElement("div", {
-                  style: {
-                    display: "inline-block"
-                  },
-                  onClick: toggleOscillator
-                }, React.createElement("div", {
-                      className: "unit-container"
-                    }, React.createElement(Switch$WebAudio.make, {
-                          isOn: oscillatorOn,
-                          children: "START"
-                        }))), tmp);
+                  className: "unit-container"
+                }, React.createElement(Switch$WebAudio.make, {
+                      isOn: oscillatorOn,
+                      toggle: toggleOscillator,
+                      children: "START"
+                    })), tmp);
 }
 
 var make = OscillatorUnit;
