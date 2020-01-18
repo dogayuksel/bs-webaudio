@@ -11,7 +11,6 @@ import * as Switch$WebAudio from "./Switch.bs.js";
 import * as Envelope$WebAudio from "../Envelope/Envelope.bs.js";
 import * as Oscillator$WebAudio from "../Oscillator/Oscillator.bs.js";
 import * as WaveSampler$WebAudio from "./WaveSampler.bs.js";
-import * as ColorPalette$WebAudio from "../ColorPalette.bs.js";
 import * as EnvelopeUnit$WebAudio from "./EnvelopeUnit.bs.js";
 import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 
@@ -20,6 +19,7 @@ function OscillatorUnit(Props) {
   var targetOutput = Props.targetOutput;
   var match = Props.alone;
   var alone = match !== undefined ? match : false;
+  var remove = Props.remove;
   var appContext = React.useContext(AppContextProvider$WebAudio.appContext);
   var match$1 = React.useState((function () {
           return false;
@@ -110,18 +110,31 @@ function OscillatorUnit(Props) {
     tmp = null;
   }
   return React.createElement("div", {
-              style: {
-                backgroundColor: ColorPalette$WebAudio.green
-              }
-            }, React.createElement("h3", {
-                  className: "unit-label"
-                }, name), React.createElement("div", {
-                  className: "unit-container"
-                }, React.createElement(Switch$WebAudio.make, {
-                      isOn: oscillatorOn,
-                      toggle: toggleOscillator,
-                      children: "START"
-                    })), tmp);
+              className: "unit-group-container"
+            }, React.createElement("div", {
+                  className: "row-group-container"
+                }, React.createElement("h2", {
+                      className: "unit-label"
+                    }, name), React.createElement("div", {
+                      style: {
+                        left: "0",
+                        position: "absolute",
+                        top: "0"
+                      }
+                    }, React.createElement("button", {
+                          className: "unit-container",
+                          onClick: (function (param) {
+                              return Curry._1(remove, /* () */0);
+                            })
+                        }, "X"))), React.createElement("div", {
+                  className: "row-group-container"
+                }, React.createElement("div", {
+                      className: "unit-container"
+                    }, React.createElement(Switch$WebAudio.make, {
+                          isOn: oscillatorOn,
+                          toggle: toggleOscillator,
+                          children: "START"
+                        })), tmp));
 }
 
 var make = OscillatorUnit;

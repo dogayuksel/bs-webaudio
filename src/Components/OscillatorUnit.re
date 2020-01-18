@@ -4,6 +4,7 @@ let make =
       ~name: string,
       ~targetOutput: option(AudioNode.audioNode_like('a)),
       ~alone: bool=false,
+      ~remove: unit => unit,
     ) => {
   let appContext = React.useContext(AppContextProvider.appContext);
   let (oscillatorOn, setOscillatorOn) = React.useState(() => false);
@@ -60,46 +61,64 @@ let make =
     Some(() => cleanUp());
   });
 
-  <div style={ReactDOMRe.Style.make(~backgroundColor=ColorPalette.green, ())}>
-    <h3 className="unit-label"> {React.string(name)} </h3>
-    <div className="unit-container">
-      <Switch isOn=oscillatorOn toggle=toggleOscillator>
-        {React.string("START")}
-      </Switch>
+  <div className="unit-group-container">
+    <div className="row-group-container">
+      <h2 className="unit-label"> {React.string(name)} </h2>
+      <div
+        style={ReactDOMRe.Style.make(
+          ~position="absolute",
+          ~left="0",
+          ~top="0",
+          (),
+        )}>
+        <button className="unit-container" onClick={_ => remove()}>
+          {React.string("X")}
+        </button>
+      </div>
     </div>
-    {switch (React.Ref.current(oscillator), React.Ref.current(envelope)) {
-     | (Some(osc), Some(env)) =>
-       <>
-         <WaveSampler
-           setWaveCallback={wave =>
-             Oscillator.setOscillatorType(~oscillatorType=Custom(wave), osc)
-           }
-         />
-         <div className="unit-container">
-           <Knob
-             name="FREQUENCY"
-             initialParamValue={
-               osc |> Oscillator.getFrequency |> AudioParam.getValue
-             }
-             setParamValue={frequency =>
-               osc |> Oscillator.setFrequency(~frequency)
-             }
-             config={
-               minValue: 1.0,
-               maxValue: 18000.0,
-               scale: Logarithmic,
-               size: 120,
+    <div className="row-group-container">
+      <div className="unit-container">
+        <Switch isOn=oscillatorOn toggle=toggleOscillator>
+          {React.string("START")}
+        </Switch>
+      </div>
+      {switch (React.Ref.current(oscillator), React.Ref.current(envelope)) {
+       | (Some(osc), Some(env)) =>
+         <>
+           <WaveSampler
+             setWaveCallback={wave =>
+               Oscillator.setOscillatorType(
+                 ~oscillatorType=Custom(wave),
+                 osc,
+               )
              }
            />
-           <Slider
-             name="GAIN"
-             param={osc |> Oscillator.getOscillatorGain}
-             config={minValue: epsilon_float, maxValue: 1.0}
-           />
-         </div>
-         <EnvelopeUnit envelope=env />
-       </>
-     | _ => ReasonReact.null
-     }}
+           <div className="unit-container">
+             <Knob
+               name="FREQUENCY"
+               initialParamValue={
+                 osc |> Oscillator.getFrequency |> AudioParam.getValue
+               }
+               setParamValue={frequency =>
+                 osc |> Oscillator.setFrequency(~frequency)
+               }
+               config={
+                 minValue: 1.0,
+                 maxValue: 18000.0,
+                 scale: Logarithmic,
+                 size: 120,
+               }
+             />
+             <Slider
+               name="GAIN"
+               param={osc |> Oscillator.getOscillatorGain}
+               config={minValue: epsilon_float, maxValue: 1.0}
+             />
+           </div>
+           <EnvelopeUnit envelope=env />
+         </>
+       | _ => ReasonReact.null
+       }}
+    </div>
   </div>;
 };

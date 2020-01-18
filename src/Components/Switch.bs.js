@@ -14,7 +14,7 @@ function Switch(Props) {
   var children = Props.children;
   return React.createElement("div", {
               className: "control-container"
-            }, React.createElement("h5", {
+            }, React.createElement("h4", {
                   className: "control-label"
                 }, children), React.createElement("div", {
                   style: {

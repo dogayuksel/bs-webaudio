@@ -5,7 +5,7 @@ let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 [@react.component]
 let make = (~isOn: bool, ~toggle: unit => unit, ~children) => {
   <div className="control-container">
-    <h5 className="control-label"> children </h5>
+    <h4 className="control-label"> children </h4>
     <div
       onClick={_ => toggle()}
       style={ReactDOMRe.Style.make(

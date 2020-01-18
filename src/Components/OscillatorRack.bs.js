@@ -20,14 +20,17 @@ function OscillatorRack(Props) {
         }));
   var setOscillators = match$1[1];
   var oscillators = match$1[0];
-  return React.createElement("div", undefined, React.createElement("div", {
-                  style: {
-                    backgroundColor: "#839264",
-                    color: "#FFF3F5",
-                    display: "inline-block",
-                    margin: "10px 15px",
-                    padding: "0 20px"
-                  },
+  var removeOscillator = React.useCallback((function (osc) {
+          return (function (param) {
+              return Curry._1(setOscillators, (function (oList) {
+                            return List.filter((function (o) {
+                                            return o !== osc;
+                                          }))(oList);
+                          }));
+            });
+        }), ([]));
+  return React.createElement("div", undefined, React.createElement("button", {
+                  className: "unit-container",
                   onClick: (function (param) {
                       Curry._1(setOscillators, (function (oList) {
                               return /* :: */[
@@ -39,29 +42,14 @@ function OscillatorRack(Props) {
                                     return idx + 1 | 0;
                                   }));
                     })
-                }, React.createElement("h4", undefined, "Add Oscillator")), React.createElement("div", undefined, $$Array.of_list(List.map((function (osc) {
+                }, "Add Oscillator"), React.createElement("div", undefined, $$Array.of_list(List.map((function (osc) {
                             return React.createElement("div", {
                                         key: String(osc)
-                                      }, React.createElement("div", {
-                                            style: {
-                                              backgroundColor: "#839264",
-                                              color: "#FFF3F5",
-                                              display: "inline-block",
-                                              margin: "0 15px",
-                                              padding: "0 20px"
-                                            },
-                                            onClick: (function (param) {
-                                                var osc$1 = osc;
-                                                return Curry._1(setOscillators, (function (oList) {
-                                                              return List.filter((function (o) {
-                                                                              return o !== osc$1;
-                                                                            }))(oList);
-                                                            }));
-                                              })
-                                          }, React.createElement("h4", undefined, "X")), React.createElement(OscillatorUnit$WebAudio.make, {
+                                      }, React.createElement(OscillatorUnit$WebAudio.make, {
                                             name: "OSCILLATOR " + String(osc),
                                             targetOutput: undefined,
-                                            alone: List.length(oscillators) === 1
+                                            alone: List.length(oscillators) === 1,
+                                            remove: Curry._1(removeOscillator, osc)
                                           }));
                           }), oscillators))));
 }

@@ -94,7 +94,7 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
   };
 
   <div className="control-container">
-    <h5 className="control-label"> {React.string(name)} </h5>
+    <h4 className="control-label"> {React.string(name)} </h4>
     <div
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
@@ -120,10 +120,10 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
         )}
       />
     </div>
-    <h5 className="control-label">
+    <h4 className="control-label">
       {React.string(
          Js.Float.toFixedWithPrecision(~digits=indicatorPrecission, value),
        )}
-    </h5>
+    </h4>
   </div>;
 };

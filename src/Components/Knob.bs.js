@@ -134,9 +134,9 @@ function Knob(Props) {
   return React.createElement("div", {
               className: "control-container",
               style: {
-                width: String(config.size + 60 | 0) + "px"
+                width: String(config.size + 50 | 0) + "px"
               }
-            }, React.createElement("h5", {
+            }, React.createElement("h4", {
                   className: "control-label"
                 }, name), React.createElement("div", {
                   style: {
@@ -159,7 +159,7 @@ function Knob(Props) {
                         height: "0",
                         width: "0"
                       }
-                    })), React.createElement("h5", {
+                    })), React.createElement("h4", {
                   className: "control-label"
                 }, value.toFixed(indicatorPrecission)));
 }

@@ -111,7 +111,7 @@ function Slider(Props) {
   };
   return React.createElement("div", {
               className: "control-container"
-            }, React.createElement("h5", {
+            }, React.createElement("h4", {
                   className: "control-label"
                 }, name), React.createElement("div", {
                   style: {
@@ -129,7 +129,7 @@ function Slider(Props) {
                         width: String(30) + "px",
                         transform: "translate(" + (String(30 * -0.4 | 0) + "px, " + (mapValueToHeight(value) + ")"))
                       }
-                    })), React.createElement("h5", {
+                    })), React.createElement("h4", {
                   className: "control-label"
                 }, value.toFixed(indicatorPrecission)));
 }

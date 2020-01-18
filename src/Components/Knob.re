@@ -136,11 +136,11 @@ let make =
 
   <div
     style={ReactDOMRe.Style.make(
-      ~width={sizeInPixels(config.size + 60)},
+      ~width={sizeInPixels(config.size + 50)},
       (),
     )}
     className="control-container">
-    <h5 className="control-label"> {React.string(name)} </h5>
+    <h4 className="control-label"> {React.string(name)} </h4>
     <div
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
@@ -166,10 +166,10 @@ let make =
         )}
       />
     </div>
-    <h5 className="control-label">
+    <h4 className="control-label">
       {React.string(
          Js.Float.toFixedWithPrecision(value, ~digits=indicatorPrecission),
        )}
-    </h5>
+    </h4>
   </div>;
 };
