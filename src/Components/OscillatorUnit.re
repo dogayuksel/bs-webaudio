@@ -1,6 +1,10 @@
 [@react.component]
 let make =
-    (~name: string, ~targetOutput: option(AudioNode.audioNode_like('a))) => {
+    (
+      ~name: string,
+      ~targetOutput: option(AudioNode.audioNode_like('a)),
+      ~alone: bool=false,
+    ) => {
   let appContext = React.useContext(AppContextProvider.appContext);
   let (oscillatorOn, setOscillatorOn) = React.useState(() => false);
   let oscillator = React.useRef(None);
@@ -16,8 +20,6 @@ let make =
     ->Belt.Option.map(appContext.removeFromTriggerTargets)
     ->ignore;
   };
-
-  React.useEffect0(() => Some(() => cleanUp()));
 
   let toggleOscillator = _: unit =>
     if (oscillatorOn == false) {
@@ -46,6 +48,13 @@ let make =
       cleanUp();
       setOscillatorOn(_ => false);
     };
+
+  React.useEffect0(() => {
+    if (alone) {
+      toggleOscillator();
+    };
+    Some(() => cleanUp());
+  });
 
   <div>
     <h3> {React.string(name)} </h3>
@@ -78,7 +87,7 @@ let make =
          <Slider
            name="Gain"
            param={osc |> Oscillator.getOscillatorGain}
-           config={minValue: epsilon_float, maxValue: 10.0}
+           config={minValue: epsilon_float, maxValue: 1.0}
          />
          <EnvelopeUnit envelope=env />
        </>

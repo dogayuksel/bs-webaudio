@@ -44,6 +44,7 @@ let make = () => {
               <OscillatorUnit
                 name={"Oscillator " ++ string_of_int(osc)}
                 targetOutput=None
+                alone={oscillators |> List.length == 1}
               />
             </div>
           )

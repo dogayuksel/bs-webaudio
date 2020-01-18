@@ -17,12 +17,14 @@ import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 function OscillatorUnit(Props) {
   var name = Props.name;
   var targetOutput = Props.targetOutput;
+  var match = Props.alone;
+  var alone = match !== undefined ? match : false;
   var appContext = React.useContext(AppContextProvider$WebAudio.appContext);
-  var match = React.useState((function () {
+  var match$1 = React.useState((function () {
           return false;
         }));
-  var setOscillatorOn = match[1];
-  var oscillatorOn = match[0];
+  var setOscillatorOn = match$1[1];
+  var oscillatorOn = match$1[0];
   var oscillator = React.useRef(undefined);
   var envelope = React.useRef(undefined);
   var cleanUp = function (param) {
@@ -30,11 +32,6 @@ function OscillatorUnit(Props) {
     Belt_Option.map(envelope.current, appContext.removeFromTriggerTargets);
     return /* () */0;
   };
-  React.useEffect((function () {
-          return (function (param) {
-                    return cleanUp(/* () */0);
-                  });
-        }), ([]));
   var toggleOscillator = function (param) {
     if (oscillatorOn === false) {
       var match = appContext.audioContext;
@@ -63,11 +60,19 @@ function OscillatorUnit(Props) {
                   }));
     }
   };
-  var match$1 = oscillator.current;
-  var match$2 = envelope.current;
+  React.useEffect((function () {
+          if (alone) {
+            toggleOscillator(/* () */0);
+          }
+          return (function (param) {
+                    return cleanUp(/* () */0);
+                  });
+        }), ([]));
+  var match$2 = oscillator.current;
+  var match$3 = envelope.current;
   var tmp;
-  if (match$1 !== undefined && match$2 !== undefined) {
-    var osc = match$1;
+  if (match$2 !== undefined && match$3 !== undefined) {
+    var osc = match$2;
     tmp = React.createElement(React.Fragment, undefined, React.createElement(WaveSampler$WebAudio.make, {
               setWaveCallback: (function (wave) {
                   return Oscillator$WebAudio.setOscillatorType(/* Custom */[wave], osc);
@@ -89,10 +94,10 @@ function OscillatorUnit(Props) {
               param: Oscillator$WebAudio.getOscillatorGain(osc),
               config: {
                 minValue: Pervasives.epsilon_float,
-                maxValue: 10.0
+                maxValue: 1.0
               }
             }), React.createElement(EnvelopeUnit$WebAudio.make, {
-              envelope: match$2
+              envelope: match$3
             }));
   } else {
     tmp = null;

@@ -19,6 +19,7 @@ function OscillatorRack(Props) {
                 ];
         }));
   var setOscillators = match$1[1];
+  var oscillators = match$1[0];
   return React.createElement("div", undefined, React.createElement("div", {
                   style: {
                     backgroundColor: "#839264",
@@ -59,9 +60,10 @@ function OscillatorRack(Props) {
                                               })
                                           }, React.createElement("h4", undefined, "X")), React.createElement(OscillatorUnit$WebAudio.make, {
                                             name: "Oscillator " + String(osc),
-                                            targetOutput: undefined
+                                            targetOutput: undefined,
+                                            alone: List.length(oscillators) === 1
                                           }));
-                          }), match$1[0]))));
+                          }), oscillators))));
 }
 
 var make = OscillatorRack;
