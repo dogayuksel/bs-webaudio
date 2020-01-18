@@ -3,19 +3,21 @@ let make =
     (~name: string, ~targetOutput: option(AudioNode.audioNode_like('a))) => {
   let appContext = React.useContext(AppContextProvider.appContext);
   let (oscillatorOn, setOscillatorOn) = React.useState(() => false);
-  let (oscillator, setOscillator) = React.useState(() => None);
-  let (envelope, setEnvelope) = React.useState(() => None);
+  let oscillator = React.useRef(None);
+  let envelope = React.useRef(None);
 
-  React.useEffect0(() => {
-    Some(
-      () => {
-        oscillator->Belt.Option.map(Oscillator.cleanUp)->ignore;
-        envelope
-        ->Belt.Option.map(appContext.removeFromTriggerTargets)
-        ->ignore;
-      },
-    )
-  });
+  let cleanUp = (): unit => {
+    oscillator
+    ->React.Ref.current
+    ->Belt.Option.map(Oscillator.cleanUp)
+    ->ignore;
+    envelope
+    ->React.Ref.current
+    ->Belt.Option.map(appContext.removeFromTriggerTargets)
+    ->ignore;
+  };
+
+  React.useEffect0(() => Some(() => cleanUp()));
 
   let toggleOscillator = _: unit =>
     if (oscillatorOn == false) {
@@ -28,23 +30,20 @@ let make =
           };
         let osc =
           audioContext
-          |> Oscillator.make(~oscillatorType=Sine)
+          |> Oscillator.make
           |> Oscillator.connect(~target)
           |> Oscillator.start;
-        setOscillator(_ => Some(osc));
+        oscillator->React.Ref.setCurrent(Some(osc));
         let env =
           audioContext |> Envelope.make(Oscillator.getEnvelopeGain(osc));
         env |> appContext.addToTriggerTargets;
-        setEnvelope(_ => Some(env));
+        envelope->React.Ref.setCurrent(Some(env));
         setOscillatorOn(_ => true);
         ();
       | None => Js.log("Missing Audio Context")
       };
     } else {
-      oscillator->Belt.Option.map(Oscillator.cleanUp)->ignore;
-      setOscillator(_ => None);
-      envelope->Belt.Option.map(appContext.removeFromTriggerTargets)->ignore;
-      setEnvelope(_ => None);
+      cleanUp();
       setOscillatorOn(_ => false);
     };
 
@@ -53,7 +52,7 @@ let make =
     <div onClick=toggleOscillator>
       <Switch isOn=oscillatorOn> {React.string("Start")} </Switch>
     </div>
-    {switch (oscillator, envelope) {
+    {switch (React.Ref.current(oscillator), React.Ref.current(envelope)) {
      | (Some(osc), Some(env)) =>
        <>
          <WaveSampler
