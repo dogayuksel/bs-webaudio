@@ -132,17 +132,12 @@ function Knob(Props) {
     return /* () */0;
   };
   return React.createElement("div", {
+              className: "control-container",
               style: {
-                backgroundColor: ColorPalette$WebAudio.blue,
-                display: "inline-block",
-                padding: "5px 10px",
                 width: String(config.size + 60 | 0) + "px"
               }
             }, React.createElement("h5", {
-                  className: "knob-label",
-                  style: {
-                    color: ColorPalette$WebAudio.white
-                  }
+                  className: "control-label"
                 }, name), React.createElement("div", {
                   style: {
                     backgroundColor: ColorPalette$WebAudio.silver,
@@ -165,10 +160,7 @@ function Knob(Props) {
                         width: "0"
                       }
                     })), React.createElement("h5", {
-                  className: "knob-label",
-                  style: {
-                    color: ColorPalette$WebAudio.white
-                  }
+                  className: "control-label"
                 }, value.toFixed(indicatorPrecission)));
 }
 

@@ -5,19 +5,11 @@ import * as React from "react";
 import * as Pervasives from "bs-platform/lib/es6/pervasives.js";
 import * as Knob$WebAudio from "./Knob.bs.js";
 import * as Envelope$WebAudio from "../Envelope/Envelope.bs.js";
-import * as ColorPalette$WebAudio from "../ColorPalette.bs.js";
 
 function EnvelopeUnit(Props) {
   var envelope = Props.envelope;
   return React.createElement("div", {
-              style: {
-                backgroundColor: ColorPalette$WebAudio.blue,
-                border: "3px solid " + ColorPalette$WebAudio.white,
-                display: "inline-block",
-                margin: "10px",
-                padding: "0 20px",
-                borderRadius: "20px"
-              }
+              className: "unit-container"
             }, React.createElement("div", undefined, React.createElement(Knob$WebAudio.make, {
                       name: "ATTACK",
                       config: {

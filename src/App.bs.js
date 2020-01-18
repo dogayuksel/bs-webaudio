@@ -84,10 +84,12 @@ function App(Props) {
                     top: "0"
                   },
                   onClick: toggleAudioContextOn
-                }, React.createElement(Switch$WebAudio.make, {
-                      isOn: audioContextOn,
-                      children: "POWER"
-                    })), audioContext !== undefined ? React.createElement(OscillatorRack$WebAudio.make, { }) : null, React.createElement(Keyboard$WebAudio.make, { }));
+                }, React.createElement("div", {
+                      className: "unit-container"
+                    }, React.createElement(Switch$WebAudio.make, {
+                          isOn: audioContextOn,
+                          children: "POWER"
+                        }))), audioContext !== undefined ? React.createElement(OscillatorRack$WebAudio.make, { }) : null, React.createElement(Keyboard$WebAudio.make, { }));
 }
 
 var make = App;

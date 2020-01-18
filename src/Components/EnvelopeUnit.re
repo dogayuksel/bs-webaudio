@@ -1,15 +1,6 @@
 [@react.component]
 let make = (~envelope: Envelope.t) => {
-  <div
-    style={ReactDOMRe.Style.make(
-      ~display="inline-block",
-      ~backgroundColor=ColorPalette.blue,
-      ~padding="0 20px",
-      ~margin="10px",
-      ~border="3px solid " ++ ColorPalette.white,
-      ~borderRadius="20px",
-      (),
-    )}>
+  <div className="unit-container">
     <div>
       <Knob
         name="ATTACK"

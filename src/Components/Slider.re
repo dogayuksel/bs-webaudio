@@ -93,18 +93,8 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
     ();
   };
 
-  <div
-    style={ReactDOMRe.Style.make(
-      ~display="inline-block",
-      ~backgroundColor=ColorPalette.blue,
-      ~padding="10px 20px",
-      (),
-    )}>
-    <h5
-      className="knob-label"
-      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
-      {React.string(name)}
-    </h5>
+  <div className="control-container">
+    <h5 className="control-label"> {React.string(name)} </h5>
     <div
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
@@ -130,9 +120,7 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
         )}
       />
     </div>
-    <h5
-      className="knob-label"
-      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
+    <h5 className="control-label">
       {React.string(
          Js.Float.toFixedWithPrecision(~digits=indicatorPrecission, value),
        )}

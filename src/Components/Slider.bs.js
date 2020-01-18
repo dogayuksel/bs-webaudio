@@ -110,16 +110,9 @@ function Slider(Props) {
     return /* () */0;
   };
   return React.createElement("div", {
-              style: {
-                backgroundColor: ColorPalette$WebAudio.blue,
-                display: "inline-block",
-                padding: "10px 20px"
-              }
+              className: "control-container"
             }, React.createElement("h5", {
-                  className: "knob-label",
-                  style: {
-                    color: ColorPalette$WebAudio.white
-                  }
+                  className: "control-label"
                 }, name), React.createElement("div", {
                   style: {
                     backgroundColor: ColorPalette$WebAudio.black,
@@ -137,10 +130,7 @@ function Slider(Props) {
                         transform: "translate(" + (String(30 * -0.4 | 0) + "px, " + (mapValueToHeight(value) + ")"))
                       }
                     })), React.createElement("h5", {
-                  className: "knob-label",
-                  style: {
-                    color: ColorPalette$WebAudio.white
-                  }
+                  className: "control-label"
                 }, value.toFixed(indicatorPrecission)));
 }
 

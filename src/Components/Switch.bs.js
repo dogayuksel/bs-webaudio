@@ -11,16 +11,9 @@ function Switch(Props) {
   var isOn = Props.isOn;
   var children = Props.children;
   return React.createElement("div", {
-              style: {
-                backgroundColor: ColorPalette$WebAudio.blue,
-                display: "inline-block",
-                padding: "10px 20px"
-              }
+              className: "control-container"
             }, React.createElement("h5", {
-                  className: "knob-label",
-                  style: {
-                    color: ColorPalette$WebAudio.white
-                  }
+                  className: "control-label"
                 }, children), React.createElement("div", {
                   style: {
                     backgroundColor: ColorPalette$WebAudio.black,

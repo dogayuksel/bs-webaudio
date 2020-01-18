@@ -79,14 +79,7 @@ function OscillatorUnit(Props) {
                   return Oscillator$WebAudio.setOscillatorType(/* Custom */[wave], osc);
                 })
             }), React.createElement("div", {
-              style: {
-                backgroundColor: ColorPalette$WebAudio.blue,
-                border: "3px solid " + ColorPalette$WebAudio.white,
-                display: "inline-block",
-                margin: "10px",
-                padding: "0 20px",
-                borderRadius: "20px"
-              }
+              className: "unit-container"
             }, React.createElement(Knob$WebAudio.make, {
                   name: "FREQUENCY",
                   config: {
@@ -117,19 +110,18 @@ function OscillatorUnit(Props) {
                 backgroundColor: ColorPalette$WebAudio.green
               }
             }, React.createElement("h3", {
-                  className: "knob-label",
-                  style: {
-                    color: ColorPalette$WebAudio.white
-                  }
+                  className: "unit-label"
                 }, name), React.createElement("div", {
                   style: {
                     display: "inline-block"
                   },
                   onClick: toggleOscillator
-                }, React.createElement(Switch$WebAudio.make, {
-                      isOn: oscillatorOn,
-                      children: "START"
-                    })), tmp);
+                }, React.createElement("div", {
+                      className: "unit-container"
+                    }, React.createElement(Switch$WebAudio.make, {
+                          isOn: oscillatorOn,
+                          children: "START"
+                        }))), tmp);
 }
 
 var make = OscillatorUnit;

@@ -66,16 +66,7 @@ let make = (~setWaveCallback: PeriodicWave.t => unit) => {
     (sineFactor, sawFactor, triangleFactor, squareFactor),
   );
 
-  <div
-    style={ReactDOMRe.Style.make(
-      ~display="inline-block",
-      ~backgroundColor=ColorPalette.blue,
-      ~padding="0 20px",
-      ~margin="10px",
-      ~border="3px solid " ++ ColorPalette.white,
-      ~borderRadius="20px",
-      (),
-    )}>
+  <div className="unit-container">
     <div>
       <Knob
         name="SINE"

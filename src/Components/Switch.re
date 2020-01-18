@@ -4,18 +4,8 @@ let sizeInPixels = (x: int) => string_of_int(x) ++ "px";
 
 [@react.component]
 let make = (~isOn: bool, ~children) => {
-  <div
-    style={ReactDOMRe.Style.make(
-      ~display="inline-block",
-      ~padding="10px 20px",
-      ~backgroundColor=ColorPalette.blue,
-      (),
-    )}>
-    <h5
-      className="knob-label"
-      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
-      children
-    </h5>
+  <div className="control-container">
+    <h5 className="control-label"> children </h5>
     <div
       style={ReactDOMRe.Style.make(
         ~backgroundColor=ColorPalette.black,

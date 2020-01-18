@@ -136,17 +136,11 @@ let make =
 
   <div
     style={ReactDOMRe.Style.make(
-      ~backgroundColor=ColorPalette.blue,
-      ~display="inline-block",
       ~width={sizeInPixels(config.size + 60)},
-      ~padding="5px 10px",
       (),
-    )}>
-    <h5
-      className="knob-label"
-      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
-      {React.string(name)}
-    </h5>
+    )}
+    className="control-container">
+    <h5 className="control-label"> {React.string(name)} </h5>
     <div
       onMouseDown=handleMouseDown
       style={ReactDOMRe.Style.make(
@@ -172,9 +166,7 @@ let make =
         )}
       />
     </div>
-    <h5
-      className="knob-label"
-      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}>
+    <h5 className="control-label">
       {React.string(
          Js.Float.toFixedWithPrecision(value, ~digits=indicatorPrecission),
        )}

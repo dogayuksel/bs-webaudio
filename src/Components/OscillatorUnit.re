@@ -57,15 +57,13 @@ let make =
   });
 
   <div style={ReactDOMRe.Style.make(~backgroundColor=ColorPalette.green, ())}>
-    <h3
-      style={ReactDOMRe.Style.make(~color=ColorPalette.white, ())}
-      className="knob-label">
-      {React.string(name)}
-    </h3>
+    <h3 className="unit-label"> {React.string(name)} </h3>
     <div
       style={ReactDOMRe.Style.make(~display="inline-block", ())}
       onClick=toggleOscillator>
-      <Switch isOn=oscillatorOn> {React.string("START")} </Switch>
+      <div className="unit-container">
+        <Switch isOn=oscillatorOn> {React.string("START")} </Switch>
+      </div>
     </div>
     {switch (React.Ref.current(oscillator), React.Ref.current(envelope)) {
      | (Some(osc), Some(env)) =>
@@ -75,16 +73,7 @@ let make =
              Oscillator.setOscillatorType(~oscillatorType=Custom(wave), osc)
            }
          />
-         <div
-           style={ReactDOMRe.Style.make(
-             ~display="inline-block",
-             ~backgroundColor=ColorPalette.blue,
-             ~padding="0 20px",
-             ~margin="10px",
-             ~border="3px solid " ++ ColorPalette.white,
-             ~borderRadius="20px",
-             (),
-           )}>
+         <div className="unit-container">
            <Knob
              name="FREQUENCY"
              initialParamValue={
