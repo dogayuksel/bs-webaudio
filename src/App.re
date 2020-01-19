@@ -2,6 +2,7 @@
 let make = () => {
   let (audioContextOn, setAudioContextOn) = React.useState(() => false);
   let (triggerTargets, setTriggerTargets) = React.useState(() => []);
+  let (lfoOutputGain, setLfoOutputGain) = React.useState(() => None);
   let audioContext = React.useRef(None);
 
   let addToTriggerTargets = (envelope: Envelope.t): unit => {
@@ -49,6 +50,8 @@ let make = () => {
       triggerTargets,
       addToTriggerTargets,
       removeFromTriggerTargets,
+      lfoOutputGain,
+      setLfoOutputGain,
     }>
     <div
       style={ReactDOMRe.Style.make(
@@ -64,7 +67,7 @@ let make = () => {
       </div>
     </div>
     {switch (audioContext->React.Ref.current) {
-     | Some(_) => <OscillatorRack />
+     | Some(_) => <> <OscillatorRack /> <LFOUnit /> </>
      | None => React.null
      }}
     <Keyboard />

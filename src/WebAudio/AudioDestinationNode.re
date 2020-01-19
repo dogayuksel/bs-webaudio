@@ -6,3 +6,5 @@ type t = audioDestinationNode;
 include AudioNode.Impl({
   type nonrec t = t;
 });
+
+external asAudioNodeLike: t => AudioNode.audioNode_like('a) = "%identity";

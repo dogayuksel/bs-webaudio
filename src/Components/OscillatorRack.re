@@ -1,5 +1,6 @@
 [@react.component]
 let make = () => {
+  let appContext = React.useContext(AppContextProvider.appContext);
   let (oscillatorIndex, setOscillatorIndex) = React.useState(() => 1);
   let (oscillators, setOscillators) = React.useState(() => [1]);
 
@@ -18,19 +19,22 @@ let make = () => {
       {React.string("Add Oscillator")}
     </button>
     <div>
-      {oscillators
-       |> List.map(osc =>
-            <div key={string_of_int(osc)}>
+      {switch (appContext.lfoOutputGain) {
+       | Some(outputGain) =>
+         oscillators
+         |> List.map(osc =>
               <OscillatorUnit
+                key={string_of_int(osc)}
                 name={"OSCILLATOR " ++ string_of_int(osc)}
-                targetOutput=None
+                targetOutput={Some(outputGain)}
                 alone={oscillators |> List.length == 1}
                 remove={removeOscillator(osc)}
               />
-            </div>
-          )
-       |> Array.of_list
-       |> ReasonReact.array}
+            )
+         |> Array.of_list
+         |> ReasonReact.array
+       | None => ReasonReact.null
+       }}
     </div>
   </div>;
 };

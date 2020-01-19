@@ -54,7 +54,10 @@ let start = (lfo: t): t => {
   lfo;
 };
 
-let setFrequency = (~frequency: float, lfo: t) => {
+let setFrequency = (~frequency: float, lfo: t): unit => {
   lfo.oscillatorNode |> Oscillator.setFrequency(~frequency);
-  lfo;
+};
+
+let getFrequency = (lfo: t): AudioParam.t => {
+  lfo.oscillatorNode |> Oscillator.getFrequency;
 };

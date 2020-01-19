@@ -43,7 +43,10 @@ function OscillatorUnit(Props) {
                             return Oscillator$WebAudio.make(undefined, eta);
                           })(audioContext)));
               oscillator.current = osc;
-              var env = Envelope$WebAudio.make(Oscillator$WebAudio.getEnvelopeGain(osc), audioContext);
+              var arg = Oscillator$WebAudio.getEnvelopeGain(osc);
+              var env = (function (eta) {
+                    return Envelope$WebAudio.make(undefined, arg, eta);
+                  })(audioContext);
               Curry._1(appContext.addToTriggerTargets, env);
               envelope.current = env;
               Curry._1(setOscillatorOn, (function (param) {

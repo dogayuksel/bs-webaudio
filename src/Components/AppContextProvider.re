@@ -3,6 +3,8 @@ type appContext = {
   triggerTargets: list(Envelope.t),
   addToTriggerTargets: Envelope.t => unit,
   removeFromTriggerTargets: Envelope.t => unit,
+  setLfoOutputGain: (option(GainNode.t) => option(GainNode.t)) => unit,
+  lfoOutputGain: option(GainNode.t),
 };
 
 let appContext =
@@ -11,6 +13,8 @@ let appContext =
     triggerTargets: [],
     addToTriggerTargets: _ => (),
     removeFromTriggerTargets: _ => (),
+    setLfoOutputGain: _ => (),
+    lfoOutputGain: None,
   });
 
 let makeProps = (~value, ~children, ()) => {

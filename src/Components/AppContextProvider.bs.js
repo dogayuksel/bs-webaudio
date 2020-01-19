@@ -10,7 +10,11 @@ var appContext = React.createContext({
         }),
       removeFromTriggerTargets: (function (param) {
           return /* () */0;
-        })
+        }),
+      setLfoOutputGain: (function (param) {
+          return /* () */0;
+        }),
+      lfoOutputGain: undefined
     });
 
 function makeProps(value, children, param) {

@@ -7,6 +7,7 @@ import * as Caml_obj from "bs-platform/lib/es6/caml_obj.js";
 import * as Belt_Option from "bs-platform/lib/es6/belt_Option.js";
 import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Switch$WebAudio from "./Components/Switch.bs.js";
+import * as LFOUnit$WebAudio from "./Components/LFOUnit.bs.js";
 import * as Keyboard$WebAudio from "./Components/Keyboard.bs.js";
 import * as AudioContext$WebAudio from "./WebAudio/AudioContext.bs.js";
 import * as OscillatorRack$WebAudio from "./Components/OscillatorRack.bs.js";
@@ -22,6 +23,9 @@ function App(Props) {
           return /* [] */0;
         }));
   var setTriggerTargets = match$1[1];
+  var match$2 = React.useState((function () {
+          return ;
+        }));
   var audioContext = React.useRef(undefined);
   var addToTriggerTargets = function (envelope) {
     return Curry._1(setTriggerTargets, (function (targets) {
@@ -67,12 +71,14 @@ function App(Props) {
             return /* () */0;
           }
         }), /* array */[audioContextOn]);
-  var match$2 = audioContext.current;
+  var match$3 = audioContext.current;
   return React.createElement(AppContextProvider$WebAudio.make, AppContextProvider$WebAudio.makeProps({
                   audioContext: audioContext.current,
                   triggerTargets: match$1[0],
                   addToTriggerTargets: addToTriggerTargets,
-                  removeFromTriggerTargets: removeFromTriggerTargets
+                  removeFromTriggerTargets: removeFromTriggerTargets,
+                  setLfoOutputGain: match$2[1],
+                  lfoOutputGain: match$2[0]
                 }, null, /* () */0), React.createElement("div", {
                   style: {
                     position: "absolute",
@@ -85,7 +91,7 @@ function App(Props) {
                           isOn: audioContextOn,
                           toggle: toggleAudioContextOn,
                           children: "POWER"
-                        }))), match$2 !== undefined ? React.createElement(OscillatorRack$WebAudio.make, { }) : null, React.createElement(Keyboard$WebAudio.make, { }));
+                        }))), match$3 !== undefined ? React.createElement(React.Fragment, undefined, React.createElement(OscillatorRack$WebAudio.make, { }), React.createElement(LFOUnit$WebAudio.make, { })) : null, React.createElement(Keyboard$WebAudio.make, { }));
 }
 
 var make = App;

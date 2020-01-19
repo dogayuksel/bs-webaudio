@@ -31,7 +31,10 @@ let make =
             let target =
               switch (targetOutput) {
               | Some(target) => target
-              | None => audioContext |> AudioContext.getDestination
+              | None =>
+                audioContext
+                ->AudioContext.getDestination
+                ->AudioDestinationNode.asAudioNodeLike
               };
             let osc =
               audioContext
@@ -40,7 +43,8 @@ let make =
               |> Oscillator.start;
             oscillator->React.Ref.setCurrent(Some(osc));
             let env =
-              audioContext |> Envelope.make(Oscillator.getEnvelopeGain(osc));
+              audioContext
+              |> Envelope.make(~targetParam=Oscillator.getEnvelopeGain(osc));
             env |> appContext.addToTriggerTargets;
             envelope->React.Ref.setCurrent(Some(env));
             setOscillatorOn(_ => true);

@@ -7,11 +7,12 @@ function trigger(envelope) {
   var attack = match.attack;
   var decay = match.decay;
   var sustain = match.sustain;
+  var targetValue = match.targetValue;
   var currentTime = envelope.audioContext.getOutputTimestamp();
   var attackTime = currentTime.contextTime + attack;
   envelope.targetParam.cancelScheduledValues(currentTime.contextTime);
-  envelope.targetParam.setTargetAtTime(1.0, currentTime.contextTime + Pervasives.epsilon_float, attack / 3.0);
-  envelope.targetParam.setTargetAtTime(sustain, attackTime, decay / 3.0);
+  envelope.targetParam.setTargetAtTime(targetValue, currentTime.contextTime + Pervasives.epsilon_float, attack / 3.0);
+  envelope.targetParam.setTargetAtTime(sustain * targetValue, attackTime, decay / 3.0);
   return /* () */0;
 }
 
@@ -39,17 +40,22 @@ function update(param, envelope) {
     case /* Release */3 :
         envelopeParams.release = param[0];
         return /* () */0;
+    case /* TargetValue */4 :
+        envelopeParams.targetValue = param[0];
+        return /* () */0;
     
   }
 }
 
-function make(targetParam, audioCtx) {
+function make($staropt$star, targetParam, audioCtx) {
+  var targetValue = $staropt$star !== undefined ? $staropt$star : 1.0;
   targetParam.value = Pervasives.epsilon_float;
   var envelopeParams = {
     attack: 0.2,
     decay: 0.3,
     sustain: 0.1,
-    release: 1.0
+    release: 1.0,
+    targetValue: targetValue
   };
   return {
           envelopeParams: envelopeParams,

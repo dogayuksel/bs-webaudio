@@ -30,8 +30,11 @@ function start(lfo) {
 }
 
 function setFrequency(frequency, lfo) {
-  Oscillator$WebAudio.setFrequency(frequency, lfo.oscillatorNode);
-  return lfo;
+  return Oscillator$WebAudio.setFrequency(frequency, lfo.oscillatorNode);
+}
+
+function getFrequency(lfo) {
+  return Oscillator$WebAudio.getFrequency(lfo.oscillatorNode);
 }
 
 var defaultFrequency = 3.0;
@@ -42,6 +45,7 @@ export {
   connect ,
   start ,
   setFrequency ,
+  getFrequency ,
   
 }
 /* Oscillator-WebAudio Not a pure module */

@@ -8,6 +8,7 @@ type envelopeParams = {
   mutable decay: float,
   mutable sustain: float,
   mutable release: float,
+  mutable targetValue: float,
 };
 
 type envelope = {
@@ -19,20 +20,20 @@ type envelope = {
 type t = envelope;
 
 let trigger = (envelope: t): unit => {
-  let {attack, decay, sustain} = envelope.envelopeParams;
+  let {targetValue, attack, decay, sustain} = envelope.envelopeParams;
   let currentTime = envelope.audioContext |> AudioContext.getOutputTimestamp();
   let attackTime = currentTime.contextTime +. attack;
   envelope.targetParam
   |> AudioParam.cancelScheduledValues(~startTime=currentTime.contextTime);
   envelope.targetParam
   |> AudioParam.setTargetAtTime(
-       ~target=1.0,
+       ~target=targetValue,
        ~startTime=currentTime.contextTime +. epsilon_float,
        ~timeConstant=attack /. 3.0,
      );
   envelope.targetParam
   |> AudioParam.setTargetAtTime(
-       ~target=sustain,
+       ~target=sustain *. targetValue,
        ~startTime=attackTime,
        ~timeConstant=decay /. 3.0,
      );
@@ -55,7 +56,8 @@ type envelopeParam =
   | Attack(float)
   | Decay(float)
   | Sustain(float)
-  | Release(float);
+  | Release(float)
+  | TargetValue(float);
 
 let update = (~param: envelopeParam, envelope: t): unit => {
   let {envelopeParams} = envelope;
@@ -64,16 +66,24 @@ let update = (~param: envelopeParam, envelope: t): unit => {
   | Decay(value) => envelopeParams.decay = value
   | Sustain(value) => envelopeParams.sustain = value
   | Release(value) => envelopeParams.release = value
+  | TargetValue(value) => envelopeParams.targetValue = value
   };
 };
 
-let make = (targetParam: AudioParam.t, audioCtx: AudioContext.t): t => {
+let make =
+    (
+      ~targetValue: float=1.0,
+      ~targetParam: AudioParam.t,
+      audioCtx: AudioContext.t,
+    )
+    : t => {
   targetParam->AudioParam.setValue(epsilon_float);
   let envelopeParams = {
     attack: defaultAttack,
     decay: defaultDecay,
     sustain: defaultSustain,
     release: defaultRelease,
+    targetValue,
   };
   {envelopeParams, targetParam, audioContext: audioCtx};
 };

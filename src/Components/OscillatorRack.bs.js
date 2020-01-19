@@ -4,9 +4,12 @@ import * as List from "bs-platform/lib/es6/list.js";
 import * as $$Array from "bs-platform/lib/es6/array.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as OscillatorUnit$WebAudio from "./OscillatorUnit.bs.js";
+import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 
 function OscillatorRack(Props) {
+  var appContext = React.useContext(AppContextProvider$WebAudio.appContext);
   var match = React.useState((function () {
           return 1;
         }));
@@ -29,6 +32,22 @@ function OscillatorRack(Props) {
                           }));
             });
         }), ([]));
+  var match$2 = appContext.lfoOutputGain;
+  var tmp;
+  if (match$2 !== undefined) {
+    var outputGain = Caml_option.valFromOption(match$2);
+    tmp = $$Array.of_list(List.map((function (osc) {
+                return React.createElement(OscillatorUnit$WebAudio.make, {
+                            name: "OSCILLATOR " + String(osc),
+                            targetOutput: Caml_option.some(outputGain),
+                            alone: List.length(oscillators) === 1,
+                            remove: Curry._1(removeOscillator, osc),
+                            key: String(osc)
+                          });
+              }), oscillators));
+  } else {
+    tmp = null;
+  }
   return React.createElement("div", undefined, React.createElement("button", {
                   className: "unit-container",
                   onClick: (function (param) {
@@ -42,16 +61,7 @@ function OscillatorRack(Props) {
                                     return idx + 1 | 0;
                                   }));
                     })
-                }, "Add Oscillator"), React.createElement("div", undefined, $$Array.of_list(List.map((function (osc) {
-                            return React.createElement("div", {
-                                        key: String(osc)
-                                      }, React.createElement(OscillatorUnit$WebAudio.make, {
-                                            name: "OSCILLATOR " + String(osc),
-                                            targetOutput: undefined,
-                                            alone: List.length(oscillators) === 1,
-                                            remove: Curry._1(removeOscillator, osc)
-                                          }));
-                          }), oscillators))));
+                }, "Add Oscillator"), React.createElement("div", undefined, tmp));
 }
 
 var make = OscillatorRack;
