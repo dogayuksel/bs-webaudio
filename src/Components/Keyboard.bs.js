@@ -5,6 +5,7 @@ import * as $$Array from "bs-platform/lib/es6/array.js";
 import * as Curry from "bs-platform/lib/es6/curry.js";
 import * as React from "react";
 import * as Caml_array from "bs-platform/lib/es6/caml_array.js";
+import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Switch$WebAudio from "./Switch.bs.js";
 import * as Envelope$WebAudio from "../Envelope/Envelope.bs.js";
 import * as ColorPalette$WebAudio from "../ColorPalette.bs.js";
@@ -23,19 +24,22 @@ function Keyboard(Props) {
   var setSequencerOn = match$1[1];
   var sequencerOn = match$1[0];
   var match$2 = React.useState((function () {
-          return 0;
+          return -1;
         }));
   var setActiveStep = match$2[1];
+  var activeStep = match$2[0];
   var match$3 = React.useState((function () {
           return false;
         }));
   var setKeyPress = match$3[1];
+  var lastTrigger = React.useRef(undefined);
   var toggleSequencerOn = function (param) {
     return Curry._1(setSequencerOn, (function (isOn) {
                   if (isOn === true) {
                     Curry._1(setActiveStep, (function (param) {
-                            return 0;
+                            return -1;
                           }));
+                    lastTrigger.current = undefined;
                     return false;
                   } else {
                     return true;
@@ -75,14 +79,28 @@ function Keyboard(Props) {
                     return /* () */0;
                   });
         }), /* array */[appContext.triggerTargets]);
-  React.useEffect((function () {
-          if (sequencerOn === true) {
+  var triggerTargets = function (targets) {
+    List.iter(Envelope$WebAudio.trigger, targets);
+    setTimeout((function (param) {
+            return List.iter(Envelope$WebAudio.endTrigger, appContext.triggerTargets);
+          }), 120);
+    return /* () */0;
+  };
+  React.useEffect((function (param) {
+          var match = appContext.audioContext;
+          if (match !== undefined && sequencerOn) {
+            var audioContext = Caml_option.valFromOption(match);
             var interval = setInterval((function (param) {
-                    List.iter(Envelope$WebAudio.trigger, appContext.triggerTargets);
-                    setTimeout((function (param) {
-                            return List.iter(Envelope$WebAudio.endTrigger, appContext.triggerTargets);
-                          }), 120);
-                    return /* () */0;
+                    var timeStamp = audioContext.getOutputTimestamp();
+                    lastTrigger.current = timeStamp.performanceTime;
+                    return Curry._1(setActiveStep, (function (step) {
+                                  var match = step === 7;
+                                  var newStep = match ? 0 : step + 1 | 0;
+                                  if (Caml_array.caml_array_get(sequencer, newStep) === true) {
+                                    triggerTargets(appContext.triggerTargets);
+                                  }
+                                  return newStep;
+                                }));
                   }), 500);
             return (function (param) {
                       clearInterval(interval);
@@ -91,6 +109,7 @@ function Keyboard(Props) {
           }
           
         }), /* tuple */[
+        appContext.triggerTargets,
         sequencerOn,
         sequencer
       ]);
@@ -107,16 +126,22 @@ function Keyboard(Props) {
                           toggle: toggleSequencerOn,
                           children: "START"
                         })), React.createElement("div", {
-                      className: "unit-container"
+                      className: "unit-container",
+                      style: {
+                        display: "flex"
+                      }
                     }, $$Array.mapi((function (ind, value) {
+                            var match = activeStep === ind;
                             return React.createElement("div", {
                                         key: String(ind),
                                         style: {
                                           backgroundColor: value ? ColorPalette$WebAudio.black : ColorPalette$WebAudio.white,
-                                          display: "inline-block",
+                                          display: "flex",
                                           height: "50px",
                                           margin: "5px",
-                                          width: "40px"
+                                          width: "40px",
+                                          alignItems: "center",
+                                          justifyContent: "center"
                                         },
                                         onClick: (function (param) {
                                             var index = ind;
@@ -125,7 +150,14 @@ function Keyboard(Props) {
                                                           return $$Array.copy(s);
                                                         }));
                                           })
-                                      });
+                                      }, match ? React.createElement("div", {
+                                              style: {
+                                                backgroundColor: ColorPalette$WebAudio.green,
+                                                height: "20px",
+                                                width: "20px",
+                                                borderRadius: "20px"
+                                              }
+                                            }) : null);
                           }), sequencer))));
 }
 
