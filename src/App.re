@@ -70,6 +70,7 @@ let make = () => {
      | Some(_) => <> <OscillatorRack /> <LFOUnit /> </>
      | None => React.null
      }}
+    <Sequencer />
     <Keyboard />
   </AppContextProvider>;
 };

@@ -9,6 +9,7 @@ import * as Caml_option from "bs-platform/lib/es6/caml_option.js";
 import * as Switch$WebAudio from "./Components/Switch.bs.js";
 import * as LFOUnit$WebAudio from "./Components/LFOUnit.bs.js";
 import * as Keyboard$WebAudio from "./Components/Keyboard.bs.js";
+import * as Sequencer$WebAudio from "./Components/Sequencer.bs.js";
 import * as AudioContext$WebAudio from "./WebAudio/AudioContext.bs.js";
 import * as OscillatorRack$WebAudio from "./Components/OscillatorRack.bs.js";
 import * as AppContextProvider$WebAudio from "./Components/AppContextProvider.bs.js";
@@ -91,7 +92,7 @@ function App(Props) {
                           isOn: audioContextOn,
                           toggle: toggleAudioContextOn,
                           children: "POWER"
-                        }))), match$3 !== undefined ? React.createElement(React.Fragment, undefined, React.createElement(OscillatorRack$WebAudio.make, { }), React.createElement(LFOUnit$WebAudio.make, { })) : null, React.createElement(Keyboard$WebAudio.make, { }));
+                        }))), match$3 !== undefined ? React.createElement(React.Fragment, undefined, React.createElement(OscillatorRack$WebAudio.make, { }), React.createElement(LFOUnit$WebAudio.make, { })) : null, React.createElement(Sequencer$WebAudio.make, { }), React.createElement(Keyboard$WebAudio.make, { }));
 }
 
 var make = App;
