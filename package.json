@@ -2,9 +2,11 @@
   "name": "web-audio",
   "version": "0.1.0",
   "scripts": {
-    "build": "bsb -make-world",
-    "start": "parcel ./src/index.html",
-    "clean": "bsb -clean-world"
+    "make": "bsb -make-world",
+    "clean": "bsb -clean-world",
+    "dev": "parcel ./src/index.html",
+    "build": "parcel build ./src/index.html",
+    "start": "http-server ./dist -p 3000"
   },
   "keywords": [
     "BuckleScript"
@@ -16,6 +18,7 @@
   },
   "dependencies": {
     "bs-webapi": "^0.15",
+    "http-server": "^0.12.1",
     "parcel-bundler": "^1.12.4",
     "reason-react": "^0.7.0"
   }
