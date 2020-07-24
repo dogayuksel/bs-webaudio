@@ -2,12 +2,10 @@
 
 import * as PeriodicWave$WebAudio from "./PeriodicWave.bs.js";
 
-var createAudioContext = (
-     function () {
+var createAudioContext = (function () {
        var AudioContext = window.AudioContext || window.webkitAudioContext;
        return new AudioContext();
-     }
-  );
+     });
 
 function makePeriodicWave(samples, audioContext) {
   var match = PeriodicWave$WebAudio.calculateCoefficients(samples);
@@ -21,4 +19,4 @@ export {
   makePeriodicWave ,
   
 }
-/* createAudioContext Not a pure module */
+/* No side effect */

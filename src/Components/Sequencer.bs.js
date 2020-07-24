@@ -13,19 +13,19 @@ import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 
 function Sequencer(Props) {
   var appContext = React.useContext(AppContextProvider$WebAudio.appContext);
-  var match = React.useState((function () {
-          return Caml_array.caml_make_vect(8, false);
-        }));
+  var match = React.useState(function () {
+        return Caml_array.caml_make_vect(8, false);
+      });
   var setSequencer = match[1];
   var sequencer = match[0];
-  var match$1 = React.useState((function () {
-          return false;
-        }));
+  var match$1 = React.useState(function () {
+        return false;
+      });
   var setSequencerOn = match$1[1];
   var sequencerOn = match$1[0];
-  var match$2 = React.useState((function () {
-          return -1;
-        }));
+  var match$2 = React.useState(function () {
+        return -1;
+      });
   var setActiveStep = match$2[1];
   var activeStep = match$2[0];
   var lastTrigger = React.useRef(undefined);
@@ -47,31 +47,33 @@ function Sequencer(Props) {
     setTimeout((function (param) {
             return List.iter(Envelope$WebAudio.endTrigger, appContext.triggerTargets);
           }), 120);
-    return /* () */0;
+    
   };
-  React.useEffect((function (param) {
+  React.useEffect((function () {
           var match = appContext.audioContext;
-          if (match !== undefined && sequencerOn) {
-            var audioContext = Caml_option.valFromOption(match);
-            var interval = setInterval((function (param) {
-                    var timeStamp = audioContext.getOutputTimestamp();
-                    lastTrigger.current = timeStamp.performanceTime;
-                    return Curry._1(setActiveStep, (function (step) {
-                                  var match = step === 7;
-                                  var newStep = match ? 0 : step + 1 | 0;
-                                  if (Caml_array.caml_array_get(sequencer, newStep) === true) {
-                                    triggerTargets(appContext.triggerTargets);
-                                  }
-                                  return newStep;
-                                }));
-                  }), 500);
-            return (function (param) {
-                      clearInterval(interval);
-                      return /* () */0;
-                    });
+          if (match === undefined) {
+            return ;
           }
-          
-        }), /* tuple */[
+          if (!sequencerOn) {
+            return ;
+          }
+          var audioContext = Caml_option.valFromOption(match);
+          var interval = setInterval((function (param) {
+                  var timeStamp = audioContext.getOutputTimestamp();
+                  lastTrigger.current = timeStamp.performanceTime;
+                  return Curry._1(setActiveStep, (function (step) {
+                                var newStep = step === 7 ? 0 : step + 1 | 0;
+                                if (Caml_array.caml_array_get(sequencer, newStep) === true) {
+                                  triggerTargets(appContext.triggerTargets);
+                                }
+                                return newStep;
+                              }));
+                }), 500);
+          return (function (param) {
+                    clearInterval(interval);
+                    
+                  });
+        }), [
         appContext.triggerTargets,
         sequencerOn,
         sequencer
@@ -94,7 +96,6 @@ function Sequencer(Props) {
                         display: "flex"
                       }
                     }, $$Array.mapi((function (ind, value) {
-                            var match = activeStep === ind;
                             return React.createElement("div", {
                                         key: String(ind),
                                         style: {
@@ -107,13 +108,12 @@ function Sequencer(Props) {
                                           justifyContent: "center"
                                         },
                                         onClick: (function (param) {
-                                            var index = ind;
                                             return Curry._1(setSequencer, (function (s) {
-                                                          Caml_array.caml_array_set(s, index, !Caml_array.caml_array_get(s, index));
+                                                          Caml_array.caml_array_set(s, ind, !Caml_array.caml_array_get(s, ind));
                                                           return $$Array.copy(s);
                                                         }));
                                           })
-                                      }, match ? React.createElement("div", {
+                                      }, activeStep === ind ? React.createElement("div", {
                                               style: {
                                                 backgroundColor: ColorPalette$WebAudio.green,
                                                 height: "20px",

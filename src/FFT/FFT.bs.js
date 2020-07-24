@@ -20,32 +20,30 @@ function fft(vector) {
   var n = vector.length;
   var x = Caml_array.caml_make_vect(n, complexZero);
   if (n === 1) {
-    return /* array */[Caml_array.caml_array_get(vector, 0)];
-  } else {
-    var x_evens = Caml_array.caml_make_vect(n / 2 | 0, complexZero);
-    var x_odds = Caml_array.caml_make_vect(n / 2 | 0, complexZero);
-    $$Array.iteri((function (idx, value) {
-            var match = idx % 2 === 0;
-            if (match) {
-              return Caml_array.caml_array_set(x_evens, idx / 2 | 0, value);
-            } else {
-              return Caml_array.caml_array_set(x_odds, (idx - 1 | 0) / 2 | 0, value);
-            }
-          }), vector);
-    var x_evens_fft = fft(x_evens);
-    var x_odds_fft = fft(x_odds);
-    for(var k = 0 ,k_finish = (n / 2 | 0) - 1 | 0; k <= k_finish; ++k){
-      var t = Caml_array.caml_array_get(x_evens_fft, k);
-      var exponent = Complex.exp(Complex.mul({
-                re: -2.0 * Math.PI * (k / n),
-                im: 0.0
-              }, Complex.i));
-      var e = Complex.mul(exponent, Caml_array.caml_array_get(x_odds_fft, k));
-      Caml_array.caml_array_set(x, k, Complex.add(t, e));
-      Caml_array.caml_array_set(x, k + (n / 2 | 0) | 0, Complex.sub(t, e));
-    }
-    return x;
+    return [Caml_array.caml_array_get(vector, 0)];
   }
+  var x_evens = Caml_array.caml_make_vect(n / 2 | 0, complexZero);
+  var x_odds = Caml_array.caml_make_vect(n / 2 | 0, complexZero);
+  $$Array.iteri((function (idx, value) {
+          if (idx % 2 === 0) {
+            return Caml_array.caml_array_set(x_evens, idx / 2 | 0, value);
+          } else {
+            return Caml_array.caml_array_set(x_odds, (idx - 1 | 0) / 2 | 0, value);
+          }
+        }), vector);
+  var x_evens_fft = fft(x_evens);
+  var x_odds_fft = fft(x_odds);
+  for(var k = 0 ,k_finish = n / 2 | 0; k < k_finish; ++k){
+    var t = Caml_array.caml_array_get(x_evens_fft, k);
+    var exponent = Complex.exp(Complex.mul({
+              re: -2.0 * Math.PI * (k / n),
+              im: 0.0
+            }, Complex.i));
+    var e = Complex.mul(exponent, Caml_array.caml_array_get(x_odds_fft, k));
+    Caml_array.caml_array_set(x, k, Complex.add(t, e));
+    Caml_array.caml_array_set(x, k + (n / 2 | 0) | 0, Complex.sub(t, e));
+  }
+  return x;
 }
 
 export {

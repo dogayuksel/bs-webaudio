@@ -17,6 +17,7 @@
     "reason-react"
   ],
   "warnings": {
+    "number": "-48",
     "error" : "+101"
   },
   "ppx-flags": [],

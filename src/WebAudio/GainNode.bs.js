@@ -3,10 +3,10 @@
 import * as AudioNode$WebAudio from "./AudioNode.bs.js";
 
 function Imp(T) {
-  return { };
+  return {};
 }
 
-AudioNode$WebAudio.Impl({ });
+AudioNode$WebAudio.Impl({});
 
 export {
   Imp ,

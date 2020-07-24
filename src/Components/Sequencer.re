@@ -17,7 +17,7 @@ let make = () => {
     setSequencerOn(isOn =>
       if (isOn == true) {
         setActiveStep(_ => (-1));
-        lastTrigger->React.Ref.setCurrent(None);
+        lastTrigger.current = None;
         false;
       } else {
         true;
@@ -28,10 +28,9 @@ let make = () => {
   let triggerTargets = targets => {
     targets |> List.iter(env => env |> Envelope.trigger);
     Js_global.setTimeout(
-      _ => {
+      _ =>
         appContext.triggerTargets
-        |> List.iter(env => env |> Envelope.endTrigger)
-      },
+        |> List.iter(env => env |> Envelope.endTrigger),
       120,
     )
     |> ignore;
@@ -46,9 +45,7 @@ let make = () => {
             _ => {
               let timeStamp =
                 audioContext |> AudioContext.getOutputTimestamp();
-              lastTrigger->React.Ref.setCurrent(
-                Some(timeStamp.performanceTime),
-              );
+              lastTrigger.current = Some(timeStamp.performanceTime);
               setActiveStep(step => {
                 let newStep = step === 7 ? 0 : step + 1;
                 if (sequencer[newStep] == true) {
@@ -77,7 +74,7 @@ let make = () => {
         className="unit-container"
         style={ReactDOMRe.Style.make(~display="flex", ())}>
         {sequencer
-         |> Array.mapi((ind, value) => {
+         |> Array.mapi((ind, value) =>
               <div
                 key={string_of_int(ind)}
                 onClick={_ => toggleSequencer(ind)}
@@ -104,7 +101,7 @@ let make = () => {
                      />
                    : ReasonReact.null}
               </div>
-            })
+            )
          |> ReasonReact.array}
       </div>
     </div>

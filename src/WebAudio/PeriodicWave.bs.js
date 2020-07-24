@@ -10,7 +10,7 @@ function toTypedArray(floatArray) {
   var imaginaryCoefficients = new Float32Array($$Array.map((function (x) {
               return x.im;
             }), floatArray));
-  return /* tuple */[
+  return [
           realCoefficients,
           imaginaryCoefficients
         ];

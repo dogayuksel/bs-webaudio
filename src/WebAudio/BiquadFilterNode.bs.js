@@ -6,25 +6,25 @@ function setType(filterNode, filterType) {
   switch (filterType) {
     case /* Lowpass */0 :
         filterNode.type = "lowpass";
-        return /* () */0;
+        return ;
     case /* Highpass */1 :
         filterNode.type = "highpass";
-        return /* () */0;
+        return ;
     case /* Bandpass */2 :
         filterNode.type = "bandpass";
-        return /* () */0;
+        return ;
     case /* Lowshelf */3 :
     case /* Highself */4 :
     case /* Peaking */5 :
     case /* Notch */6 :
     case /* Allpass */7 :
         console.log("Filter type not implemented yet");
-        return /* () */0;
+        return ;
     
   }
 }
 
-AudioNode$WebAudio.Impl({ });
+AudioNode$WebAudio.Impl({});
 
 export {
   setType ,

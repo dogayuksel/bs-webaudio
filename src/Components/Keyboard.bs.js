@@ -8,9 +8,9 @@ import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 
 function Keyboard(Props) {
   var appContext = React.useContext(AppContextProvider$WebAudio.appContext);
-  var match = React.useState((function () {
-          return false;
-        }));
+  var match = React.useState(function () {
+        return false;
+      });
   var setKeyPress = match[1];
   var trigger = function (e) {
     if (e.key === "a") {
@@ -22,9 +22,8 @@ function Keyboard(Props) {
                       return true;
                     }
                   }));
-    } else {
-      return 0;
     }
+    
   };
   var endTrigger = function (e) {
     if (e.key === "a") {
@@ -32,9 +31,8 @@ function Keyboard(Props) {
                     List.iter(Envelope$WebAudio.endTrigger, appContext.triggerTargets);
                     return false;
                   }));
-    } else {
-      return 0;
     }
+    
   };
   React.useEffect((function () {
           document.addEventListener("keydown", trigger);
@@ -42,9 +40,9 @@ function Keyboard(Props) {
           return (function (param) {
                     document.removeEventListener("keydown", trigger);
                     document.removeEventListener("keydown", endTrigger);
-                    return /* () */0;
+                    
                   });
-        }), /* array */[appContext.triggerTargets]);
+        }), [appContext.triggerTargets]);
   return null;
 }
 

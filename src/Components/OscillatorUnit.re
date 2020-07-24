@@ -12,12 +12,8 @@ let make =
   let envelope = React.useRef(None);
 
   let cleanUp = (): unit => {
-    oscillator
-    ->React.Ref.current
-    ->Belt.Option.map(Oscillator.cleanUp)
-    ->ignore;
-    envelope
-    ->React.Ref.current
+    oscillator.current->Belt.Option.map(Oscillator.cleanUp)->ignore;
+    envelope.current
     ->Belt.Option.map(appContext.removeFromTriggerTargets)
     ->ignore;
   };
@@ -41,12 +37,12 @@ let make =
               |> Oscillator.make
               |> Oscillator.connect(~target)
               |> Oscillator.start;
-            oscillator->React.Ref.setCurrent(Some(osc));
+            oscillator.current = Some(osc);
             let env =
               audioContext
               |> Envelope.make(~targetParam=Oscillator.getEnvelopeGain(osc));
             env |> appContext.addToTriggerTargets;
-            envelope->React.Ref.setCurrent(Some(env));
+            envelope.current = Some(env);
             setOscillatorOn(_ => true);
             ();
           | None => Js.log("Missing Audio Context")
@@ -86,7 +82,7 @@ let make =
           {React.string("START")}
         </Switch>
       </div>
-      {switch (React.Ref.current(oscillator), React.Ref.current(envelope)) {
+      {switch (oscillator.current, envelope.current) {
        | (Some(osc), Some(env)) =>
          <>
            <WaveSampler

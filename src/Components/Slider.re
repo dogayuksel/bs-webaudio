@@ -53,7 +53,7 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
     let clientY = Webapi.Dom.MouseEvent.clientY(event);
     setValue(value => {
       let change =
-        React.Ref.current(lastY)
+        lastY.current
         |> (x => x - clientY)
         |> float_of_int
         |> mapValue(~from=(0.0, float_of_int(height)), ~target=(0.0, 1.0));
@@ -64,7 +64,7 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
         |> mapToParam(~from=(0.0, 1.0));
       let clampedValue = clamp(newValue, config);
       param->AudioParam.setValue(clampedValue);
-      React.Ref.setCurrent(lastY, clientY);
+      lastY.current = clientY;
       clampedValue;
     });
     ();
@@ -80,7 +80,7 @@ let make = (~name, ~param: AudioParam.t, ~config: sliderConfig) => {
 
   let handleMouseDown = (event: ReactEvent.Mouse.t): unit => {
     let clientY = ReactEvent.Mouse.clientY(event);
-    React.Ref.setCurrent(lastY, clientY);
+    lastY.current = clientY;
     Webapi.Dom.EventTarget.addMouseMoveEventListener(
       handleMouseMove,
       Webapi.Dom.Document.asEventTarget(Webapi.Dom.document),

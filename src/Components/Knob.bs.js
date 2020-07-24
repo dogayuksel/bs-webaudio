@@ -9,10 +9,8 @@ function sizeInPixels(x) {
 }
 
 function clamp(value, config) {
-  var match = value < config.minValue;
-  var value$1 = match ? config.minValue : value;
-  var match$1 = value$1 > config.maxValue;
-  if (match$1) {
+  var value$1 = value < config.minValue ? config.minValue : value;
+  if (value$1 > config.maxValue) {
     return config.maxValue;
   } else {
     return value$1;
@@ -32,23 +30,23 @@ function Knob(Props) {
   var setParamValue = Props.setParamValue;
   var knobDomainInPixels = React.useMemo((function () {
           return (config.size << 2);
-        }), /* array */[config.size]);
-  var partial_arg_000 = config.minValue;
-  var partial_arg_001 = config.maxValue;
-  var partial_arg = /* tuple */[
-    partial_arg_000,
-    partial_arg_001
+        }), [config.size]);
+  var partial_arg_0 = config.minValue;
+  var partial_arg_1 = config.maxValue;
+  var partial_arg = [
+    partial_arg_0,
+    partial_arg_1
   ];
   var mapParam = function (param, param$1) {
     return mapValue(partial_arg, param, param$1);
   };
-  var arg_000 = config.minValue;
-  var arg_001 = config.maxValue;
-  var arg = /* tuple */[
-    arg_000,
-    arg_001
+  var arg_0 = config.minValue;
+  var arg_1 = config.maxValue;
+  var arg = [
+    arg_0,
+    arg_1
   ];
-  var arg$1 = /* tuple */[
+  var arg$1 = [
     30.0,
     330.0
   ];
@@ -61,51 +59,51 @@ function Knob(Props) {
           } else {
             return 2;
           }
-        }), /* tuple */[
+        }), [
         config.minValue,
         config.maxValue
       ]);
   var mapValueToDegrees = function (value) {
     var match = config.scale;
-    var degrees = match ? mapValue(/* tuple */[
+    var degrees = match ? mapValue([
             0.0,
             1.0
-          ], arg$1, Math.log10(Curry._2(mapParam, /* tuple */[
+          ], arg$1, Math.log10(Curry._2(mapParam, [
                     1.0,
                     10.0
-                  ], value))) : Curry._2(mapParam, /* tuple */[
+                  ], value))) : Curry._2(mapParam, [
             30.0,
             330.0
           ], value);
     return degrees.toString() + "deg";
   };
-  var match = React.useState((function () {
-          return initialParamValue;
-        }));
+  var match = React.useState(function () {
+        return initialParamValue;
+      });
   var setValue = match[1];
   var value = match[0];
   var lastY = React.useRef(0);
   var handleMouseMove = function ($$event) {
     var clientY = $$event.clientY;
     Curry._1(setValue, (function (value) {
-            var change = mapValue(/* tuple */[
+            var change = mapValue([
                   0.0,
                   knobDomainInPixels
-                ], /* tuple */[
+                ], [
                   0.0,
                   1.0
                 ], lastY.current - clientY | 0);
             var match = config.scale;
-            var newValue = match ? mapValue(/* tuple */[
+            var newValue = match ? mapValue([
                     1.0,
                     10.0
-                  ], arg, Math.pow(10.0, change + Math.log10(Curry._2(mapParam, /* tuple */[
+                  ], arg, Math.pow(10.0, change + Math.log10(Curry._2(mapParam, [
                                 1.0,
                                 10.0
-                              ], value)))) : mapValue(/* tuple */[
+                              ], value)))) : mapValue([
                     0.0,
                     1.0
-                  ], arg, change + Curry._2(mapParam, /* tuple */[
+                  ], arg, change + Curry._2(mapParam, [
                         0.0,
                         1.0
                       ], value));
@@ -114,11 +112,11 @@ function Knob(Props) {
             lastY.current = clientY;
             return clampedValue;
           }));
-    return /* () */0;
+    
   };
   var handleMouseUp = function (param) {
     document.removeEventListener("mousemove", handleMouseMove);
-    return /* () */0;
+    
   };
   var handleMouseDown = function ($$event) {
     var clientY = $$event.clientY;
@@ -129,7 +127,7 @@ function Knob(Props) {
           once: true,
           passive: true
         });
-    return /* () */0;
+    
   };
   return React.createElement("div", {
               className: "control-container",

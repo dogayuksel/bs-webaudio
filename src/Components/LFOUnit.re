@@ -13,7 +13,7 @@ let make = () => {
         |> LFO.make
         |> LFO.connect(~target=AudioContext.getDestination(audioContext))
         |> LFO.start;
-      lfoRef->React.Ref.setCurrent(Some(lfo));
+      lfoRef.current = Some(lfo);
       appContext.setLfoOutputGain(_ => Some(lfo.outputGain));
       let envelope =
         audioContext
@@ -22,7 +22,7 @@ let make = () => {
              ~targetParam=lfo |> LFO.getFrequency,
            );
       envelope |> appContext.addToTriggerTargets;
-      envelopeRef->React.Ref.setCurrent(Some(envelope));
+      envelopeRef.current = Some(envelope);
       setLfoOn(_ => true);
     | None => Js.log("Missing Audio Context")
     };
@@ -31,7 +31,7 @@ let make = () => {
 
   <div className="unit-group-container">
     <h2 className="unit-label"> {React.string("LFO")} </h2>
-    {switch (lfoOn, React.Ref.current(envelopeRef)) {
+    {switch (lfoOn, envelopeRef.current) {
      | (true, Some(env)) =>
        <div className="row-group-container">
          <div className="unit-container">

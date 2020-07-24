@@ -10,36 +10,36 @@ import * as AppContextProvider$WebAudio from "./AppContextProvider.bs.js";
 
 function OscillatorRack(Props) {
   var appContext = React.useContext(AppContextProvider$WebAudio.appContext);
-  var match = React.useState((function () {
-          return 1;
-        }));
+  var match = React.useState(function () {
+        return 1;
+      });
   var setOscillatorIndex = match[1];
   var oscillatorIndex = match[0];
-  var match$1 = React.useState((function () {
-          return /* :: */[
-                  1,
-                  /* [] */0
-                ];
-        }));
+  var match$1 = React.useState(function () {
+        return {
+                hd: 1,
+                tl: /* [] */0
+              };
+      });
   var setOscillators = match$1[1];
   var oscillators = match$1[0];
   var removeOscillator = React.useCallback((function (osc) {
-          return (function (param) {
-              return Curry._1(setOscillators, (function (oList) {
-                            return List.filter((function (o) {
-                                            return o !== osc;
-                                          }))(oList);
-                          }));
-            });
-        }), ([]));
-  var match$2 = appContext.lfoOutputGain;
+          return function (param) {
+            return Curry._1(setOscillators, (function (oList) {
+                          return List.filter(function (o) {
+                                        return o !== osc;
+                                      })(oList);
+                        }));
+          };
+        }), []);
+  var outputGain = appContext.lfoOutputGain;
   var tmp;
-  if (match$2 !== undefined) {
-    var outputGain = Caml_option.valFromOption(match$2);
+  if (outputGain !== undefined) {
+    var outputGain$1 = Caml_option.valFromOption(outputGain);
     tmp = $$Array.of_list(List.map((function (osc) {
                 return React.createElement(OscillatorUnit$WebAudio.make, {
                             name: "OSCILLATOR " + String(osc),
-                            targetOutput: Caml_option.some(outputGain),
+                            targetOutput: Caml_option.some(outputGain$1),
                             alone: List.length(oscillators) === 1,
                             remove: Curry._1(removeOscillator, osc),
                             key: String(osc)
@@ -52,10 +52,10 @@ function OscillatorRack(Props) {
                   className: "unit-container",
                   onClick: (function (param) {
                       Curry._1(setOscillators, (function (oList) {
-                              return /* :: */[
-                                      oscillatorIndex + 1 | 0,
-                                      oList
-                                    ];
+                              return {
+                                      hd: oscillatorIndex + 1 | 0,
+                                      tl: oList
+                                    };
                             }));
                       return Curry._1(setOscillatorIndex, (function (idx) {
                                     return idx + 1 | 0;

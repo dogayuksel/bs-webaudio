@@ -19,7 +19,7 @@ function sampleRandomWave(param) {
 
 function setFrequency(frequency, oscillator) {
   oscillator.oscillatorNode.frequency.value = frequency;
-  return /* () */0;
+  
 }
 
 function getFrequency(oscillator) {
@@ -51,7 +51,7 @@ function connect(target, oscillator) {
 
 function disconnect(oscillator) {
   oscillator.outputGain.disconnect();
-  return /* () */0;
+  
 }
 
 function cleanUp(oscillator) {
@@ -60,15 +60,15 @@ function cleanUp(oscillator) {
   oscillator.oscillatorNode.disconnect();
   OscillatorNode$WebAudio.setOscillatorNodeType(/* Sine */0, oscillator.oscillatorNode);
   oscillator.oscillatorNode.stop();
-  return /* () */0;
+  
 }
 
 function setOscillatorType(oscillatorType, oscillator) {
   return OscillatorNode$WebAudio.setOscillatorNodeType(oscillatorType, oscillator.oscillatorNode);
 }
 
-function make($staropt$star, audioCtx) {
-  var oscillatorType = $staropt$star !== undefined ? $staropt$star : /* Sine */0;
+function make(oscillatorTypeOpt, audioCtx) {
+  var oscillatorType = oscillatorTypeOpt !== undefined ? oscillatorTypeOpt : /* Sine */0;
   var oscillatorNode = audioCtx.createOscillator();
   var envelopeGain = audioCtx.createGain();
   oscillatorNode.connect(envelopeGain);
@@ -87,8 +87,10 @@ function make($staropt$star, audioCtx) {
 
 function makeFromRandom(audioCtx) {
   var oscillator = make(undefined, audioCtx);
-  var periodicWave = AudioContext$WebAudio.makePeriodicWave(sampleRandomWave(/* () */0), audioCtx);
-  OscillatorNode$WebAudio.setOscillatorNodeType(/* Custom */[periodicWave], oscillator.oscillatorNode);
+  var periodicWave = AudioContext$WebAudio.makePeriodicWave(sampleRandomWave(undefined), audioCtx);
+  OscillatorNode$WebAudio.setOscillatorNodeType(/* Custom */{
+        _0: periodicWave
+      }, oscillator.oscillatorNode);
   return oscillator;
 }
 
@@ -108,4 +110,4 @@ export {
   makeFromRandom ,
   
 }
-/* AudioContext-WebAudio Not a pure module */
+/* OscillatorNode-WebAudio Not a pure module */

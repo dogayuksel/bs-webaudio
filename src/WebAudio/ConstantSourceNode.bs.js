@@ -2,7 +2,7 @@
 
 import * as AudioNode$WebAudio from "./AudioNode.bs.js";
 
-AudioNode$WebAudio.Impl({ });
+AudioNode$WebAudio.Impl({});
 
 export {
   

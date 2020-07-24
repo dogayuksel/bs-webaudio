@@ -24,7 +24,7 @@ function Switch(Props) {
                     width: String(40) + "px"
                   },
                   onClick: (function (param) {
-                      return Curry._1(toggle, /* () */0);
+                      return Curry._1(toggle, undefined);
                     })
                 }, React.createElement("div", {
                       style: {

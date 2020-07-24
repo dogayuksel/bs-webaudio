@@ -2,7 +2,7 @@
 
 
 function Impl(T) {
-  return { };
+  return {};
 }
 
 export {

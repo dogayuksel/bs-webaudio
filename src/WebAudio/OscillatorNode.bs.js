@@ -3,31 +3,31 @@
 import * as AudioNode$WebAudio from "./AudioNode.bs.js";
 
 function Impl(T) {
-  return { };
+  return {};
 }
 
-AudioNode$WebAudio.Impl({ });
+AudioNode$WebAudio.Impl({});
 
 function setOscillatorNodeType(oscillatorType, oscillatorNode) {
   if (typeof oscillatorType === "number") {
     switch (oscillatorType) {
       case /* Sine */0 :
           oscillatorNode.type = "sine";
-          return /* () */0;
+          return ;
       case /* Square */1 :
           oscillatorNode.type = "square";
-          return /* () */0;
+          return ;
       case /* Sawtooth */2 :
           oscillatorNode.type = "sawtooth";
-          return /* () */0;
+          return ;
       case /* Triange */3 :
           oscillatorNode.type = "triangle";
-          return /* () */0;
+          return ;
       
     }
   } else {
-    oscillatorNode.setPeriodicWave(oscillatorType[0]);
-    return /* () */0;
+    oscillatorNode.setPeriodicWave(oscillatorType._0);
+    return ;
   }
 }
 

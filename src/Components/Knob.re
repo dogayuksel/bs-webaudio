@@ -82,7 +82,7 @@ let make =
     let clientY = Webapi.Dom.MouseEvent.clientY(event);
     setValue(value => {
       let change =
-        React.Ref.current(lastY)
+        lastY.current
         |> (x => x - clientY)
         |> float_of_int
         |> mapValue(~from=(0.0, knobDomainInPixels), ~target=(0.0, 1.0));
@@ -105,7 +105,7 @@ let make =
         };
       let clampedValue = clamp(newValue, config);
       setParamValue(clampedValue);
-      React.Ref.setCurrent(lastY, clientY);
+      lastY.current = clientY;
       clampedValue;
     });
     ();
@@ -121,7 +121,7 @@ let make =
 
   let handleMouseDown = (event: ReactEvent.Mouse.t): unit => {
     let clientY = ReactEvent.Mouse.clientY(event);
-    React.Ref.setCurrent(lastY, clientY);
+    lastY.current = clientY;
     Webapi.Dom.EventTarget.addMouseMoveEventListener(
       handleMouseMove,
       Webapi.Dom.Document.asEventTarget(Webapi.Dom.document),
@@ -136,7 +136,9 @@ let make =
 
   <div
     style={ReactDOMRe.Style.make(
-      ~width={sizeInPixels(config.size + 50)},
+      ~width={
+        sizeInPixels(config.size + 50);
+      },
       (),
     )}
     className="control-container">

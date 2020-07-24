@@ -6,13 +6,13 @@ var appContext = React.createContext({
       audioContext: undefined,
       triggerTargets: /* [] */0,
       addToTriggerTargets: (function (param) {
-          return /* () */0;
+          
         }),
       removeFromTriggerTargets: (function (param) {
-          return /* () */0;
+          
         }),
       setLfoOutputGain: (function (param) {
-          return /* () */0;
+          
         }),
       lfoOutputGain: undefined
     });

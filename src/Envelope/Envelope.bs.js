@@ -13,7 +13,7 @@ function trigger(envelope) {
   envelope.targetParam.cancelScheduledValues(currentTime.contextTime);
   envelope.targetParam.setTargetAtTime(targetValue, currentTime.contextTime + Pervasives.epsilon_float, attack / 3.0);
   envelope.targetParam.setTargetAtTime(sustain * targetValue, attackTime, decay / 3.0);
-  return /* () */0;
+  
 }
 
 function endTrigger(envelope) {
@@ -22,33 +22,33 @@ function endTrigger(envelope) {
   var currentTime = envelope.audioContext.getOutputTimestamp();
   envelope.targetParam.cancelScheduledValues(currentTime.contextTime);
   envelope.targetParam.setTargetAtTime(Pervasives.epsilon_float, currentTime.contextTime, release / 3.0);
-  return /* () */0;
+  
 }
 
 function update(param, envelope) {
   var envelopeParams = envelope.envelopeParams;
-  switch (param.tag | 0) {
+  switch (param.TAG | 0) {
     case /* Attack */0 :
-        envelopeParams.attack = param[0];
-        return /* () */0;
+        envelopeParams.attack = param._0;
+        return ;
     case /* Decay */1 :
-        envelopeParams.decay = param[0];
-        return /* () */0;
+        envelopeParams.decay = param._0;
+        return ;
     case /* Sustain */2 :
-        envelopeParams.sustain = param[0];
-        return /* () */0;
+        envelopeParams.sustain = param._0;
+        return ;
     case /* Release */3 :
-        envelopeParams.release = param[0];
-        return /* () */0;
+        envelopeParams.release = param._0;
+        return ;
     case /* TargetValue */4 :
-        envelopeParams.targetValue = param[0];
-        return /* () */0;
+        envelopeParams.targetValue = param._0;
+        return ;
     
   }
 }
 
-function make($staropt$star, targetParam, audioCtx) {
-  var targetValue = $staropt$star !== undefined ? $staropt$star : 1.0;
+function make(targetValueOpt, targetParam, audioCtx) {
+  var targetValue = targetValueOpt !== undefined ? targetValueOpt : 1.0;
   targetParam.value = Pervasives.epsilon_float;
   var envelopeParams = {
     attack: 0.2,

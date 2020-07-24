@@ -16,28 +16,25 @@ let make = () => {
     React.useCallback1(
       _ =>
         if (audioContextOn == false) {
-          switch (audioContext->React.Ref.current) {
+          switch (audioContext.current) {
           | Some(audioCtx) =>
             audioCtx
             |> AudioContext.resume
-            |> Js.Promise.then_(_ => {
+            |> Js.Promise.then_(_ =>
                  Js.Promise.resolve(setAudioContextOn(_ => true))
-               })
+               )
             |> ignore
           | None =>
-            audioContext->React.Ref.setCurrent(
-              Some(AudioContext.createAudioContext()),
-            );
+            audioContext.current = Some(AudioContext.createAudioContext());
             setAudioContextOn(_ => true);
           };
         } else {
-          audioContext
-          ->React.Ref.current
+          audioContext.current
           ->Belt.Option.map(AudioContext.suspend)
           ->Belt.Option.map(
-              Js.Promise.then_(_ => {
+              Js.Promise.then_(_ =>
                 Js.Promise.resolve(setAudioContextOn(_ => false))
-              }),
+              ),
             )
           |> ignore;
         },
@@ -46,7 +43,7 @@ let make = () => {
 
   <AppContextProvider
     value=AppContextProvider.{
-      audioContext: audioContext->React.Ref.current,
+      audioContext: audioContext.current,
       triggerTargets,
       addToTriggerTargets,
       removeFromTriggerTargets,
@@ -66,7 +63,7 @@ let make = () => {
         </Switch>
       </div>
     </div>
-    {switch (audioContext->React.Ref.current) {
+    {switch (audioContext.current) {
      | Some(_) => <> <OscillatorRack /> <LFOUnit /> </>
      | None => React.null
      }}

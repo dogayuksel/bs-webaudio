@@ -9,10 +9,8 @@ function sizeInPixels(x) {
 }
 
 function clamp(value, config) {
-  var match = value < config.minValue;
-  var value$1 = match ? config.minValue : value;
-  var match$1 = value$1 > config.maxValue;
-  if (match$1) {
+  var value$1 = value < config.minValue ? config.minValue : value;
+  if (value$1 > config.maxValue) {
     return config.maxValue;
   } else {
     return value$1;
@@ -29,20 +27,20 @@ function Slider(Props) {
   var name = Props.name;
   var param = Props.param;
   var config = Props.config;
-  var partial_arg_000 = config.minValue;
-  var partial_arg_001 = config.maxValue;
-  var partial_arg = /* tuple */[
-    partial_arg_000,
-    partial_arg_001
+  var partial_arg_0 = config.minValue;
+  var partial_arg_1 = config.maxValue;
+  var partial_arg = [
+    partial_arg_0,
+    partial_arg_1
   ];
   var mapParam = function (param, param$1) {
     return mapValue(partial_arg, param, param$1);
   };
-  var arg_000 = config.minValue;
-  var arg_001 = config.maxValue;
-  var arg = /* tuple */[
-    arg_000,
-    arg_001
+  var arg_0 = config.minValue;
+  var arg_1 = config.maxValue;
+  var arg = [
+    arg_0,
+    arg_1
   ];
   var indicatorPrecission = React.useMemo((function () {
           var logRange = Math.log10(config.maxValue - config.minValue);
@@ -53,37 +51,37 @@ function Slider(Props) {
           } else {
             return 2;
           }
-        }), /* tuple */[
+        }), [
         config.minValue,
         config.maxValue
       ]);
   var mapValueToHeight = function (value) {
-    var height = Curry._2(mapParam, /* tuple */[
+    var height = Curry._2(mapParam, [
           110,
           0.0
         ], value);
     return height.toString() + "px";
   };
-  var match = React.useState((function () {
-          return param.value;
-        }));
+  var match = React.useState(function () {
+        return param.value;
+      });
   var setValue = match[1];
   var value = match[0];
   var lastY = React.useRef(0);
   var handleMouseMove = function ($$event) {
     var clientY = $$event.clientY;
     Curry._1(setValue, (function (value) {
-            var change = mapValue(/* tuple */[
+            var change = mapValue([
                   0.0,
                   120
-                ], /* tuple */[
+                ], [
                   0.0,
                   1.0
                 ], lastY.current - clientY | 0);
-            var newValue = mapValue(/* tuple */[
+            var newValue = mapValue([
                   0.0,
                   1.0
-                ], arg, change + Curry._2(mapParam, /* tuple */[
+                ], arg, change + Curry._2(mapParam, [
                       0.0,
                       1.0
                     ], value));
@@ -92,11 +90,11 @@ function Slider(Props) {
             lastY.current = clientY;
             return clampedValue;
           }));
-    return /* () */0;
+    
   };
   var handleMouseUp = function (param) {
     document.removeEventListener("mousemove", handleMouseMove);
-    return /* () */0;
+    
   };
   var handleMouseDown = function ($$event) {
     var clientY = $$event.clientY;
@@ -107,7 +105,7 @@ function Slider(Props) {
           once: true,
           passive: true
         });
-    return /* () */0;
+    
   };
   return React.createElement("div", {
               className: "control-container"

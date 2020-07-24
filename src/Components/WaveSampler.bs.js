@@ -40,24 +40,24 @@ var squareWave = $$Array.mapi((function (idx, param) {
 function WaveSampler(Props) {
   var setWaveCallback = Props.setWaveCallback;
   var appContext = React.useContext(AppContextProvider$WebAudio.appContext);
-  var match = React.useState((function () {
-          return 1.0;
-        }));
+  var match = React.useState(function () {
+        return 1.0;
+      });
   var setSineFactor = match[1];
   var sineFactor = match[0];
-  var match$1 = React.useState((function () {
-          return 0.0;
-        }));
+  var match$1 = React.useState(function () {
+        return 0.0;
+      });
   var setSawFactor = match$1[1];
   var sawFactor = match$1[0];
-  var match$2 = React.useState((function () {
-          return 0.0;
-        }));
+  var match$2 = React.useState(function () {
+        return 0.0;
+      });
   var setTriangleFactor = match$2[1];
   var triangleFactor = match$2[0];
-  var match$3 = React.useState((function () {
-          return 0.0;
-        }));
+  var match$3 = React.useState(function () {
+        return 0.0;
+      });
   var setSquareFactor = match$3[1];
   var squareFactor = match$3[0];
   var sampleWave = function (param) {
@@ -69,15 +69,15 @@ function WaveSampler(Props) {
                   return si + sa + tr + sq;
                 }), range);
   };
-  React.useEffect((function (param) {
-          var match = appContext.audioContext;
-          if (match !== undefined) {
-            Curry._1(setWaveCallback, AudioContext$WebAudio.makePeriodicWave(sampleWave(/* () */0), Caml_option.valFromOption(match)));
+  React.useEffect((function () {
+          var audioCtx = appContext.audioContext;
+          if (audioCtx !== undefined) {
+            Curry._1(setWaveCallback, AudioContext$WebAudio.makePeriodicWave(sampleWave(undefined), Caml_option.valFromOption(audioCtx)));
           } else {
             console.log("Audio Context missing");
           }
-          return ;
-        }), /* tuple */[
+          
+        }), [
         sineFactor,
         sawFactor,
         triangleFactor,

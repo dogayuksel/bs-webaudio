@@ -15,63 +15,62 @@ import * as OscillatorRack$WebAudio from "./Components/OscillatorRack.bs.js";
 import * as AppContextProvider$WebAudio from "./Components/AppContextProvider.bs.js";
 
 function App(Props) {
-  var match = React.useState((function () {
-          return false;
-        }));
+  var match = React.useState(function () {
+        return false;
+      });
   var setAudioContextOn = match[1];
   var audioContextOn = match[0];
-  var match$1 = React.useState((function () {
-          return /* [] */0;
-        }));
+  var match$1 = React.useState(function () {
+        return /* [] */0;
+      });
   var setTriggerTargets = match$1[1];
-  var match$2 = React.useState((function () {
-          return ;
-        }));
+  var match$2 = React.useState(function () {
+        
+      });
   var audioContext = React.useRef(undefined);
   var addToTriggerTargets = function (envelope) {
     return Curry._1(setTriggerTargets, (function (targets) {
-                  return /* :: */[
-                          envelope,
-                          targets
-                        ];
+                  return {
+                          hd: envelope,
+                          tl: targets
+                        };
                 }));
   };
   var removeFromTriggerTargets = function (envelope) {
     return Curry._1(setTriggerTargets, (function (targets) {
-                  return List.filter((function (e) {
-                                  return Caml_obj.caml_notequal(e, envelope);
-                                }))(targets);
+                  return List.filter(function (e) {
+                                return Caml_obj.caml_notequal(e, envelope);
+                              })(targets);
                 }));
   };
   var toggleAudioContextOn = React.useCallback((function (param) {
           if (audioContextOn === false) {
-            var match = audioContext.current;
-            if (match !== undefined) {
-              Caml_option.valFromOption(match).resume().then((function (param) {
-                      return Promise.resolve(Curry._1(setAudioContextOn, (function (param) {
-                                        return true;
-                                      })));
-                    }));
-              return /* () */0;
+            var audioCtx = audioContext.current;
+            if (audioCtx !== undefined) {
+              Caml_option.valFromOption(audioCtx).resume().then(function (param) {
+                    return Promise.resolve(Curry._1(setAudioContextOn, (function (param) {
+                                      return true;
+                                    })));
+                  });
+              return ;
             } else {
-              audioContext.current = Caml_option.some(Curry._1(AudioContext$WebAudio.createAudioContext, /* () */0));
+              audioContext.current = Caml_option.some(AudioContext$WebAudio.createAudioContext(undefined));
               return Curry._1(setAudioContextOn, (function (param) {
                             return true;
                           }));
             }
-          } else {
-            Belt_Option.map(Belt_Option.map(audioContext.current, (function (prim) {
-                        return prim.suspend();
-                      })), (function (param) {
-                    return param.then((function (param) {
-                                  return Promise.resolve(Curry._1(setAudioContextOn, (function (param) {
-                                                    return false;
-                                                  })));
-                                }));
-                  }));
-            return /* () */0;
           }
-        }), /* array */[audioContextOn]);
+          Belt_Option.map(Belt_Option.map(audioContext.current, (function (prim) {
+                      return prim.suspend();
+                    })), (function (param) {
+                  return param.then(function (param) {
+                              return Promise.resolve(Curry._1(setAudioContextOn, (function (param) {
+                                                return false;
+                                              })));
+                            });
+                }));
+          
+        }), [audioContextOn]);
   var match$3 = audioContext.current;
   return React.createElement(AppContextProvider$WebAudio.make, AppContextProvider$WebAudio.makeProps({
                   audioContext: audioContext.current,
@@ -80,7 +79,7 @@ function App(Props) {
                   removeFromTriggerTargets: removeFromTriggerTargets,
                   setLfoOutputGain: match$2[1],
                   lfoOutputGain: match$2[0]
-                }, null, /* () */0), React.createElement("div", {
+                }, null, undefined), React.createElement("div", {
                   style: {
                     position: "absolute",
                     right: "0",
@@ -92,7 +91,7 @@ function App(Props) {
                           isOn: audioContextOn,
                           toggle: toggleAudioContextOn,
                           children: "POWER"
-                        }))), match$3 !== undefined ? React.createElement(React.Fragment, undefined, React.createElement(OscillatorRack$WebAudio.make, { }), React.createElement(LFOUnit$WebAudio.make, { })) : null, React.createElement(Sequencer$WebAudio.make, { }), React.createElement(Keyboard$WebAudio.make, { }));
+                        }))), match$3 !== undefined ? React.createElement(React.Fragment, undefined, React.createElement(OscillatorRack$WebAudio.make, {}), React.createElement(LFOUnit$WebAudio.make, {})) : null, React.createElement(Sequencer$WebAudio.make, {}), React.createElement(Keyboard$WebAudio.make, {}));
 }
 
 var make = App;
