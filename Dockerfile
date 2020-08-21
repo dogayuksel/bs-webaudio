@@ -1,20 +1,22 @@
-FROM node:10.16-alpine
-
-RUN apk update && apk add python g++ make && rm -rf /var/cache/apk/*
-
-RUN npm install -g bs-platform --unsafe-perm
+FROM node:12
 
 WORKDIR /usr/app/
 
 COPY . .
 
-RUN yarn && yarn cache clean
-
-RUN npm link bs-platform
+RUN yarn
 
 RUN yarn make
 
 RUN yarn build
+
+
+
+FROM node:12.18.3-alpine3.12
+
+WORKDIR /usr/app/
+
+COPY . .
 
 RUN addgroup -S appgroup && \
     adduser -S appuser appgroup && \

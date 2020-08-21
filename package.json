@@ -17,8 +17,8 @@
     "bsb-js": "^1.1.7"
   },
   "dependencies": {
-    "bs-platform": "^8.0.3",
-    "bs-webapi": "^0.18",
+    "bs-platform": "^8.2.0",
+    "bs-webapi": "^0.19.1",
     "parcel": "latest",
     "react": "^16.13.1",
     "react-dom": "^16.13.1",
